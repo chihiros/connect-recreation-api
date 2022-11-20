@@ -13,7 +13,7 @@ func main() {
 	}
 
 	r := infra.NewRouter(conn)
-	if err := http.ListenAndServe(":9876", r); err != nil {
+	if err := http.ListenAndServe(":8080", r); err != nil {
 		panic(err)
 	}
 }
