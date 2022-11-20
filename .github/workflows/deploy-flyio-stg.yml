@@ -1,8 +1,5 @@
 name: Deploy to Fly.io
-on:
-  push:
-    branches:
-      - staging
+on: push
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
   TOML_FILE: ./.github/workflows/fly.staging.toml
