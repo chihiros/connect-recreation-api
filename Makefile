@@ -17,3 +17,6 @@ gen:
 gomod-update:
 	cd app; \
 	go get -u && go mod tidy
+
+deploy:
+	flyctl deploy --config ./.github/workflows/fly.staging.toml --build-target deploy --remote-only
