@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
       target: docker
     ports:
-      - 8686:9876
+      - 8686:8080
     volumes:
       - ./app:/app
     tty: true
