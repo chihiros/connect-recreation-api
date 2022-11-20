@@ -13,4 +13,6 @@ jobs:
         - uses: superfly/flyctl-actions/setup-flyctl@master
         - run: echo $FLY_API_TOKEN
         - run: echo $TOML_FILE
+        - run: ls -lah
+        - run: pwd
         - run: flyctl deploy --config {{ env.TOML_FILE }} --build-target deploy --remote-only
