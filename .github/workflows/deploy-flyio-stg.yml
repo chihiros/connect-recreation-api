@@ -15,4 +15,6 @@ jobs:
         - run: echo $TOML_FILE
         - run: ls -lah
         - run: pwd
+        # dirがあるか確認する
+        - run: ls -lah ./.github
         - run: flyctl deploy --config {{ env.TOML_FILE }} --build-target deploy --remote-only
