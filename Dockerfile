@@ -11,6 +11,7 @@ RUN go mod download
 RUN GOOS=linux go build -tags timetzdata -mod=readonly -v -o server
 
 FROM ubuntu:latest AS deploy
+RUN apt update && apt install -y ca-certificates
 COPY --from=build /app/server /server
 
 CMD ["/server"]
