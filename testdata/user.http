@@ -1,11 +1,16 @@
-### ユーザー一覧の取得
-GET http://localhost:8686/api/users
+# @HOST=https://topicpost-api.fly.dev
+@HOST=http://localhost:8686
+### 疎通確認
+GET {{HOST}}/api/now
 
 ### ユーザー一覧の取得
-GET http://localhost:8686/api/users/query?id=1
+GET {{HOST}}/api/users
+
+### ユーザー一覧の取得
+GET {{HOST}}/api/users/query?id=1
 
 #### ユーザーの追加
-POST http://localhost:8686/api/users
+POST {{HOST}}/api/users
 Context-Type: application/json
 
 {
@@ -14,7 +19,7 @@ Context-Type: application/json
 }
 
 #### ユーザーの追加・更新
-PUT http://localhost:8686/api/users
+PUT {{HOST}}/api/users
 Context-Type: application/json
 
 {
@@ -23,4 +28,4 @@ Context-Type: application/json
 }
 
 ### ユーザー一覧の取得
-DELETE http://localhost:8686/api/users?id=1
+DELETE {{HOST}}/api/users?id=1
