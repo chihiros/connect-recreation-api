@@ -21,6 +21,18 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 			r.Put("/", controller.Put)
 			r.Delete("/", controller.Delete)
 		})
+
+		r.Route("/now", func(r chi.Router) {
+			r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+				jst, err := time.LoadLocation("Asia/Tokyo")
+				if err != nil {
+					panic(err)
+				}
+				now := time.Now().In(jst)
+				w.WriteHeader(http.StatusOK)
+				json.NewEncoder(w).Encode(now)
+			})
+		})
 	})
 
 	return r
