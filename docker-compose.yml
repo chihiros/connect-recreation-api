@@ -20,6 +20,9 @@ services:
       DB_NAME: postgres
       DB_TIMEZONE: Asia/Tokyo
       PROJECT_ENV: docker
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     build:
