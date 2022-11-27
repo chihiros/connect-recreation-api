@@ -14,3 +14,23 @@ services:
       - .env
     environment:
       PROJECT_ENV: docker
+
+  db:
+    build:
+      context: .
+      dockerfile: ./docker/postgres/Dockerfile
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      TZ: Asia/Tokyo
+      LANG: ja_JP.utf8
+    volumes:
+      - ./docker/postgres/seeds:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
