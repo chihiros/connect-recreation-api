@@ -10,7 +10,7 @@ services:
     volumes:
       - ./app:/app
     tty: true
-    # env_file:
-      # - .env
+    env_file:
+      - .env
     environment:
       PROJECT_ENV: docker
