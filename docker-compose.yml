@@ -25,9 +25,7 @@ services:
         condition: service_healthy
 
   db:
-    build:
-      context: .
-      dockerfile: ./docker/postgres/Dockerfile
+    image: postgres:13.5-bullseye
     ports:
       - 5432:5432
     environment:
@@ -35,7 +33,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       TZ: Asia/Tokyo
-      LANG: ja_JP.utf8
     volumes:
       - ./docker/postgres/seeds:/docker-entrypoint-initdb.d
     healthcheck:
