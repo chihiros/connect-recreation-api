@@ -6,8 +6,14 @@ import (
 )
 
 func main() {
-	// SQLite3へのコネクションを取得する
-	conn, err := infra.NewSQLite3Connection()
+	// // SQLite3へのコネクションを取得する
+	// conn, err := infra.NewSQLite3Connection()
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// Postgresへのコネクションを取得する
+	conn, err := infra.NewPostgresConnection()
 	if err != nil {
 		panic(err)
 	}
