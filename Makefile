@@ -20,3 +20,6 @@ gomod-update:
 
 deploy:
 	flyctl deploy --config ./.github/workflows/fly.staging.toml --build-target deploy --remote-only
+
+kushi:
+	flyctl proxy 5432:5433 -a topicpost-api-db
