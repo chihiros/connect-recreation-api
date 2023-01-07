@@ -30,8 +30,10 @@ func NewSQLite3Connection() (*ent.Client, error) {
 func CreateSample(ctx context.Context, client *ent.Client, id int) (*ent.User, error) {
 	user, err := client.User.
 		Create().
+		SetUID("uid" + strconv.Itoa(id)).
 		SetUsername("user" + strconv.Itoa(id)).
-		SetAge(10 * id).
+		SetMail("user" + strconv.Itoa(id) + "@example.com").
+		SetPrefectureID(1).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
 		Save(ctx)

@@ -46,8 +46,9 @@ func (r *UserRepository) GetByID(ctx context.Context, id int) (usecase.Response,
 
 func (r *UserRepository) Post(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	user, err := r.DBConn.User.Create().
+		SetUID(req.UID).
 		SetUsername(req.Username).
-		SetAge(req.Age).
+		SetPrefectureID(req.PrefectureID).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
 		Save(ctx)
@@ -69,8 +70,9 @@ func (r *UserRepository) Post(ctx context.Context, req usecase.Request) (usecase
 
 func (r *UserRepository) Put(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	id, err := r.DBConn.User.Create().
+		SetUID(req.UID).
 		SetUsername(req.Username).
-		SetAge(req.Age).
+		SetPrefectureID(req.PrefectureID).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
 		OnConflict(
@@ -78,7 +80,7 @@ func (r *UserRepository) Put(ctx context.Context, req usecase.Request) (usecase.
 		).
 		Update(func(u *ent.UserUpsert) {
 			u.SetUsername(req.Username)
-			u.SetAge(req.Age)
+			u.SetPrefectureID(req.PrefectureID)
 			u.UpdateUpdatedAt()
 		}).
 		ID(ctx)
