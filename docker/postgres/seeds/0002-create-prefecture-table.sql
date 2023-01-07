@@ -6,7 +6,6 @@ CREATE TABLE prefectures (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Path: docker/postgres/seeds/0003-create-prefectures-data.sql
 -- 都道府県のデータを作成する
 INSERT INTO prefectures (name) VALUES ('北海道');
 INSERT INTO prefectures (name) VALUES ('青森県');
