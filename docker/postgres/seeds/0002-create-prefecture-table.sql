@@ -1,4 +1,4 @@
--- 都道府県のテーブルマスターを作成する
+-- 都道府県のテーブルを作成する
 CREATE TABLE prefectures (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
