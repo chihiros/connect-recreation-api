@@ -15,6 +15,7 @@ type Prefecture struct {
 func (Prefecture) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").
+			Immutable().
 			Unique(),
 		field.Time("created_at").
 			Default(time.Now),
