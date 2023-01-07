@@ -246,18 +246,6 @@ type (
 	}
 )
 
-// SetName sets the "name" field.
-func (u *PrefectureUpsert) SetName(v string) *PrefectureUpsert {
-	u.Set(prefecture.FieldName, v)
-	return u
-}
-
-// UpdateName sets the "name" field to the value that was provided on create.
-func (u *PrefectureUpsert) UpdateName() *PrefectureUpsert {
-	u.SetExcluded(prefecture.FieldName)
-	return u
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (u *PrefectureUpsert) SetCreatedAt(v time.Time) *PrefectureUpsert {
 	u.Set(prefecture.FieldCreatedAt, v)
@@ -292,6 +280,11 @@ func (u *PrefectureUpsert) UpdateUpdatedAt() *PrefectureUpsert {
 //		Exec(ctx)
 func (u *PrefectureUpsertOne) UpdateNewValues() *PrefectureUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.Name(); exists {
+			s.SetIgnore(prefecture.FieldName)
+		}
+	}))
 	return u
 }
 
@@ -320,20 +313,6 @@ func (u *PrefectureUpsertOne) Update(set func(*PrefectureUpsert)) *PrefectureUps
 		set(&PrefectureUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetName sets the "name" field.
-func (u *PrefectureUpsertOne) SetName(v string) *PrefectureUpsertOne {
-	return u.Update(func(s *PrefectureUpsert) {
-		s.SetName(v)
-	})
-}
-
-// UpdateName sets the "name" field to the value that was provided on create.
-func (u *PrefectureUpsertOne) UpdateName() *PrefectureUpsertOne {
-	return u.Update(func(s *PrefectureUpsert) {
-		s.UpdateName()
-	})
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -534,6 +513,13 @@ type PrefectureUpsertBulk struct {
 //		Exec(ctx)
 func (u *PrefectureUpsertBulk) UpdateNewValues() *PrefectureUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.Name(); exists {
+				s.SetIgnore(prefecture.FieldName)
+			}
+		}
+	}))
 	return u
 }
 
@@ -562,20 +548,6 @@ func (u *PrefectureUpsertBulk) Update(set func(*PrefectureUpsert)) *PrefectureUp
 		set(&PrefectureUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetName sets the "name" field.
-func (u *PrefectureUpsertBulk) SetName(v string) *PrefectureUpsertBulk {
-	return u.Update(func(s *PrefectureUpsert) {
-		s.SetName(v)
-	})
-}
-
-// UpdateName sets the "name" field to the value that was provided on create.
-func (u *PrefectureUpsertBulk) UpdateName() *PrefectureUpsertBulk {
-	return u.Update(func(s *PrefectureUpsert) {
-		s.UpdateName()
-	})
 }
 
 // SetCreatedAt sets the "created_at" field.

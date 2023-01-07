@@ -22,15 +22,27 @@ type UserCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetAge sets the "age" field.
-func (uc *UserCreate) SetAge(i int) *UserCreate {
-	uc.mutation.SetAge(i)
+// SetUID sets the "uid" field.
+func (uc *UserCreate) SetUID(s string) *UserCreate {
+	uc.mutation.SetUID(s)
 	return uc
 }
 
 // SetUsername sets the "username" field.
 func (uc *UserCreate) SetUsername(s string) *UserCreate {
 	uc.mutation.SetUsername(s)
+	return uc
+}
+
+// SetMail sets the "mail" field.
+func (uc *UserCreate) SetMail(s string) *UserCreate {
+	uc.mutation.SetMail(s)
+	return uc
+}
+
+// SetPrefectureID sets the "prefecture_id" field.
+func (uc *UserCreate) SetPrefectureID(i int) *UserCreate {
+	uc.mutation.SetPrefectureID(i)
 	return uc
 }
 
@@ -151,11 +163,17 @@ func (uc *UserCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (uc *UserCreate) check() error {
-	if _, ok := uc.mutation.Age(); !ok {
-		return &ValidationError{Name: "age", err: errors.New(`ent: missing required field "User.age"`)}
+	if _, ok := uc.mutation.UID(); !ok {
+		return &ValidationError{Name: "uid", err: errors.New(`ent: missing required field "User.uid"`)}
 	}
 	if _, ok := uc.mutation.Username(); !ok {
 		return &ValidationError{Name: "username", err: errors.New(`ent: missing required field "User.username"`)}
+	}
+	if _, ok := uc.mutation.Mail(); !ok {
+		return &ValidationError{Name: "mail", err: errors.New(`ent: missing required field "User.mail"`)}
+	}
+	if _, ok := uc.mutation.PrefectureID(); !ok {
+		return &ValidationError{Name: "prefecture_id", err: errors.New(`ent: missing required field "User.prefecture_id"`)}
 	}
 	if _, ok := uc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "User.created_at"`)}
@@ -191,13 +209,21 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 	)
 	_spec.OnConflict = uc.conflict
-	if value, ok := uc.mutation.Age(); ok {
-		_spec.SetField(user.FieldAge, field.TypeInt, value)
-		_node.Age = value
+	if value, ok := uc.mutation.UID(); ok {
+		_spec.SetField(user.FieldUID, field.TypeString, value)
+		_node.UID = value
 	}
 	if value, ok := uc.mutation.Username(); ok {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
 		_node.Username = value
+	}
+	if value, ok := uc.mutation.Mail(); ok {
+		_spec.SetField(user.FieldMail, field.TypeString, value)
+		_node.Mail = value
+	}
+	if value, ok := uc.mutation.PrefectureID(); ok {
+		_spec.SetField(user.FieldPrefectureID, field.TypeInt, value)
+		_node.PrefectureID = &value
 	}
 	if value, ok := uc.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
@@ -214,7 +240,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.User.Create().
-//		SetAge(v).
+//		SetUID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -223,7 +249,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.UserUpsert) {
-//			SetAge(v+v).
+//			SetUID(v+v).
 //		}).
 //		Exec(ctx)
 func (uc *UserCreate) OnConflict(opts ...sql.ConflictOption) *UserUpsertOne {
@@ -259,24 +285,6 @@ type (
 	}
 )
 
-// SetAge sets the "age" field.
-func (u *UserUpsert) SetAge(v int) *UserUpsert {
-	u.Set(user.FieldAge, v)
-	return u
-}
-
-// UpdateAge sets the "age" field to the value that was provided on create.
-func (u *UserUpsert) UpdateAge() *UserUpsert {
-	u.SetExcluded(user.FieldAge)
-	return u
-}
-
-// AddAge adds v to the "age" field.
-func (u *UserUpsert) AddAge(v int) *UserUpsert {
-	u.Add(user.FieldAge, v)
-	return u
-}
-
 // SetUsername sets the "username" field.
 func (u *UserUpsert) SetUsername(v string) *UserUpsert {
 	u.Set(user.FieldUsername, v)
@@ -286,6 +294,36 @@ func (u *UserUpsert) SetUsername(v string) *UserUpsert {
 // UpdateUsername sets the "username" field to the value that was provided on create.
 func (u *UserUpsert) UpdateUsername() *UserUpsert {
 	u.SetExcluded(user.FieldUsername)
+	return u
+}
+
+// SetMail sets the "mail" field.
+func (u *UserUpsert) SetMail(v string) *UserUpsert {
+	u.Set(user.FieldMail, v)
+	return u
+}
+
+// UpdateMail sets the "mail" field to the value that was provided on create.
+func (u *UserUpsert) UpdateMail() *UserUpsert {
+	u.SetExcluded(user.FieldMail)
+	return u
+}
+
+// SetPrefectureID sets the "prefecture_id" field.
+func (u *UserUpsert) SetPrefectureID(v int) *UserUpsert {
+	u.Set(user.FieldPrefectureID, v)
+	return u
+}
+
+// UpdatePrefectureID sets the "prefecture_id" field to the value that was provided on create.
+func (u *UserUpsert) UpdatePrefectureID() *UserUpsert {
+	u.SetExcluded(user.FieldPrefectureID)
+	return u
+}
+
+// AddPrefectureID adds v to the "prefecture_id" field.
+func (u *UserUpsert) AddPrefectureID(v int) *UserUpsert {
+	u.Add(user.FieldPrefectureID, v)
 	return u
 }
 
@@ -323,6 +361,11 @@ func (u *UserUpsert) UpdateUpdatedAt() *UserUpsert {
 //		Exec(ctx)
 func (u *UserUpsertOne) UpdateNewValues() *UserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.UID(); exists {
+			s.SetIgnore(user.FieldUID)
+		}
+	}))
 	return u
 }
 
@@ -353,27 +396,6 @@ func (u *UserUpsertOne) Update(set func(*UserUpsert)) *UserUpsertOne {
 	return u
 }
 
-// SetAge sets the "age" field.
-func (u *UserUpsertOne) SetAge(v int) *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.SetAge(v)
-	})
-}
-
-// AddAge adds v to the "age" field.
-func (u *UserUpsertOne) AddAge(v int) *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.AddAge(v)
-	})
-}
-
-// UpdateAge sets the "age" field to the value that was provided on create.
-func (u *UserUpsertOne) UpdateAge() *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.UpdateAge()
-	})
-}
-
 // SetUsername sets the "username" field.
 func (u *UserUpsertOne) SetUsername(v string) *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
@@ -385,6 +407,41 @@ func (u *UserUpsertOne) SetUsername(v string) *UserUpsertOne {
 func (u *UserUpsertOne) UpdateUsername() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.UpdateUsername()
+	})
+}
+
+// SetMail sets the "mail" field.
+func (u *UserUpsertOne) SetMail(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetMail(v)
+	})
+}
+
+// UpdateMail sets the "mail" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateMail() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateMail()
+	})
+}
+
+// SetPrefectureID sets the "prefecture_id" field.
+func (u *UserUpsertOne) SetPrefectureID(v int) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetPrefectureID(v)
+	})
+}
+
+// AddPrefectureID adds v to the "prefecture_id" field.
+func (u *UserUpsertOne) AddPrefectureID(v int) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.AddPrefectureID(v)
+	})
+}
+
+// UpdatePrefectureID sets the "prefecture_id" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdatePrefectureID() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdatePrefectureID()
 	})
 }
 
@@ -547,7 +604,7 @@ func (ucb *UserCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.UserUpsert) {
-//			SetAge(v+v).
+//			SetUID(v+v).
 //		}).
 //		Exec(ctx)
 func (ucb *UserCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserUpsertBulk {
@@ -586,6 +643,13 @@ type UserUpsertBulk struct {
 //		Exec(ctx)
 func (u *UserUpsertBulk) UpdateNewValues() *UserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.UID(); exists {
+				s.SetIgnore(user.FieldUID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -616,27 +680,6 @@ func (u *UserUpsertBulk) Update(set func(*UserUpsert)) *UserUpsertBulk {
 	return u
 }
 
-// SetAge sets the "age" field.
-func (u *UserUpsertBulk) SetAge(v int) *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.SetAge(v)
-	})
-}
-
-// AddAge adds v to the "age" field.
-func (u *UserUpsertBulk) AddAge(v int) *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.AddAge(v)
-	})
-}
-
-// UpdateAge sets the "age" field to the value that was provided on create.
-func (u *UserUpsertBulk) UpdateAge() *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.UpdateAge()
-	})
-}
-
 // SetUsername sets the "username" field.
 func (u *UserUpsertBulk) SetUsername(v string) *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
@@ -648,6 +691,41 @@ func (u *UserUpsertBulk) SetUsername(v string) *UserUpsertBulk {
 func (u *UserUpsertBulk) UpdateUsername() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.UpdateUsername()
+	})
+}
+
+// SetMail sets the "mail" field.
+func (u *UserUpsertBulk) SetMail(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetMail(v)
+	})
+}
+
+// UpdateMail sets the "mail" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateMail() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateMail()
+	})
+}
+
+// SetPrefectureID sets the "prefecture_id" field.
+func (u *UserUpsertBulk) SetPrefectureID(v int) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetPrefectureID(v)
+	})
+}
+
+// AddPrefectureID adds v to the "prefecture_id" field.
+func (u *UserUpsertBulk) AddPrefectureID(v int) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.AddPrefectureID(v)
+	})
+}
+
+// UpdatePrefectureID sets the "prefecture_id" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdatePrefectureID() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdatePrefectureID()
 	})
 }
 

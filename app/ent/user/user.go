@@ -11,10 +11,14 @@ const (
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldAge holds the string denoting the age field in the database.
-	FieldAge = "age"
+	// FieldUID holds the string denoting the uid field in the database.
+	FieldUID = "uid"
 	// FieldUsername holds the string denoting the username field in the database.
 	FieldUsername = "username"
+	// FieldMail holds the string denoting the mail field in the database.
+	FieldMail = "mail"
+	// FieldPrefectureID holds the string denoting the prefecture_id field in the database.
+	FieldPrefectureID = "prefecture_id"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -26,8 +30,10 @@ const (
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
-	FieldAge,
+	FieldUID,
 	FieldUsername,
+	FieldMail,
+	FieldPrefectureID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }

@@ -28,12 +28,6 @@ func (pu *PrefectureUpdate) Where(ps ...predicate.Prefecture) *PrefectureUpdate 
 	return pu
 }
 
-// SetName sets the "name" field.
-func (pu *PrefectureUpdate) SetName(s string) *PrefectureUpdate {
-	pu.mutation.SetName(s)
-	return pu
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (pu *PrefectureUpdate) SetCreatedAt(t time.Time) *PrefectureUpdate {
 	pu.mutation.SetCreatedAt(t)
@@ -139,9 +133,6 @@ func (pu *PrefectureUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := pu.mutation.Name(); ok {
-		_spec.SetField(prefecture.FieldName, field.TypeString, value)
-	}
 	if value, ok := pu.mutation.CreatedAt(); ok {
 		_spec.SetField(prefecture.FieldCreatedAt, field.TypeTime, value)
 	}
@@ -165,12 +156,6 @@ type PrefectureUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *PrefectureMutation
-}
-
-// SetName sets the "name" field.
-func (puo *PrefectureUpdateOne) SetName(s string) *PrefectureUpdateOne {
-	puo.mutation.SetName(s)
-	return puo
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -307,9 +292,6 @@ func (puo *PrefectureUpdateOne) sqlSave(ctx context.Context) (_node *Prefecture,
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := puo.mutation.Name(); ok {
-		_spec.SetField(prefecture.FieldName, field.TypeString, value)
 	}
 	if value, ok := puo.mutation.CreatedAt(); ok {
 		_spec.SetField(prefecture.FieldCreatedAt, field.TypeTime, value)

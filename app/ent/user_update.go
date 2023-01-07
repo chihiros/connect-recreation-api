@@ -28,22 +28,28 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	return uu
 }
 
-// SetAge sets the "age" field.
-func (uu *UserUpdate) SetAge(i int) *UserUpdate {
-	uu.mutation.ResetAge()
-	uu.mutation.SetAge(i)
-	return uu
-}
-
-// AddAge adds i to the "age" field.
-func (uu *UserUpdate) AddAge(i int) *UserUpdate {
-	uu.mutation.AddAge(i)
-	return uu
-}
-
 // SetUsername sets the "username" field.
 func (uu *UserUpdate) SetUsername(s string) *UserUpdate {
 	uu.mutation.SetUsername(s)
+	return uu
+}
+
+// SetMail sets the "mail" field.
+func (uu *UserUpdate) SetMail(s string) *UserUpdate {
+	uu.mutation.SetMail(s)
+	return uu
+}
+
+// SetPrefectureID sets the "prefecture_id" field.
+func (uu *UserUpdate) SetPrefectureID(i int) *UserUpdate {
+	uu.mutation.ResetPrefectureID()
+	uu.mutation.SetPrefectureID(i)
+	return uu
+}
+
+// AddPrefectureID adds i to the "prefecture_id" field.
+func (uu *UserUpdate) AddPrefectureID(i int) *UserUpdate {
+	uu.mutation.AddPrefectureID(i)
 	return uu
 }
 
@@ -152,14 +158,17 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := uu.mutation.Age(); ok {
-		_spec.SetField(user.FieldAge, field.TypeInt, value)
-	}
-	if value, ok := uu.mutation.AddedAge(); ok {
-		_spec.AddField(user.FieldAge, field.TypeInt, value)
-	}
 	if value, ok := uu.mutation.Username(); ok {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.Mail(); ok {
+		_spec.SetField(user.FieldMail, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.PrefectureID(); ok {
+		_spec.SetField(user.FieldPrefectureID, field.TypeInt, value)
+	}
+	if value, ok := uu.mutation.AddedPrefectureID(); ok {
+		_spec.AddField(user.FieldPrefectureID, field.TypeInt, value)
 	}
 	if value, ok := uu.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
@@ -186,22 +195,28 @@ type UserUpdateOne struct {
 	mutation *UserMutation
 }
 
-// SetAge sets the "age" field.
-func (uuo *UserUpdateOne) SetAge(i int) *UserUpdateOne {
-	uuo.mutation.ResetAge()
-	uuo.mutation.SetAge(i)
-	return uuo
-}
-
-// AddAge adds i to the "age" field.
-func (uuo *UserUpdateOne) AddAge(i int) *UserUpdateOne {
-	uuo.mutation.AddAge(i)
-	return uuo
-}
-
 // SetUsername sets the "username" field.
 func (uuo *UserUpdateOne) SetUsername(s string) *UserUpdateOne {
 	uuo.mutation.SetUsername(s)
+	return uuo
+}
+
+// SetMail sets the "mail" field.
+func (uuo *UserUpdateOne) SetMail(s string) *UserUpdateOne {
+	uuo.mutation.SetMail(s)
+	return uuo
+}
+
+// SetPrefectureID sets the "prefecture_id" field.
+func (uuo *UserUpdateOne) SetPrefectureID(i int) *UserUpdateOne {
+	uuo.mutation.ResetPrefectureID()
+	uuo.mutation.SetPrefectureID(i)
+	return uuo
+}
+
+// AddPrefectureID adds i to the "prefecture_id" field.
+func (uuo *UserUpdateOne) AddPrefectureID(i int) *UserUpdateOne {
+	uuo.mutation.AddPrefectureID(i)
 	return uuo
 }
 
@@ -340,14 +355,17 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			}
 		}
 	}
-	if value, ok := uuo.mutation.Age(); ok {
-		_spec.SetField(user.FieldAge, field.TypeInt, value)
-	}
-	if value, ok := uuo.mutation.AddedAge(); ok {
-		_spec.AddField(user.FieldAge, field.TypeInt, value)
-	}
 	if value, ok := uuo.mutation.Username(); ok {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.Mail(); ok {
+		_spec.SetField(user.FieldMail, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.PrefectureID(); ok {
+		_spec.SetField(user.FieldPrefectureID, field.TypeInt, value)
+	}
+	if value, ok := uuo.mutation.AddedPrefectureID(); ok {
+		_spec.AddField(user.FieldPrefectureID, field.TypeInt, value)
 	}
 	if value, ok := uuo.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
