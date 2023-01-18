@@ -16,26 +16,24 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 	r.Use(middleware.Logger)
 
 	controller := controller.NewController(conn)
-	r.Route("/api", func(r chi.Router) {
-		r.Route("v1", func(r chi.Router) {
-			r.Route("/users", func(r chi.Router) {
-				r.Get("/", controller.Get)
-				r.Get("/query", controller.GetByID)
-				r.Post("/", controller.Post)
-				r.Put("/", controller.Put)
-				r.Delete("/", controller.Delete)
-			})
+	r.Route("v1", func(r chi.Router) {
+		r.Route("/users", func(r chi.Router) {
+			r.Get("/", controller.Get)
+			r.Get("/query", controller.GetByID)
+			r.Post("/", controller.Post)
+			r.Put("/", controller.Put)
+			r.Delete("/", controller.Delete)
+		})
 
-			r.Route("/now", func(r chi.Router) {
-				r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-					jst, err := time.LoadLocation("Asia/Tokyo")
-					if err != nil {
-						panic(err)
-					}
-					now := time.Now().In(jst)
-					w.WriteHeader(http.StatusOK)
-					json.NewEncoder(w).Encode(now)
-				})
+		r.Route("/now", func(r chi.Router) {
+			r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+				jst, err := time.LoadLocation("Asia/Tokyo")
+				if err != nil {
+					panic(err)
+				}
+				now := time.Now().In(jst)
+				w.WriteHeader(http.StatusOK)
+				json.NewEncoder(w).Encode(now)
 			})
 		})
 	})
