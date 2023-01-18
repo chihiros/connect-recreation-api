@@ -16,7 +16,7 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 	r.Use(middleware.Logger)
 
 	controller := controller.NewController(conn)
-	r.Route("/api", func(r chi.Router) {
+	r.Route("v1", func(r chi.Router) {
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", controller.Get)
 			r.Get("/query", controller.GetByID)

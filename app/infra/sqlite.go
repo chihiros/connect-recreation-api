@@ -15,6 +15,8 @@ func NewSQLite3Connection() (*ent.Client, error) {
 	if err != nil {
 		log.Printf("failed opening connection to sqlite: %v", err)
 	}
+
+	// Dockerで使う場合は、下記のコメントアウトを外してください。
 	ctx := context.Background()
 	if err := client.Schema.Create(ctx); err != nil {
 		log.Printf("failed creating schema resources: %v", err)
@@ -23,6 +25,7 @@ func NewSQLite3Connection() (*ent.Client, error) {
 	for i := 1; i <= 5; i++ {
 		CreateSample(ctx, client, i)
 	}
+	// ./------------------------------------------------
 
 	return client, err
 }
@@ -30,8 +33,10 @@ func NewSQLite3Connection() (*ent.Client, error) {
 func CreateSample(ctx context.Context, client *ent.Client, id int) (*ent.User, error) {
 	user, err := client.User.
 		Create().
+		SetUID("uid" + strconv.Itoa(id)).
 		SetUsername("user" + strconv.Itoa(id)).
-		SetAge(10 * id).
+		SetMail("user" + strconv.Itoa(id) + "@example.com").
+		SetPrefectureID(1).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
 		Save(ctx)
