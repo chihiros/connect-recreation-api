@@ -2,7 +2,6 @@ package infra
 
 import (
 	"app/ent"
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -28,15 +27,6 @@ func NewPostgresConnection() (*ent.Client, error) {
 	if err != nil {
 		log.Printf("failed opening connection to postgres: %v", err)
 	}
-
-	ctx := context.Background()
-	if err := client.Schema.Create(ctx); err != nil {
-		log.Printf("failed creating schema resources: %v", err)
-	}
-
-	// for i := 1; i <= 5; i++ {
-	// 	CreateSample(ctx, client, i)
-	// }
 
 	return client, err
 }

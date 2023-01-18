@@ -15,9 +15,15 @@ type User struct {
 // Fields of the User.
 func (User) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("age"),
+		field.String("uid").
+			Immutable().
+			Unique(),
 		field.String("username").
 			Unique(),
+		field.String("mail").
+			Unique(),
+		field.Int("prefecture_id").
+			Nillable(),
 		field.Time("created_at").
 			Default(time.Now),
 		field.Time("updated_at").
