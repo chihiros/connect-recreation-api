@@ -4,7 +4,6 @@ app = "topicpost-api-db"
 kill_signal = "SIGTERM"
 kill_timeout = 300
 processes = []
-services = []
 
 [checks]
   [checks.pg]
