@@ -2,8 +2,6 @@ package infra
 
 import (
 	"app/ent"
-	"app/ent/migrate"
-	"context"
 	"fmt"
 	"log"
 	"os"
