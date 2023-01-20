@@ -1,4 +1,4 @@
-# @HOST=https://topicpost-api.fly.dev
+# @HOST=https://api.topicpost.net
 @HOST=http://localhost:8686
 ### 疎通確認
 GET {{HOST}}/v1/now
