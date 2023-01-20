@@ -14,8 +14,10 @@ POST {{HOST}}/v1/users
 Context-Type: application/json
 
 {
-    "username": "User2",
-    "age": 20
+    "uid": "1000000006",
+    "username": "hayasi",
+    "mail": "hayashi@example.com",
+    "prefecture_id": 6
 }
 
 ### ユーザー一覧の取得
