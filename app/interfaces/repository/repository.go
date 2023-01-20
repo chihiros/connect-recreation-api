@@ -48,6 +48,7 @@ func (r *UserRepository) Post(ctx context.Context, req usecase.Request) (usecase
 	user, err := r.DBConn.User.Create().
 		SetUID(req.UID).
 		SetUsername(req.Username).
+		SetMail(req.Mail).
 		SetPrefectureID(req.PrefectureID).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
