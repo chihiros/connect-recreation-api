@@ -8,7 +8,6 @@ type UserUseCase interface {
 	Get(context.Context) (Response, error)
 	GetByID(context.Context, int) (Response, error)
 	Post(context.Context, Request) (Response, error)
-	Put(context.Context, Request) (Response, error)
 	Delete(context.Context, int) error
 }
 
@@ -16,7 +15,6 @@ type UserRepository interface {
 	Get(context.Context) (Response, error)
 	GetByID(context.Context, int) (Response, error)
 	Post(context.Context, Request) (Response, error)
-	Put(context.Context, Request) (Response, error)
 	Delete(context.Context, int) error
 }
 
@@ -34,10 +32,6 @@ func (u *UserUsecase) GetByID(ctx context.Context, id int) (Response, error) {
 
 func (u *UserUsecase) Post(ctx context.Context, req Request) (Response, error) {
 	return u.Repository.Post(ctx, req)
-}
-
-func (u *UserUsecase) Put(ctx context.Context, req Request) (Response, error) {
-	return u.Repository.Put(ctx, req)
 }
 
 func (u *UserUsecase) Delete(ctx context.Context, id int) error {

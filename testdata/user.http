@@ -18,14 +18,5 @@ Context-Type: application/json
     "age": 20
 }
 
-#### ユーザーの追加・更新
-PUT {{HOST}}/v1/users
-Context-Type: application/json
-
-{
-    "username": "User2",
-    "age": 20
-}
-
 ### ユーザー一覧の取得
 DELETE {{HOST}}/v1/users?id=1

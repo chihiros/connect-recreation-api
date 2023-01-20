@@ -21,7 +21,6 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 			r.Get("/", controller.Get)
 			r.Get("/query", controller.GetByID)
 			r.Post("/", controller.Post)
-			r.Put("/", controller.Put)
 			r.Delete("/", controller.Delete)
 		})
 
