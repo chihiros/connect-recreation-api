@@ -2,8 +2,6 @@ package infra
 
 import (
 	"app/ent"
-	"app/ent/migrate"
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -28,18 +26,6 @@ func NewPostgresConnection() (*ent.Client, error) {
 	client, err := ent.Open("postgres", DB_URL)
 	if err != nil {
 		log.Printf("failed opening connection to postgres: %v", err)
-	}
-
-	// 環境に応じでマイグレーションを行うか設定した方が良さそう
-	ctx := context.Background()
-	// マイグレーションの実行
-	err = client.Schema.Create(
-		ctx,
-		migrate.WithDropIndex(true),
-		migrate.WithDropColumn(true),
-	)
-	if err != nil {
-		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
 	return client, err

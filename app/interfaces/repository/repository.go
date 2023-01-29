@@ -7,8 +7,6 @@ import (
 	"context"
 	"fmt"
 	"time"
-
-	"entgo.io/ent/dialect/sql"
 )
 
 type UserRepository struct {
@@ -48,6 +46,7 @@ func (r *UserRepository) Post(ctx context.Context, req usecase.Request) (usecase
 	user, err := r.DBConn.User.Create().
 		SetUID(req.UID).
 		SetUsername(req.Username).
+		SetMail(req.Mail).
 		SetPrefectureID(req.PrefectureID).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
@@ -68,39 +67,6 @@ func (r *UserRepository) Post(ctx context.Context, req usecase.Request) (usecase
 	return res, err
 }
 
-func (r *UserRepository) Put(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	id, err := r.DBConn.User.Create().
-		SetUID(req.UID).
-		SetUsername(req.Username).
-		SetPrefectureID(req.PrefectureID).
-		SetCreatedAt(time.Now()).
-		SetUpdatedAt(time.Now()).
-		OnConflict(
-			sql.ConflictColumns(user.FieldUsername),
-		).
-		Update(func(u *ent.UserUpsert) {
-			u.SetUsername(req.Username)
-			u.SetPrefectureID(req.PrefectureID)
-			u.UpdateUpdatedAt()
-		}).
-		ID(ctx)
-
-	if err != nil {
-		panic(err)
-	}
-
-	// 更新されたユーザー情報を取得する
-	user, err := r.DBConn.User.Query().
-		Where(user.IDEQ(id)).
-		All(ctx)
-
-	if err != nil {
-		panic(err)
-	}
-
-	res := usecase.Response{Data: user}
-	return res, err
-}
 func (r *UserRepository) Delete(ctx context.Context, id int) error {
 	_, err := r.DBConn.User.Delete().
 		Where(user.IDEQ(id)).
