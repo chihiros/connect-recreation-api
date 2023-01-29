@@ -3,15 +3,16 @@ module app
 go 1.18
 
 require (
-	entgo.io/ent v0.11.4
+	entgo.io/ent v0.11.7
+	github.com/chihiros/logger v0.0.2
 	github.com/go-chi/chi v1.5.4
-	github.com/go-chi/chi/v5 v5.0.7
+	github.com/go-chi/chi/v5 v5.0.8
 	github.com/lib/pq v1.10.7
 	github.com/mattn/go-sqlite3 v1.14.16
 )
 
 require (
-	ariga.io/atlas v0.8.3 // indirect
+	ariga.io/atlas v0.9.1-0.20230119145809-92243f7c55cb // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
@@ -21,5 +22,5 @@ require (
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/zclconf/go-cty v1.12.1 // indirect
 	golang.org/x/mod v0.7.0 // indirect
-	golang.org/x/text v0.4.0 // indirect
+	golang.org/x/text v0.6.0 // indirect
 )
