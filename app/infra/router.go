@@ -5,16 +5,16 @@ import (
 	"app/interfaces/controller"
 	"encoding/json"
 	"net/http"
-	"strings"
 	"time"
 
+	"github.com/chihiros/logger"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
 func NewRouter(conn *ent.Client) *chi.Mux {
 	r := chi.NewRouter()
-	r.Use(middleware.Logger)
+	r.Use(logger.Logger)
 	r.Use(middleware.Recoverer)
 
 	controller := controller.NewController(conn)
