@@ -8,10 +8,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var logLevel string
+
+type ENV int
 
 const (
-	PROD = iota
+	PROD ENV = iota
 	STG
 	DEV
 )
