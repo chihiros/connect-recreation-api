@@ -40,32 +40,27 @@ func SetEnv(env ENV) {
 }
 
 func Debug(args string) {
-	fn, file, line := getCaller()
-	msg := genMessage(fn, file, line, args)
+	msg := genMessage(args)
 	logrus.Debug(msg)
 }
 
 func Info(args string) {
-	fn, file, line := getCaller()
-	msg := genMessage(fn, file, line, args)
+	msg := genMessage(args)
 	logrus.Info(msg)
 }
 
 func Warn(args string) {
-	fn, file, line := getCaller()
-	msg := genMessage(fn, file, line, args)
+	msg := genMessage(args)
 	logrus.Warn(msg)
 }
 
 func Error(args string) {
-	fn, file, line := getCaller()
-	msg := genMessage(fn, file, line, args)
+	msg := genMessage(args)
 	logrus.Error(msg)
 }
 
 func Panic(err error) {
-	fn, file, line := getCaller()
-	msg := genMessage(fn, file, line, err)
+	msg := genMessage(err)
 	logrus.Panic(msg)
 }
 
@@ -77,7 +72,8 @@ func getCaller() (funcName, filepath string, line int) {
 	return fn, file, line
 }
 
-func genMessage(fn, file string, line int, args interface{}) string {
+func genMessage(args interface{}) string {
+	fn, file, line := getCaller()
 	msg := fmt.Sprintf("%s %s:%d %v", fn, file, line, args)
 	return msg
 }
