@@ -30,7 +30,7 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	controller := controller.NewController(conn)
+	ucon := controller.NewUserController(conn)
 	r.Route("/v1", func(r chi.Router) {
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", controller.Get)

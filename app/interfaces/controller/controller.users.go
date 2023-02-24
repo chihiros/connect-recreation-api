@@ -10,13 +10,13 @@ import (
 	"strconv"
 )
 
-type Controller struct {
+type UserController struct {
 	Usecase usecase.UserUseCase
 }
 
-func NewController(conn *ent.Client) *Controller {
+func NewUserController(conn *ent.Client) *UserController {
 	u := NewUserUsecase(conn)
-	return &Controller{
+	return &UserController{
 		Usecase: u,
 	}
 }
