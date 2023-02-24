@@ -8,7 +8,8 @@ import (
 )
 
 func main() {
-	applog.SetEnv("staging")
+	applog.SetEnv(applog.DEV)
+	// applog.SetEnv(applog.PROD)
 	alog := applog.NewLog()
 
 	// ロケールを日本に設定する
