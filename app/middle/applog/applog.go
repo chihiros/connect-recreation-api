@@ -2,11 +2,10 @@ package applog
 
 import (
 	"fmt"
-	"log"
-	"os"
 	"runtime"
 
-	"github.com/hashicorp/logutils"
+	"github.com/mattn/go-colorable"
+	"github.com/sirupsen/logrus"
 )
 
 var logLevel string
