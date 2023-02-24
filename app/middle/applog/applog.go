@@ -43,13 +43,6 @@ func SetEnv(env ENV) {
 type AppLog struct{}
 
 func NewLog() *AppLog {
-	filter := &logutils.LevelFilter{
-		Levels:   []logutils.LogLevel{"DEBUG", "WARN", "ERROR"},
-		MinLevel: logutils.LogLevel(logLevel),
-		Writer:   os.Stderr,
-	}
-	log.SetOutput(filter)
-
 	return &AppLog{}
 }
 
