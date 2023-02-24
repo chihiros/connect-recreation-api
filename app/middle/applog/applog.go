@@ -40,37 +40,31 @@ func SetEnv(env ENV) {
 	logrus.SetLevel(logLevel)
 }
 
-type AppLog struct{}
-
-func NewLog() *AppLog {
-	return &AppLog{}
-}
-
-func (l *AppLog) Debug(args string) {
+func Debug(args string) {
 	fn, file, line := getCaller()
 	msg := genMessage(fn, file, line, args)
 	logrus.Debug(msg)
 }
 
-func (l *AppLog) Info(args string) {
+func Info(args string) {
 	fn, file, line := getCaller()
 	msg := genMessage(fn, file, line, args)
 	logrus.Info(msg)
 }
 
-func (l *AppLog) Warn(args string) {
+func Warn(args string) {
 	fn, file, line := getCaller()
 	msg := genMessage(fn, file, line, args)
 	logrus.Warn(msg)
 }
 
-func (l *AppLog) Error(args string) {
+func Error(args string) {
 	fn, file, line := getCaller()
 	msg := genMessage(fn, file, line, args)
 	logrus.Error(msg)
 }
 
-func (l *AppLog) Panic(err error) {
+func Panic(err error) {
 	fn, file, line := getCaller()
 	msg := genMessage(fn, file, line, err)
 	logrus.Panic(msg)
