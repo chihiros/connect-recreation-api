@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	applog.SetEnv(applog.DEV)
+	applog.Setenv(applog.DEV)
 	// applog.SetEnv(applog.PROD)
 
 	// ロケールを日本に設定する

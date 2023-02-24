@@ -18,7 +18,7 @@ const (
 	DEV
 )
 
-func SetEnv(env ENV) {
+func Setenv(env ENV) {
 	switch env {
 	case PROD:
 		logLevel = logrus.WarnLevel
