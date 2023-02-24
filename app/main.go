@@ -2,10 +2,15 @@ package main
 
 import (
 	"app/infra"
+	"app/middle/applog"
 	"net/http"
+	"time"
 )
 
 func main() {
+	applog.SetEnv("staging")
+	alog := applog.NewLog()
+
 	// // SQLite3へのコネクションを取得する
 	// conn, err := infra.NewSQLite3Connection()
 	// if err != nil {
