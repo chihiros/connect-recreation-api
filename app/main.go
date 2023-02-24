@@ -10,13 +10,12 @@ import (
 func main() {
 	applog.SetEnv(applog.DEV)
 	// applog.SetEnv(applog.PROD)
-	alog := applog.NewLog()
 
 	// ロケールを日本に設定する
 	{
 		jst, err := time.LoadLocation("Asia/Tokyo")
 		if err != nil {
-			alog.Panic(err)
+			applog.Panic(err)
 		}
 		time.Local = jst
 	}
@@ -30,11 +29,11 @@ func main() {
 	// Postgresへのコネクションを取得する
 	conn, err := infra.NewPostgresConnection()
 	if err != nil {
-		alog.Panic(err)
+		applog.Panic(err)
 	}
 
 	r := infra.NewRouter(conn)
 	if err := http.ListenAndServe(":8080", r); err != nil {
-		alog.Panic(err)
+		applog.Panic(err)
 	}
 }
