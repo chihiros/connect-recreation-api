@@ -9,7 +9,7 @@ import (
 
 func main() {
 	applog.Setenv(applog.DEV)
-	// applog.SetEnv(applog.PROD)
+	// applog.Setenv(applog.PROD)
 
 	// ロケールを日本に設定する
 	{
