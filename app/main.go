@@ -23,3 +23,11 @@ func main() {
 		panic(err)
 	}
 }
+
+func init() {
+	jst, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		panic(err)
+	}
+	time.Local = jst
+}
