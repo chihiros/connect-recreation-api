@@ -29,6 +29,15 @@ func SetEnv(env ENV) {
 	default:
 		logLevel = logrus.TraceLevel
 	}
+
+	logrus.SetFormatter(&logrus.TextFormatter{
+		ForceColors:   true,
+		FullTimestamp: true,
+	})
+	// logrus.SetFormatter(&logrus.JSONFormatter{}) // 出力の形式がJSONになる
+	logrus.SetOutput(colorable.NewColorableStdout())
+	fmt.Printf("logLevel: %v\n", logLevel)
+	logrus.SetLevel(logLevel)
 }
 
 type AppLog struct{}
