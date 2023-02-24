@@ -33,10 +33,10 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 	ucon := controller.NewUserController(conn)
 	r.Route("/v1", func(r chi.Router) {
 		r.Route("/users", func(r chi.Router) {
-			r.Get("/", controller.Get)
-			r.Get("/query", controller.GetByID)
-			r.Post("/", controller.Post)
-			r.Delete("/", controller.Delete)
+			r.Get("/", ucon.GetUsers)
+			r.Get("/query", ucon.GetUsersByID)
+			r.Post("/", ucon.PostUsers)
+			r.Delete("/", ucon.DeleteUsersByID)
 		})
 
 		r.Route("/now", func(r chi.Router) {
