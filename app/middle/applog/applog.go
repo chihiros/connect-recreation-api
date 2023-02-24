@@ -40,7 +40,7 @@ func SetEnv(env ENV) {
 }
 
 func Debug(args string) {
-	logrus.Debug(genMessage(args))
+	logrus.Debug(args)
 }
 
 func Info(args string) {
