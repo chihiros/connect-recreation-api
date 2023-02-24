@@ -40,28 +40,23 @@ func SetEnv(env ENV) {
 }
 
 func Debug(args string) {
-	msg := genMessage(args)
-	logrus.Debug(msg)
+	logrus.Debug(genMessage(args))
 }
 
 func Info(args string) {
-	msg := genMessage(args)
-	logrus.Info(msg)
+	logrus.Info(genMessage(args))
 }
 
 func Warn(args string) {
-	msg := genMessage(args)
-	logrus.Warn(msg)
+	logrus.Warn(genMessage(args))
 }
 
 func Error(args string) {
-	msg := genMessage(args)
-	logrus.Error(msg)
+	logrus.Error(genMessage(args))
 }
 
 func Panic(err error) {
-	msg := genMessage(err)
-	logrus.Panic(msg)
+	logrus.Panic(genMessage(err))
 }
 
 // 実行元のファイル名と行数を取得
