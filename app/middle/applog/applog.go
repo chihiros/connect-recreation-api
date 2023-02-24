@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var logLevel logrus.Level
 
 type ENV int
 
@@ -17,13 +18,16 @@ const (
 	DEV
 )
 
+func SetEnv(env ENV) {
 	switch env {
-	case "production":
-		logLevel = "WARN"
-	case "staging":
-		logLevel = "DEBUG"
+	case PROD:
+		logLevel = logrus.WarnLevel
+	case STG:
+		logLevel = logrus.TraceLevel
+	case DEV:
+		logLevel = logrus.TraceLevel
 	default:
-		logLevel = "DEBUG"
+		logLevel = logrus.TraceLevel
 	}
 }
 
