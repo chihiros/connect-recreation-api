@@ -78,3 +78,7 @@ func getCaller() (funcName, filepath string, line int) {
 	return fn, file, line
 }
 
+func genMessage(fn, file string, line int, args interface{}) string {
+	msg := fmt.Sprintf("%s %s:%d %v", fn, file, line, args)
+	return msg
+}
