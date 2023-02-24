@@ -69,3 +69,12 @@ func (l *AppLog) Panic(err error) {
 	Print("[PANIC] " + err.Error())
 	panic(err)
 }
+
+// 実行元のファイル名と行数を取得
+func getCaller() (funcName, filepath string, line int) {
+	pc, file, line, _ := runtime.Caller(2)
+	fn := runtime.FuncForPC(pc).Name()
+
+	return fn, file, line
+}
+
