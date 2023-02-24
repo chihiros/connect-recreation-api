@@ -11,6 +11,15 @@ func main() {
 	applog.SetEnv("staging")
 	alog := applog.NewLog()
 
+	// ロケールを日本に設定する
+	{
+		jst, err := time.LoadLocation("Asia/Tokyo")
+		if err != nil {
+			alog.Panic(err)
+		}
+		time.Local = jst
+	}
+
 	// // SQLite3へのコネクションを取得する
 	// conn, err := infra.NewSQLite3Connection()
 	// if err != nil {
