@@ -46,13 +46,6 @@ func NewLog() *AppLog {
 	return &AppLog{}
 }
 
-func Print(args string) {
-	pc, file, line, _ := runtime.Caller(2)
-	fn := runtime.FuncForPC(pc).Name()
-	msg := fmt.Sprintf("%s %s:%d %s", fn, file, line, args)
-	log.Print(msg)
-}
-
 func (l *AppLog) Debug(args string) {
 	fn, file, line := getCaller()
 	msg := genMessage(fn, file, line, args)
