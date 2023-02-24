@@ -10,6 +10,7 @@ import (
 	"github.com/chihiros/logger"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 )
 
 func NewRouter(conn *ent.Client) *chi.Mux {
