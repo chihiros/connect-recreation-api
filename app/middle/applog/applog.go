@@ -63,7 +63,6 @@ func Panic(err error) {
 func getCaller() (funcName, filepath string, line int) {
 	pc, file, line, _ := runtime.Caller(3)
 	fn := runtime.FuncForPC(pc).Name()
-
 	return fn, file, line
 }
 
