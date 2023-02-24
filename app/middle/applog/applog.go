@@ -54,20 +54,33 @@ func Print(args string) {
 }
 
 func (l *AppLog) Debug(args string) {
-	Print("[DEBUG] " + args)
+	fn, file, line := getCaller()
+	msg := genMessage(fn, file, line, args)
+	logrus.Debug(msg)
+}
+
+func (l *AppLog) Info(args string) {
+	fn, file, line := getCaller()
+	msg := genMessage(fn, file, line, args)
+	logrus.Info(msg)
 }
 
 func (l *AppLog) Warn(args string) {
-	Print("[WARN] " + args)
+	fn, file, line := getCaller()
+	msg := genMessage(fn, file, line, args)
+	logrus.Warn(msg)
 }
 
 func (l *AppLog) Error(args string) {
-	Print("[ERROR] " + args)
+	fn, file, line := getCaller()
+	msg := genMessage(fn, file, line, args)
+	logrus.Error(msg)
 }
 
 func (l *AppLog) Panic(err error) {
-	Print("[PANIC] " + err.Error())
-	panic(err)
+	fn, file, line := getCaller()
+	msg := genMessage(fn, file, line, err)
+	logrus.Panic(msg)
 }
 
 // 実行元のファイル名と行数を取得
