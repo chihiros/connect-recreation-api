@@ -10,8 +10,12 @@ import (
 
 var logLevel string
 
-func SetEnv(env string) {
-	logLevel = "DEBUG"
+const (
+	PROD = iota
+	STG
+	DEV
+)
+
 	switch env {
 	case "production":
 		logLevel = "WARN"
