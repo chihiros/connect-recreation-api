@@ -20,12 +20,12 @@ func main() {
 	// Postgresへのコネクションを取得する
 	conn, err := infra.NewPostgresConnection()
 	if err != nil {
-		panic(err)
+		alog.Panic(err)
 	}
 
 	r := infra.NewRouter(conn)
 	if err := http.ListenAndServe(":8080", r); err != nil {
-		panic(err)
+		alog.Panic(err)
 	}
 }
 
