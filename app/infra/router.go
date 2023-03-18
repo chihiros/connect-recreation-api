@@ -2,7 +2,8 @@ package infra
 
 import (
 	"app/ent"
-	"app/users/interfaces/controller"
+	rec_controller "app/recreations/interfaces/controller"
+	user_controller "app/users/interfaces/controller"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -30,8 +31,8 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	ucon := controller.NewUserController(conn)
-	// rcon := controller.NewRecreationController(conn)
+	ucon := user_controller.NewUserController(conn)
+	rcon := rec_controller.NewRecreationController(conn)
 	r.Route("/v1", func(r chi.Router) {
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", ucon.GetUsers)
@@ -52,12 +53,12 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 			})
 		})
 
-		// r.Route("/recreation", func(r chi.Router) {
-		// 	// r.Get("/", ucon.GetUsers)
-		// 	// r.Get("/query", ucon.GetUsersByID)
-		// 	r.Post("/", rcon.PostRecreations)
-		// 	// r.Delete("/", ucon.DeleteUsersByID)
-		// })
+		r.Route("/recreation", func(r chi.Router) {
+			// r.Get("/", ucon.GetUsers)
+			// r.Get("/query", ucon.GetUsersByID)
+			r.Post("/", rcon.PostRecreations)
+			// r.Delete("/", ucon.DeleteUsersByID)
+		})
 	})
 
 	return r
