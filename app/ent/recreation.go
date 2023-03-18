@@ -3,7 +3,7 @@
 package ent
 
 import (
-	"app/ent/user"
+	"app/ent/recreation"
 	"fmt"
 	"strings"
 	"time"
@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// User is the model entity for the User schema.
-type User struct {
+// Recreation is the model entity for the Recreation schema.
+type Recreation struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
@@ -31,124 +31,124 @@ type User struct {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*User) scanValues(columns []string) ([]any, error) {
+func (*Recreation) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID, user.FieldPrefectureID:
+		case recreation.FieldID, recreation.FieldPrefectureID:
 			values[i] = new(sql.NullInt64)
-		case user.FieldUID, user.FieldUsername, user.FieldMail:
+		case recreation.FieldUID, recreation.FieldUsername, recreation.FieldMail:
 			values[i] = new(sql.NullString)
-		case user.FieldCreatedAt, user.FieldUpdatedAt:
+		case recreation.FieldCreatedAt, recreation.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type User", columns[i])
+			return nil, fmt.Errorf("unexpected column %q for type Recreation", columns[i])
 		}
 	}
 	return values, nil
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the User fields.
-func (u *User) assignValues(columns []string, values []any) error {
+// to the Recreation fields.
+func (r *Recreation) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID:
+		case recreation.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			u.ID = int(value.Int64)
-		case user.FieldUID:
+			r.ID = int(value.Int64)
+		case recreation.FieldUID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field uid", values[i])
 			} else if value.Valid {
-				u.UID = value.String
+				r.UID = value.String
 			}
-		case user.FieldUsername:
+		case recreation.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])
 			} else if value.Valid {
-				u.Username = value.String
+				r.Username = value.String
 			}
-		case user.FieldMail:
+		case recreation.FieldMail:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field mail", values[i])
 			} else if value.Valid {
-				u.Mail = value.String
+				r.Mail = value.String
 			}
-		case user.FieldPrefectureID:
+		case recreation.FieldPrefectureID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field prefecture_id", values[i])
 			} else if value.Valid {
-				u.PrefectureID = new(int)
-				*u.PrefectureID = int(value.Int64)
+				r.PrefectureID = new(int)
+				*r.PrefectureID = int(value.Int64)
 			}
-		case user.FieldCreatedAt:
+		case recreation.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				u.CreatedAt = value.Time
+				r.CreatedAt = value.Time
 			}
-		case user.FieldUpdatedAt:
+		case recreation.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				u.UpdatedAt = value.Time
+				r.UpdatedAt = value.Time
 			}
 		}
 	}
 	return nil
 }
 
-// Update returns a builder for updating this User.
-// Note that you need to call User.Unwrap() before calling this method if this User
+// Update returns a builder for updating this Recreation.
+// Note that you need to call Recreation.Unwrap() before calling this method if this Recreation
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (u *User) Update() *UserUpdateOne {
-	return NewUserClient(u.config).UpdateOne(u)
+func (r *Recreation) Update() *RecreationUpdateOne {
+	return NewRecreationClient(r.config).UpdateOne(r)
 }
 
-// Unwrap unwraps the User entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the Recreation entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (u *User) Unwrap() *User {
-	_tx, ok := u.config.driver.(*txDriver)
+func (r *Recreation) Unwrap() *Recreation {
+	_tx, ok := r.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: User is not a transactional entity")
+		panic("ent: Recreation is not a transactional entity")
 	}
-	u.config.driver = _tx.drv
-	return u
+	r.config.driver = _tx.drv
+	return r
 }
 
 // String implements the fmt.Stringer.
-func (u *User) String() string {
+func (r *Recreation) String() string {
 	var builder strings.Builder
-	builder.WriteString("User(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
+	builder.WriteString("Recreation(")
+	builder.WriteString(fmt.Sprintf("id=%v, ", r.ID))
 	builder.WriteString("uid=")
-	builder.WriteString(u.UID)
+	builder.WriteString(r.UID)
 	builder.WriteString(", ")
 	builder.WriteString("username=")
-	builder.WriteString(u.Username)
+	builder.WriteString(r.Username)
 	builder.WriteString(", ")
 	builder.WriteString("mail=")
-	builder.WriteString(u.Mail)
+	builder.WriteString(r.Mail)
 	builder.WriteString(", ")
-	if v := u.PrefectureID; v != nil {
+	if v := r.PrefectureID; v != nil {
 		builder.WriteString("prefecture_id=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(r.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(r.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// Users is a parsable slice of User.
-type Users []*User
+// Recreations is a parsable slice of Recreation.
+type Recreations []*Recreation

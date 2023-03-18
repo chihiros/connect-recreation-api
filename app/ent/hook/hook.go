@@ -14,11 +14,22 @@ type PrefectureFunc func(context.Context, *ent.PrefectureMutation) (ent.Value, e
 
 // Mutate calls f(ctx, m).
 func (f PrefectureFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.PrefectureMutation)
-	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PrefectureMutation", m)
+	if mv, ok := m.(*ent.PrefectureMutation); ok {
+		return f(ctx, mv)
 	}
-	return f(ctx, mv)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PrefectureMutation", m)
+}
+
+// The RecreationFunc type is an adapter to allow the use of ordinary
+// function as Recreation mutator.
+type RecreationFunc func(context.Context, *ent.RecreationMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f RecreationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.RecreationMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RecreationMutation", m)
 }
 
 // The UserFunc type is an adapter to allow the use of ordinary
@@ -27,11 +38,10 @@ type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
 func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.UserMutation)
-	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
+	if mv, ok := m.(*ent.UserMutation); ok {
+		return f(ctx, mv)
 	}
-	return f(ctx, mv)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
 }
 
 // Condition is a hook condition function.

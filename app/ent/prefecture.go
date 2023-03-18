@@ -83,7 +83,7 @@ func (pr *Prefecture) assignValues(columns []string, values []any) error {
 // Note that you need to call Prefecture.Unwrap() before calling this method if this Prefecture
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (pr *Prefecture) Update() *PrefectureUpdateOne {
-	return (&PrefectureClient{config: pr.config}).UpdateOne(pr)
+	return NewPrefectureClient(pr.config).UpdateOne(pr)
 }
 
 // Unwrap unwraps the Prefecture entity that was returned from a transaction after it was closed,
@@ -116,9 +116,3 @@ func (pr *Prefecture) String() string {
 
 // Prefectures is a parsable slice of Prefecture.
 type Prefectures []*Prefecture
-
-func (pr Prefectures) config(cfg config) {
-	for _i := range pr {
-		pr[_i].config = cfg
-	}
-}

@@ -4,6 +4,7 @@ package ent
 
 import (
 	"app/ent/prefecture"
+	"app/ent/recreation"
 	"app/ent/schema"
 	"app/ent/user"
 	"time"
@@ -23,6 +24,16 @@ func init() {
 	prefectureDescUpdatedAt := prefectureFields[2].Descriptor()
 	// prefecture.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	prefecture.DefaultUpdatedAt = prefectureDescUpdatedAt.Default.(func() time.Time)
+	recreationFields := schema.Recreation{}.Fields()
+	_ = recreationFields
+	// recreationDescCreatedAt is the schema descriptor for created_at field.
+	recreationDescCreatedAt := recreationFields[4].Descriptor()
+	// recreation.DefaultCreatedAt holds the default value on creation for the created_at field.
+	recreation.DefaultCreatedAt = recreationDescCreatedAt.Default.(func() time.Time)
+	// recreationDescUpdatedAt is the schema descriptor for updated_at field.
+	recreationDescUpdatedAt := recreationFields[5].Descriptor()
+	// recreation.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	recreation.DefaultUpdatedAt = recreationDescUpdatedAt.Default.(func() time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescCreatedAt is the schema descriptor for created_at field.
