@@ -2,48 +2,47 @@ package repository
 
 import (
 	"app/ent"
-	"app/ent/user"
-	"app/users/usecase"
+	"app/recreations/usecase"
 	"context"
 	"fmt"
 	"time"
 )
 
-type UserRepository struct {
+type RecreationRepository struct {
 	DBConn *ent.Client
 }
 
-func NewUserRepository(conn *ent.Client) *UserRepository {
-	return &UserRepository{
+func NewRecreationRepository(conn *ent.Client) *RecreationRepository {
+	return &RecreationRepository{
 		DBConn: conn,
 	}
 }
 
-func (r *UserRepository) GetUsers(ctx context.Context) (usecase.Response, error) {
-	users, err := r.DBConn.User.Query().All(ctx)
-	if err != nil {
-		panic(err)
-	}
+// func (r *RecreationRepository) GetRecreations(ctx context.Context) (usecase.Response, error) {
+// 	users, err := r.DBConn.Recreation.Query().All(ctx)
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	res := usecase.Response{Data: users}
-	return res, err
-}
+// 	res := usecase.Response{Data: users}
+// 	return res, err
+// }
 
-func (r *UserRepository) GetUsersByID(ctx context.Context, id int) (usecase.Response, error) {
-	user, err := r.DBConn.User.Query().
-		Where(user.IDEQ(id)).
-		All(ctx)
+// func (r *RecreationRepository) GetRecreationsByID(ctx context.Context, id int) (usecase.Response, error) {
+// 	user, err := r.DBConn.Recreation.Query().
+// 		Where(user.IDEQ(id)).
+// 		All(ctx)
 
-	if err != nil {
-		panic(err)
-	}
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	res := usecase.Response{Data: user}
-	return res, err
-}
+// 	res := usecase.Response{Data: user}
+// 	return res, err
+// }
 
-func (r *UserRepository) PostUsers(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	user, err := r.DBConn.User.Create().
+func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.Request) (usecase.Response, error) {
+	user, err := r.DBConn.Recreation.Create().
 		SetUID(req.UID).
 		SetUsername(req.Username).
 		SetMail(req.Mail).
@@ -67,14 +66,14 @@ func (r *UserRepository) PostUsers(ctx context.Context, req usecase.Request) (us
 	return res, err
 }
 
-func (r *UserRepository) DeleteUsersByID(ctx context.Context, id int) error {
-	_, err := r.DBConn.User.Delete().
-		Where(user.IDEQ(id)).
-		Exec(ctx)
+// func (r *RecreationRepository) DeleteRecreationsByID(ctx context.Context, id int) error {
+// 	_, err := r.DBConn.Recreation.Delete().
+// 		Where(user.IDEQ(id)).
+// 		Exec(ctx)
 
-	if err != nil {
-		panic(err)
-	}
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	return err
-}
+// 	return err
+// }

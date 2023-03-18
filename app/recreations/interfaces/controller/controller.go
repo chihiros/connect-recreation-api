@@ -2,60 +2,59 @@ package controller
 
 import (
 	"app/ent"
-	"app/users/interfaces/repository"
-	"app/users/usecase"
+	"app/recreations/interfaces/repository"
+	"app/recreations/usecase"
 	"context"
 	"encoding/json"
 	"net/http"
-	"strconv"
 )
 
-type UserController struct {
-	Usecase usecase.UserUseCase
+type RecreationController struct {
+	Usecase usecase.RecreationUseCase
 }
 
-func NewUserController(conn *ent.Client) *UserController {
-	u := NewUserUsecase(conn)
-	return &UserController{
+func NewRecreationController(conn *ent.Client) *RecreationController {
+	u := NewRecreationUsecase(conn)
+	return &RecreationController{
 		Usecase: u,
 	}
 }
 
-func NewUserUsecase(conn *ent.Client) *usecase.UserUsecase {
-	repo := repository.NewUserRepository(conn)
-	return &usecase.UserUsecase{
+func NewRecreationUsecase(conn *ent.Client) *usecase.RecreationUsecase {
+	repo := repository.NewRecreationRepository(conn)
+	return &usecase.RecreationUsecase{
 		Repository: repo,
 	}
 }
 
-func (c *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := c.Usecase.GetUsers(context.Background())
-	if err != nil {
-		panic(err)
-	}
+// func (c *RecreationController) GetRecreations(w http.ResponseWriter, r *http.Request) {
+// 	users, err := c.Usecase.GetRecreations(context.Background())
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(users)
-}
+// 	w.WriteHeader(http.StatusOK)
+// 	json.NewEncoder(w).Encode(users)
+// }
 
-func (c *UserController) GetUsersByID(w http.ResponseWriter, r *http.Request) {
-	// クエリパラメータからidを取得する
-	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+// func (c *RecreationController) GetRecreationsByID(w http.ResponseWriter, r *http.Request) {
+// 	// クエリパラメータからidを取得する
+// 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
 
-	users, err := c.Usecase.GetUsersByID(context.Background(), id)
-	if err != nil {
-		panic(err)
-	}
+// 	users, err := c.Usecase.GetRecreationsByID(context.Background(), id)
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(users)
-}
+// 	w.WriteHeader(http.StatusOK)
+// 	json.NewEncoder(w).Encode(users)
+// }
 
-func (c *UserController) PostUsers(w http.ResponseWriter, r *http.Request) {
+func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする
 	req := usecase.Request{}
 	err := json.NewDecoder(r.Body).Decode(&req)
-	user, err := c.Usecase.PostUsers(context.Background(), req)
+	user, err := c.Usecase.PostRecreations(context.Background(), req)
 
 	if err != nil {
 		switch err.Error() {
@@ -71,10 +70,10 @@ func (c *UserController) PostUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
-func (c *UserController) DeleteUsersByID(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
-	user := c.Usecase.DeleteUsersByID(context.Background(), id)
+// func (c *RecreationController) DeleteRecreationsByID(w http.ResponseWriter, r *http.Request) {
+// 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+// 	user := c.Usecase.DeleteRecreationsByID(context.Background(), id)
 
-	w.WriteHeader(http.StatusNoContent)
-	json.NewEncoder(w).Encode(user)
-}
+// 	w.WriteHeader(http.StatusNoContent)
+// 	json.NewEncoder(w).Encode(user)
+// }
