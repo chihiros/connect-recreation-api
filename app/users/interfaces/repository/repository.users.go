@@ -3,7 +3,7 @@ package repository
 import (
 	"app/ent"
 	"app/ent/user"
-	"app/usecase"
+	"app/users/usecase"
 	"context"
 	"fmt"
 	"time"

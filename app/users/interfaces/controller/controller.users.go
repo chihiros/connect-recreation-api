@@ -2,8 +2,8 @@ package controller
 
 import (
 	"app/ent"
-	"app/interfaces/repository"
-	"app/usecase"
+	"app/users/interfaces/repository"
+	"app/users/usecase"
 	"context"
 	"encoding/json"
 	"net/http"

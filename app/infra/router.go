@@ -2,7 +2,7 @@ package infra
 
 import (
 	"app/ent"
-	"app/interfaces/controller"
+	"app/users/interfaces/controller"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -31,6 +31,7 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 	}))
 
 	ucon := controller.NewUserController(conn)
+	// rcon := controller.NewRecreationController(conn)
 	r.Route("/v1", func(r chi.Router) {
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", ucon.GetUsers)
@@ -50,6 +51,13 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 				json.NewEncoder(w).Encode(now)
 			})
 		})
+
+		// r.Route("/recreation", func(r chi.Router) {
+		// 	// r.Get("/", ucon.GetUsers)
+		// 	// r.Get("/query", ucon.GetUsersByID)
+		// 	r.Post("/", rcon.PostRecreations)
+		// 	// r.Delete("/", ucon.DeleteUsersByID)
+		// })
 	})
 
 	return r
