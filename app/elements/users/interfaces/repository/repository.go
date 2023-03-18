@@ -1,9 +1,9 @@
 package repository
 
 import (
+	"app/elements/users/usecase"
 	"app/ent"
 	"app/ent/user"
-	"app/users/usecase"
 	"context"
 	"fmt"
 	"time"

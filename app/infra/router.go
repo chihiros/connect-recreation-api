@@ -1,9 +1,9 @@
 package infra
 
 import (
+	rec_controller "app/elements/recreations/interfaces/controller"
+	user_controller "app/elements/users/interfaces/controller"
 	"app/ent"
-	rec_controller "app/recreations/interfaces/controller"
-	user_controller "app/users/interfaces/controller"
 	"encoding/json"
 	"net/http"
 	"time"

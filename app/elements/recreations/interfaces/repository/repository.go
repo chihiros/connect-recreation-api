@@ -1,8 +1,8 @@
 package repository
 
 import (
+	"app/elements/recreations/usecase"
 	"app/ent"
-	"app/recreations/usecase"
 	"context"
 	"fmt"
 	"time"
