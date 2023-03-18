@@ -1,5 +1,13 @@
 package applog
 
+/*
+* Use Example
+applog.Debug("Server started at :8080")
+applog.Info("Server started at :8080")
+applog.Warn("Server started at :8080")
+applog.Error("Server started at :8080")
+*/
+
 import (
 	"fmt"
 	"runtime"
