@@ -10,7 +10,10 @@ import (
 func PostWebhook(webhook_url string) {
 	// 送信するデータを作成
 	values := url.Values{}
-	values.Add("payload", "{\"text\": \"Hello, World!\"}")
+	values.Add(
+		"payload",
+		`{"text": "Hello, World!"}`,
+	)
 
 	// POST送信
 	resp, err := http.PostForm(webhook_url, values)
