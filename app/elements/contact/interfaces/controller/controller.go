@@ -30,7 +30,7 @@ func (c *ContactController) PostContact(w http.ResponseWriter, r *http.Request) 
 	// bodyの中身をbindする
 	req := usecase.Request{}
 	err := json.NewDecoder(r.Body).Decode(&req)
-	user, err := c.Usecase.PostContact(context.Background(), req)
+	result, err := c.Usecase.PostContact(context.Background(), req)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -39,5 +39,5 @@ func (c *ContactController) PostContact(w http.ResponseWriter, r *http.Request) 
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(result)
 }
