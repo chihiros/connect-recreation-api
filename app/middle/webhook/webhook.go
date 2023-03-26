@@ -7,12 +7,15 @@ import (
 	"net/url"
 )
 
-func PostWebhook(webhook_url string) {
+func PostWebhook(webhook_url, text string) {
 	// 送信するデータを作成
 	values := url.Values{}
 	values.Add(
 		"payload",
-		`{"text": "Hello, World!"}`,
+		`{
+			"username": "TopicPostお知らせボット",
+			"text": "`+text+`"
+		}`,
 	)
 
 	// POST送信
