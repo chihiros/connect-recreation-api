@@ -9,5 +9,8 @@ import (
 // Prefecture is the predicate function for prefecture builders.
 type Prefecture func(*sql.Selector)
 
+// Recreation is the predicate function for recreation builders.
+type Recreation func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

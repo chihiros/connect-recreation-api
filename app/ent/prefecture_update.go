@@ -63,34 +63,7 @@ func (pu *PrefectureUpdate) Mutation() *PrefectureMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (pu *PrefectureUpdate) Save(ctx context.Context) (int, error) {
-	var (
-		err      error
-		affected int
-	)
-	if len(pu.hooks) == 0 {
-		affected, err = pu.sqlSave(ctx)
-	} else {
-		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*PrefectureMutation)
-			if !ok {
-				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			pu.mutation = mutation
-			affected, err = pu.sqlSave(ctx)
-			mutation.done = true
-			return affected, err
-		})
-		for i := len(pu.hooks) - 1; i >= 0; i-- {
-			if pu.hooks[i] == nil {
-				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
-			}
-			mut = pu.hooks[i](mut)
-		}
-		if _, err := mut.Mutate(ctx, pu.mutation); err != nil {
-			return 0, err
-		}
-	}
-	return affected, err
+	return withHooks[int, PrefectureMutation](ctx, pu.sqlSave, pu.mutation, pu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -116,16 +89,7 @@ func (pu *PrefectureUpdate) ExecX(ctx context.Context) {
 }
 
 func (pu *PrefectureUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   prefecture.Table,
-			Columns: prefecture.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: prefecture.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(prefecture.Table, prefecture.Columns, sqlgraph.NewFieldSpec(prefecture.FieldID, field.TypeInt))
 	if ps := pu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -147,6 +111,7 @@ func (pu *PrefectureUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
+	pu.mutation.done = true
 	return n, nil
 }
 
@@ -191,6 +156,12 @@ func (puo *PrefectureUpdateOne) Mutation() *PrefectureMutation {
 	return puo.mutation
 }
 
+// Where appends a list predicates to the PrefectureUpdate builder.
+func (puo *PrefectureUpdateOne) Where(ps ...predicate.Prefecture) *PrefectureUpdateOne {
+	puo.mutation.Where(ps...)
+	return puo
+}
+
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
 func (puo *PrefectureUpdateOne) Select(field string, fields ...string) *PrefectureUpdateOne {
@@ -200,40 +171,7 @@ func (puo *PrefectureUpdateOne) Select(field string, fields ...string) *Prefectu
 
 // Save executes the query and returns the updated Prefecture entity.
 func (puo *PrefectureUpdateOne) Save(ctx context.Context) (*Prefecture, error) {
-	var (
-		err  error
-		node *Prefecture
-	)
-	if len(puo.hooks) == 0 {
-		node, err = puo.sqlSave(ctx)
-	} else {
-		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*PrefectureMutation)
-			if !ok {
-				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			puo.mutation = mutation
-			node, err = puo.sqlSave(ctx)
-			mutation.done = true
-			return node, err
-		})
-		for i := len(puo.hooks) - 1; i >= 0; i-- {
-			if puo.hooks[i] == nil {
-				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
-			}
-			mut = puo.hooks[i](mut)
-		}
-		v, err := mut.Mutate(ctx, puo.mutation)
-		if err != nil {
-			return nil, err
-		}
-		nv, ok := v.(*Prefecture)
-		if !ok {
-			return nil, fmt.Errorf("unexpected node type %T returned from PrefectureMutation", v)
-		}
-		node = nv
-	}
-	return node, err
+	return withHooks[*Prefecture, PrefectureMutation](ctx, puo.sqlSave, puo.mutation, puo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -259,16 +197,7 @@ func (puo *PrefectureUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (puo *PrefectureUpdateOne) sqlSave(ctx context.Context) (_node *Prefecture, err error) {
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   prefecture.Table,
-			Columns: prefecture.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: prefecture.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(prefecture.Table, prefecture.Columns, sqlgraph.NewFieldSpec(prefecture.FieldID, field.TypeInt))
 	id, ok := puo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Prefecture.id" for update`)}
@@ -310,5 +239,6 @@ func (puo *PrefectureUpdateOne) sqlSave(ctx context.Context) (_node *Prefecture,
 		}
 		return nil, err
 	}
+	puo.mutation.done = true
 	return _node, nil
 }

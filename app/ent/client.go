@@ -11,6 +11,7 @@ import (
 	"app/ent/migrate"
 
 	"app/ent/prefecture"
+	"app/ent/recreation"
 	"app/ent/user"
 
 	"entgo.io/ent/dialect"
@@ -24,13 +25,15 @@ type Client struct {
 	Schema *migrate.Schema
 	// Prefecture is the client for interacting with the Prefecture builders.
 	Prefecture *PrefectureClient
+	// Recreation is the client for interacting with the Recreation builders.
+	Recreation *RecreationClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
 
 // NewClient creates a new client configured with the given options.
 func NewClient(opts ...Option) *Client {
-	cfg := config{log: log.Println, hooks: &hooks{}}
+	cfg := config{log: log.Println, hooks: &hooks{}, inters: &inters{}}
 	cfg.options(opts...)
 	client := &Client{config: cfg}
 	client.init()
@@ -40,6 +43,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Prefecture = NewPrefectureClient(c.config)
+	c.Recreation = NewRecreationClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -75,6 +79,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ctx:        ctx,
 		config:     cfg,
 		Prefecture: NewPrefectureClient(cfg),
+		Recreation: NewRecreationClient(cfg),
 		User:       NewUserClient(cfg),
 	}, nil
 }
@@ -96,6 +101,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ctx:        ctx,
 		config:     cfg,
 		Prefecture: NewPrefectureClient(cfg),
+		Recreation: NewRecreationClient(cfg),
 		User:       NewUserClient(cfg),
 	}, nil
 }
@@ -126,7 +132,30 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Prefecture.Use(hooks...)
+	c.Recreation.Use(hooks...)
 	c.User.Use(hooks...)
+}
+
+// Intercept adds the query interceptors to all the entity clients.
+// In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
+func (c *Client) Intercept(interceptors ...Interceptor) {
+	c.Prefecture.Intercept(interceptors...)
+	c.Recreation.Intercept(interceptors...)
+	c.User.Intercept(interceptors...)
+}
+
+// Mutate implements the ent.Mutator interface.
+func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
+	switch m := m.(type) {
+	case *PrefectureMutation:
+		return c.Prefecture.mutate(ctx, m)
+	case *RecreationMutation:
+		return c.Recreation.mutate(ctx, m)
+	case *UserMutation:
+		return c.User.mutate(ctx, m)
+	default:
+		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
 }
 
 // PrefectureClient is a client for the Prefecture schema.
@@ -143,6 +172,12 @@ func NewPrefectureClient(c config) *PrefectureClient {
 // A call to `Use(f, g, h)` equals to `prefecture.Hooks(f(g(h())))`.
 func (c *PrefectureClient) Use(hooks ...Hook) {
 	c.hooks.Prefecture = append(c.hooks.Prefecture, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `prefecture.Intercept(f(g(h())))`.
+func (c *PrefectureClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Prefecture = append(c.inters.Prefecture, interceptors...)
 }
 
 // Create returns a builder for creating a Prefecture entity.
@@ -197,6 +232,8 @@ func (c *PrefectureClient) DeleteOneID(id int) *PrefectureDeleteOne {
 func (c *PrefectureClient) Query() *PrefectureQuery {
 	return &PrefectureQuery{
 		config: c.config,
+		ctx:    &QueryContext{Type: TypePrefecture},
+		inters: c.Interceptors(),
 	}
 }
 
@@ -219,6 +256,144 @@ func (c *PrefectureClient) Hooks() []Hook {
 	return c.hooks.Prefecture
 }
 
+// Interceptors returns the client interceptors.
+func (c *PrefectureClient) Interceptors() []Interceptor {
+	return c.inters.Prefecture
+}
+
+func (c *PrefectureClient) mutate(ctx context.Context, m *PrefectureMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PrefectureCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PrefectureUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PrefectureUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PrefectureDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Prefecture mutation op: %q", m.Op())
+	}
+}
+
+// RecreationClient is a client for the Recreation schema.
+type RecreationClient struct {
+	config
+}
+
+// NewRecreationClient returns a client for the Recreation from the given config.
+func NewRecreationClient(c config) *RecreationClient {
+	return &RecreationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `recreation.Hooks(f(g(h())))`.
+func (c *RecreationClient) Use(hooks ...Hook) {
+	c.hooks.Recreation = append(c.hooks.Recreation, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `recreation.Intercept(f(g(h())))`.
+func (c *RecreationClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Recreation = append(c.inters.Recreation, interceptors...)
+}
+
+// Create returns a builder for creating a Recreation entity.
+func (c *RecreationClient) Create() *RecreationCreate {
+	mutation := newRecreationMutation(c.config, OpCreate)
+	return &RecreationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Recreation entities.
+func (c *RecreationClient) CreateBulk(builders ...*RecreationCreate) *RecreationCreateBulk {
+	return &RecreationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Recreation.
+func (c *RecreationClient) Update() *RecreationUpdate {
+	mutation := newRecreationMutation(c.config, OpUpdate)
+	return &RecreationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RecreationClient) UpdateOne(r *Recreation) *RecreationUpdateOne {
+	mutation := newRecreationMutation(c.config, OpUpdateOne, withRecreation(r))
+	return &RecreationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RecreationClient) UpdateOneID(id int) *RecreationUpdateOne {
+	mutation := newRecreationMutation(c.config, OpUpdateOne, withRecreationID(id))
+	return &RecreationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Recreation.
+func (c *RecreationClient) Delete() *RecreationDelete {
+	mutation := newRecreationMutation(c.config, OpDelete)
+	return &RecreationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *RecreationClient) DeleteOne(r *Recreation) *RecreationDeleteOne {
+	return c.DeleteOneID(r.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *RecreationClient) DeleteOneID(id int) *RecreationDeleteOne {
+	builder := c.Delete().Where(recreation.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RecreationDeleteOne{builder}
+}
+
+// Query returns a query builder for Recreation.
+func (c *RecreationClient) Query() *RecreationQuery {
+	return &RecreationQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeRecreation},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Recreation entity by its id.
+func (c *RecreationClient) Get(ctx context.Context, id int) (*Recreation, error) {
+	return c.Query().Where(recreation.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RecreationClient) GetX(ctx context.Context, id int) *Recreation {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *RecreationClient) Hooks() []Hook {
+	return c.hooks.Recreation
+}
+
+// Interceptors returns the client interceptors.
+func (c *RecreationClient) Interceptors() []Interceptor {
+	return c.inters.Recreation
+}
+
+func (c *RecreationClient) mutate(ctx context.Context, m *RecreationMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&RecreationCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&RecreationUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&RecreationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&RecreationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Recreation mutation op: %q", m.Op())
+	}
+}
+
 // UserClient is a client for the User schema.
 type UserClient struct {
 	config
@@ -233,6 +408,12 @@ func NewUserClient(c config) *UserClient {
 // A call to `Use(f, g, h)` equals to `user.Hooks(f(g(h())))`.
 func (c *UserClient) Use(hooks ...Hook) {
 	c.hooks.User = append(c.hooks.User, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `user.Intercept(f(g(h())))`.
+func (c *UserClient) Intercept(interceptors ...Interceptor) {
+	c.inters.User = append(c.inters.User, interceptors...)
 }
 
 // Create returns a builder for creating a User entity.
@@ -287,6 +468,8 @@ func (c *UserClient) DeleteOneID(id int) *UserDeleteOne {
 func (c *UserClient) Query() *UserQuery {
 	return &UserQuery{
 		config: c.config,
+		ctx:    &QueryContext{Type: TypeUser},
+		inters: c.Interceptors(),
 	}
 }
 
@@ -307,4 +490,24 @@ func (c *UserClient) GetX(ctx context.Context, id int) *User {
 // Hooks returns the client hooks.
 func (c *UserClient) Hooks() []Hook {
 	return c.hooks.User
+}
+
+// Interceptors returns the client interceptors.
+func (c *UserClient) Interceptors() []Interceptor {
+	return c.inters.User
+}
+
+func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&UserCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&UserUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&UserDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown User mutation op: %q", m.Op())
+	}
 }

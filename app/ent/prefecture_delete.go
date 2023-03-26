@@ -6,7 +6,6 @@ import (
 	"app/ent/predicate"
 	"app/ent/prefecture"
 	"context"
-	"fmt"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -28,34 +27,7 @@ func (pd *PrefectureDelete) Where(ps ...predicate.Prefecture) *PrefectureDelete 
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (pd *PrefectureDelete) Exec(ctx context.Context) (int, error) {
-	var (
-		err      error
-		affected int
-	)
-	if len(pd.hooks) == 0 {
-		affected, err = pd.sqlExec(ctx)
-	} else {
-		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*PrefectureMutation)
-			if !ok {
-				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			pd.mutation = mutation
-			affected, err = pd.sqlExec(ctx)
-			mutation.done = true
-			return affected, err
-		})
-		for i := len(pd.hooks) - 1; i >= 0; i-- {
-			if pd.hooks[i] == nil {
-				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
-			}
-			mut = pd.hooks[i](mut)
-		}
-		if _, err := mut.Mutate(ctx, pd.mutation); err != nil {
-			return 0, err
-		}
-	}
-	return affected, err
+	return withHooks[int, PrefectureMutation](ctx, pd.sqlExec, pd.mutation, pd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
@@ -68,15 +40,7 @@ func (pd *PrefectureDelete) ExecX(ctx context.Context) int {
 }
 
 func (pd *PrefectureDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := &sqlgraph.DeleteSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table: prefecture.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: prefecture.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewDeleteSpec(prefecture.Table, sqlgraph.NewFieldSpec(prefecture.FieldID, field.TypeInt))
 	if ps := pd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -88,12 +52,19 @@ func (pd *PrefectureDelete) sqlExec(ctx context.Context) (int, error) {
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
+	pd.mutation.done = true
 	return affected, err
 }
 
 // PrefectureDeleteOne is the builder for deleting a single Prefecture entity.
 type PrefectureDeleteOne struct {
 	pd *PrefectureDelete
+}
+
+// Where appends a list predicates to the PrefectureDelete builder.
+func (pdo *PrefectureDeleteOne) Where(ps ...predicate.Prefecture) *PrefectureDeleteOne {
+	pdo.pd.mutation.Where(ps...)
+	return pdo
 }
 
 // Exec executes the deletion query.
@@ -111,5 +82,7 @@ func (pdo *PrefectureDeleteOne) Exec(ctx context.Context) error {
 
 // ExecX is like Exec, but panics if an error occurs.
 func (pdo *PrefectureDeleteOne) ExecX(ctx context.Context) {
-	pdo.pd.ExecX(ctx)
+	if err := pdo.Exec(ctx); err != nil {
+		panic(err)
+	}
 }

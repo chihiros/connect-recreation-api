@@ -1,9 +1,9 @@
 package repository
 
 import (
+	"app/elements/users/usecase"
 	"app/ent"
 	"app/ent/user"
-	"app/usecase"
 	"context"
 	"fmt"
 	"time"
@@ -19,7 +19,7 @@ func NewUserRepository(conn *ent.Client) *UserRepository {
 	}
 }
 
-func (r *UserRepository) Get(ctx context.Context) (usecase.Response, error) {
+func (r *UserRepository) GetUsers(ctx context.Context) (usecase.Response, error) {
 	users, err := r.DBConn.User.Query().All(ctx)
 	if err != nil {
 		panic(err)
@@ -29,7 +29,7 @@ func (r *UserRepository) Get(ctx context.Context) (usecase.Response, error) {
 	return res, err
 }
 
-func (r *UserRepository) GetByID(ctx context.Context, id int) (usecase.Response, error) {
+func (r *UserRepository) GetUsersByID(ctx context.Context, id int) (usecase.Response, error) {
 	user, err := r.DBConn.User.Query().
 		Where(user.IDEQ(id)).
 		All(ctx)
@@ -42,7 +42,7 @@ func (r *UserRepository) GetByID(ctx context.Context, id int) (usecase.Response,
 	return res, err
 }
 
-func (r *UserRepository) Post(ctx context.Context, req usecase.Request) (usecase.Response, error) {
+func (r *UserRepository) PostUsers(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	user, err := r.DBConn.User.Create().
 		SetUID(req.UID).
 		SetUsername(req.Username).
@@ -67,7 +67,7 @@ func (r *UserRepository) Post(ctx context.Context, req usecase.Request) (usecase
 	return res, err
 }
 
-func (r *UserRepository) Delete(ctx context.Context, id int) error {
+func (r *UserRepository) DeleteUsersByID(ctx context.Context, id int) error {
 	_, err := r.DBConn.User.Delete().
 		Where(user.IDEQ(id)).
 		Exec(ctx)
