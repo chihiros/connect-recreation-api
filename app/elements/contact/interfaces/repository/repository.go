@@ -4,7 +4,7 @@ import (
 	"app/elements/contact/usecase"
 	"app/middle/applog"
 	"context"
-	"errors"
+	"os"
 )
 
 type ContactRepository struct{}
@@ -14,7 +14,7 @@ func NewContactRepository() *ContactRepository {
 }
 
 func (c *ContactRepository) PostContact(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	err := errors.New("error")
+	webhook_url := os.Getenv("WEBHOOK_URL")
 
 	if err != nil {
 		applog.Panic(err)
