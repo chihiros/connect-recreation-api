@@ -60,10 +60,7 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 		})
 
 		r.Route("/recreation", func(r chi.Router) {
-			// r.Get("/", ucon.GetUsers)
-			// r.Get("/query", ucon.GetUsersByID)
 			r.Post("/", rcon.PostRecreations)
-			// r.Delete("/", ucon.DeleteUsersByID)
 		})
 	})
 
