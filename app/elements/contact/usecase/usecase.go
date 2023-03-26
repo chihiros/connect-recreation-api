@@ -4,18 +4,18 @@ import (
 	"context"
 )
 
-type UserUseCase interface {
-	PostUsers(context.Context, Request) (Response, error)
+type ContactUseCase interface {
+	PostContact(context.Context, Request) (Response, error)
 }
 
-type UserRepository interface {
-	PostUsers(context.Context, Request) (Response, error)
+type ContactRepository interface {
+	PostContact(context.Context, Request) (Response, error)
 }
 
-type UserUsecase struct {
-	Repository UserRepository
+type ContactUsecase struct {
+	Repository ContactRepository
 }
 
-func (u *UserUsecase) PostUsers(ctx context.Context, req Request) (Response, error) {
-	return u.Repository.PostUsers(ctx, req)
+func (u *ContactUsecase) PostContact(ctx context.Context, req Request) (Response, error) {
+	return u.Repository.PostContact(ctx, req)
 }

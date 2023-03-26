@@ -9,29 +9,29 @@ import (
 	"net/http"
 )
 
-type UserController struct {
-	Usecase usecase.UserUseCase
+type ContactController struct {
+	Usecase usecase.ContactUseCase
 }
 
-func NewUserController(conn *ent.Client) *UserController {
-	u := NewUserUsecase(conn)
-	return &UserController{
+func NewContactController(conn *ent.Client) *ContactController {
+	u := NewContactUsecase(conn)
+	return &ContactController{
 		Usecase: u,
 	}
 }
 
-func NewUserUsecase(conn *ent.Client) *usecase.UserUsecase {
-	repo := repository.NewUserRepository(conn)
-	return &usecase.UserUsecase{
+func NewContactUsecase(conn *ent.Client) *usecase.ContactUsecase {
+	repo := repository.NewContactRepository(conn)
+	return &usecase.ContactUsecase{
 		Repository: repo,
 	}
 }
 
-func (c *UserController) PostUsers(w http.ResponseWriter, r *http.Request) {
+func (c *ContactController) PostContact(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする
 	req := usecase.Request{}
 	err := json.NewDecoder(r.Body).Decode(&req)
-	user, err := c.Usecase.PostUsers(context.Background(), req)
+	user, err := c.Usecase.PostContact(context.Background(), req)
 
 	if err != nil {
 		switch err.Error() {

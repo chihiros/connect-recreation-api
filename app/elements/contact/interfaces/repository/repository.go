@@ -1,32 +1,21 @@
 package repository
 
 import (
-	"app/elements/users/usecase"
+	"app/elements/contact/usecase"
 	"app/ent"
 	"context"
+	"errors"
 	"fmt"
-	"time"
 )
 
-type UserRepository struct {
-	DBConn *ent.Client
+type ContactRepository struct{}
+
+func NewContactRepository() *ContactRepository {
+	return &ContactRepository{}
 }
 
-func NewUserRepository(conn *ent.Client) *UserRepository {
-	return &UserRepository{
-		DBConn: conn,
-	}
-}
-
-func (r *UserRepository) PostUsers(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	user, err := r.DBConn.User.Create().
-		SetUID(req.UID).
-		SetUsername(req.Username).
-		SetMail(req.Mail).
-		SetPrefectureID(req.PrefectureID).
-		SetCreatedAt(time.Now()).
-		SetUpdatedAt(time.Now()).
-		Save(ctx)
+func (r *ContactRepository) PostContact(ctx context.Context, req usecase.Request) (usecase.Response, error) {
+	err := errors.New("error")
 
 	if err != nil {
 		if ent.IsConstraintError(err) {
@@ -39,6 +28,6 @@ func (r *UserRepository) PostUsers(ctx context.Context, req usecase.Request) (us
 		panic(err)
 	}
 
-	res := usecase.Response{Data: user}
+	res := usecase.Response{Data: "success"}
 	return res, err
 }
