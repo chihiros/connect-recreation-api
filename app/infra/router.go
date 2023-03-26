@@ -1,6 +1,7 @@
 package infra
 
 import (
+	contact_controller "app/elements/contact/interfaces/controller"
 	rec_controller "app/elements/recreations/interfaces/controller"
 	user_controller "app/elements/users/interfaces/controller"
 	"app/ent"
@@ -32,8 +33,13 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 	}))
 
 	ucon := user_controller.NewUserController(conn)
+	ccon := contact_controller.NewContactController()
 	rcon := rec_controller.NewRecreationController(conn)
 	r.Route("/v1", func(r chi.Router) {
+		r.Route("/contact", func(r chi.Router) {
+			r.Post("/", ccon.PostContact)
+		})
+
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", ucon.GetUsers)
 			r.Get("/query", ucon.GetUsersByID)
