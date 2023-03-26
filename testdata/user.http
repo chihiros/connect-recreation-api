@@ -22,3 +22,13 @@ Context-Type: application/json
 
 ### ユーザー一覧の取得
 DELETE {{HOST}}/v1/users?id=1
+
+### お問い合わせ用のAPI
+POST {{HOST}}/v1/contact
+Context-Type: application/json
+
+{
+    "name": "テスト太郎",
+    "email": "contact@example.com",
+    "content": "これってなんですか？"
+}
