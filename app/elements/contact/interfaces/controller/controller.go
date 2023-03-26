@@ -33,13 +33,9 @@ func (c *ContactController) PostContact(w http.ResponseWriter, r *http.Request) 
 	user, err := c.Usecase.PostContact(context.Background(), req)
 
 	if err != nil {
-		switch err.Error() {
-		case "duplicate":
-			w.WriteHeader(http.StatusConflict)
-			json.NewEncoder(w).Encode(user)
-		default:
-			panic(err)
-		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
