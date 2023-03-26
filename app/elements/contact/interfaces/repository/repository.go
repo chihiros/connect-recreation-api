@@ -2,10 +2,9 @@ package repository
 
 import (
 	"app/elements/contact/usecase"
-	"app/ent"
+	"app/middle/applog"
 	"context"
 	"errors"
-	"fmt"
 )
 
 type ContactRepository struct{}
