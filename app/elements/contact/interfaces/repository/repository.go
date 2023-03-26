@@ -14,7 +14,7 @@ func NewContactRepository() *ContactRepository {
 	return &ContactRepository{}
 }
 
-func (r *ContactRepository) PostContact(ctx context.Context, req usecase.Request) (usecase.Response, error) {
+func (c *ContactRepository) PostContact(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	err := errors.New("error")
 
 	if err != nil {

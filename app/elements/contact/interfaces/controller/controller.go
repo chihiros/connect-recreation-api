@@ -1,9 +1,8 @@
 package controller
 
 import (
-	"app/elements/users/interfaces/repository"
-	"app/elements/users/usecase"
-	"app/ent"
+	"app/elements/contact/interfaces/repository"
+	"app/elements/contact/usecase"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -13,15 +12,15 @@ type ContactController struct {
 	Usecase usecase.ContactUseCase
 }
 
-func NewContactController(conn *ent.Client) *ContactController {
-	u := NewContactUsecase(conn)
+func NewContactController() *ContactController {
+	u := NewContactUsecase()
 	return &ContactController{
 		Usecase: u,
 	}
 }
 
-func NewContactUsecase(conn *ent.Client) *usecase.ContactUsecase {
-	repo := repository.NewContactRepository(conn)
+func NewContactUsecase() *usecase.ContactUsecase {
+	repo := repository.NewContactRepository()
 	return &usecase.ContactUsecase{
 		Repository: repo,
 	}
