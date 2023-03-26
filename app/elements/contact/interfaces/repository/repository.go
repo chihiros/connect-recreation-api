@@ -18,14 +18,7 @@ func (c *ContactRepository) PostContact(ctx context.Context, req usecase.Request
 	err := errors.New("error")
 
 	if err != nil {
-		if ent.IsConstraintError(err) {
-			// ent側の制約エラー
-			return usecase.Response{}, fmt.Errorf("duplicate")
-		}
-	}
-
-	if err != nil {
-		panic(err)
+		applog.Panic(err)
 	}
 
 	res := usecase.Response{Data: "success"}
