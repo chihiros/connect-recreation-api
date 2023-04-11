@@ -28,16 +28,6 @@ func NewProfileUsecase(conn *ent.Client) *usecase.ProfileUsecase {
 	}
 }
 
-func (c *ProfileController) GetProfiles(w http.ResponseWriter, r *http.Request) {
-	profiles, err := c.Usecase.GetProfiles(context.Background())
-	if err != nil {
-		panic(err)
-	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(profiles)
-}
-
 func (c *ProfileController) GetProfilesByID(w http.ResponseWriter, r *http.Request) {
 	// クエリパラメータからidを取得する
 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))

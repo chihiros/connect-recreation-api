@@ -18,17 +18,6 @@ func NewProfileRepository(conn *ent.Client) *ProfileRepository {
 		DBConn: conn,
 	}
 }
-
-func (r *ProfileRepository) GetProfiles(ctx context.Context) (usecase.Response, error) {
-	profiles, err := r.DBConn.Profile.Query().All(ctx)
-	if err != nil {
-		panic(err)
-	}
-
-	res := usecase.Response{Data: profiles}
-	return res, err
-}
-
 func (r *ProfileRepository) GetProfilesByID(ctx context.Context, id int) (usecase.Response, error) {
 	profile, err := r.DBConn.Profile.Query().
 		Where(profile.IDEQ(id)).

@@ -40,6 +40,11 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 			r.Post("/", ccon.PostContact)
 		})
 
+		// r.Route("/profile", func(r chi.Router) {
+		// 	r.Post("/", pcon.PostProfile)
+		//  r.Get("/", pcon.GetProfile)
+		// })
+
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", ucon.GetUsers)
 			r.Get("/query", ucon.GetUsersByID)
@@ -60,7 +65,10 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 		})
 
 		r.Route("/recreation", func(r chi.Router) {
+			// r.Get("/", ucon.GetUsers)
+			// r.Get("/query", ucon.GetUsersByID)
 			r.Post("/", rcon.PostRecreations)
+			// r.Delete("/", ucon.DeleteUsersByID)
 		})
 	})
 

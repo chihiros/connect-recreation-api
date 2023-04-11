@@ -5,14 +5,12 @@ import (
 )
 
 type ProfileUseCase interface {
-	GetProfiles(context.Context) (Response, error)
 	GetProfilesByID(context.Context, int) (Response, error)
 	PostProfiles(context.Context, Request) (Response, error)
 	DeleteProfilesByID(context.Context, int) error
 }
 
 type ProfileRepository interface {
-	GetProfiles(context.Context) (Response, error)
 	GetProfilesByID(context.Context, int) (Response, error)
 	PostProfiles(context.Context, Request) (Response, error)
 	DeleteProfilesByID(context.Context, int) error
@@ -20,10 +18,6 @@ type ProfileRepository interface {
 
 type ProfileUsecase struct {
 	Repository ProfileRepository
-}
-
-func (u *ProfileUsecase) GetProfiles(ctx context.Context) (Response, error) {
-	return u.Repository.GetProfiles(ctx)
 }
 
 func (u *ProfileUsecase) GetProfilesByID(ctx context.Context, id int) (Response, error) {
