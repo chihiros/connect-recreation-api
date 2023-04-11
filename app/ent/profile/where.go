@@ -4,53 +4,52 @@ package profile
 
 import (
 	"app/ent/predicate"
-	"time"
 
 	"entgo.io/ent/dialect/sql"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int8) predicate.Profile {
+func ID(id int) predicate.Profile {
 	return predicate.Profile(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int8) predicate.Profile {
+func IDEQ(id int) predicate.Profile {
 	return predicate.Profile(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int8) predicate.Profile {
+func IDNEQ(id int) predicate.Profile {
 	return predicate.Profile(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int8) predicate.Profile {
+func IDIn(ids ...int) predicate.Profile {
 	return predicate.Profile(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int8) predicate.Profile {
+func IDNotIn(ids ...int) predicate.Profile {
 	return predicate.Profile(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int8) predicate.Profile {
+func IDGT(id int) predicate.Profile {
 	return predicate.Profile(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int8) predicate.Profile {
+func IDGTE(id int) predicate.Profile {
 	return predicate.Profile(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int8) predicate.Profile {
+func IDLT(id int) predicate.Profile {
 	return predicate.Profile(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int8) predicate.Profile {
+func IDLTE(id int) predicate.Profile {
 	return predicate.Profile(sql.FieldLTE(FieldID, id))
 }
 
@@ -67,16 +66,6 @@ func UUID(v string) predicate.Profile {
 // IconURL applies equality check predicate on the "icon_url" field. It's identical to IconURLEQ.
 func IconURL(v string) predicate.Profile {
 	return predicate.Profile(sql.FieldEQ(FieldIconURL, v))
-}
-
-// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
-func CreatedAt(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldEQ(FieldCreatedAt, v))
-}
-
-// UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
-func UpdatedAt(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
 // NicknameEQ applies the EQ predicate on the "nickname" field.
@@ -272,86 +261,6 @@ func IconURLEqualFold(v string) predicate.Profile {
 // IconURLContainsFold applies the ContainsFold predicate on the "icon_url" field.
 func IconURLContainsFold(v string) predicate.Profile {
 	return predicate.Profile(sql.FieldContainsFold(FieldIconURL, v))
-}
-
-// CreatedAtEQ applies the EQ predicate on the "created_at" field.
-func CreatedAtEQ(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldEQ(FieldCreatedAt, v))
-}
-
-// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
-func CreatedAtNEQ(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldNEQ(FieldCreatedAt, v))
-}
-
-// CreatedAtIn applies the In predicate on the "created_at" field.
-func CreatedAtIn(vs ...time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldIn(FieldCreatedAt, vs...))
-}
-
-// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
-func CreatedAtNotIn(vs ...time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldNotIn(FieldCreatedAt, vs...))
-}
-
-// CreatedAtGT applies the GT predicate on the "created_at" field.
-func CreatedAtGT(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldGT(FieldCreatedAt, v))
-}
-
-// CreatedAtGTE applies the GTE predicate on the "created_at" field.
-func CreatedAtGTE(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldGTE(FieldCreatedAt, v))
-}
-
-// CreatedAtLT applies the LT predicate on the "created_at" field.
-func CreatedAtLT(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldLT(FieldCreatedAt, v))
-}
-
-// CreatedAtLTE applies the LTE predicate on the "created_at" field.
-func CreatedAtLTE(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldLTE(FieldCreatedAt, v))
-}
-
-// UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
-func UpdatedAtEQ(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldEQ(FieldUpdatedAt, v))
-}
-
-// UpdatedAtNEQ applies the NEQ predicate on the "updated_at" field.
-func UpdatedAtNEQ(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldNEQ(FieldUpdatedAt, v))
-}
-
-// UpdatedAtIn applies the In predicate on the "updated_at" field.
-func UpdatedAtIn(vs ...time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldIn(FieldUpdatedAt, vs...))
-}
-
-// UpdatedAtNotIn applies the NotIn predicate on the "updated_at" field.
-func UpdatedAtNotIn(vs ...time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldNotIn(FieldUpdatedAt, vs...))
-}
-
-// UpdatedAtGT applies the GT predicate on the "updated_at" field.
-func UpdatedAtGT(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldGT(FieldUpdatedAt, v))
-}
-
-// UpdatedAtGTE applies the GTE predicate on the "updated_at" field.
-func UpdatedAtGTE(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldGTE(FieldUpdatedAt, v))
-}
-
-// UpdatedAtLT applies the LT predicate on the "updated_at" field.
-func UpdatedAtLT(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldLT(FieldUpdatedAt, v))
-}
-
-// UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
-func UpdatedAtLTE(v time.Time) predicate.Profile {
-	return predicate.Profile(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
 // And groups predicates with the AND operator between them.

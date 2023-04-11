@@ -382,7 +382,7 @@ func (c *ProfileClient) UpdateOne(pr *Profile) *ProfileUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *ProfileClient) UpdateOneID(id int8) *ProfileUpdateOne {
+func (c *ProfileClient) UpdateOneID(id int) *ProfileUpdateOne {
 	mutation := newProfileMutation(c.config, OpUpdateOne, withProfileID(id))
 	return &ProfileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -399,7 +399,7 @@ func (c *ProfileClient) DeleteOne(pr *Profile) *ProfileDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *ProfileClient) DeleteOneID(id int8) *ProfileDeleteOne {
+func (c *ProfileClient) DeleteOneID(id int) *ProfileDeleteOne {
 	builder := c.Delete().Where(profile.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -416,12 +416,12 @@ func (c *ProfileClient) Query() *ProfileQuery {
 }
 
 // Get returns a Profile entity by its id.
-func (c *ProfileClient) Get(ctx context.Context, id int8) (*Profile, error) {
+func (c *ProfileClient) Get(ctx context.Context, id int) (*Profile, error) {
 	return c.Query().Where(profile.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *ProfileClient) GetX(ctx context.Context, id int8) *Profile {
+func (c *ProfileClient) GetX(ctx context.Context, id int) *Profile {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)

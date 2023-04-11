@@ -3,8 +3,6 @@
 package profile
 
 import (
-	"time"
-
 	"entgo.io/ent/dialect/sql"
 )
 
@@ -19,10 +17,6 @@ const (
 	FieldUUID = "uuid"
 	// FieldIconURL holds the string denoting the icon_url field in the database.
 	FieldIconURL = "icon_url"
-	// FieldCreatedAt holds the string denoting the created_at field in the database.
-	FieldCreatedAt = "created_at"
-	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
-	FieldUpdatedAt = "updated_at"
 	// Table holds the table name of the profile in the database.
 	Table = "profiles"
 )
@@ -33,8 +27,6 @@ var Columns = []string{
 	FieldNickname,
 	FieldUUID,
 	FieldIconURL,
-	FieldCreatedAt,
-	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -46,13 +38,6 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
-
-var (
-	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
-	DefaultCreatedAt func() time.Time
-	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
-	DefaultUpdatedAt func() time.Time
-)
 
 // Order defines the ordering method for the Profile queries.
 type Order func(*sql.Selector)
@@ -75,14 +60,4 @@ func ByUUID(opts ...sql.OrderTermOption) Order {
 // ByIconURL orders the results by the icon_url field.
 func ByIconURL(opts ...sql.OrderTermOption) Order {
 	return sql.OrderByField(FieldIconURL, opts...).ToFunc()
-}
-
-// ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
-	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
-}
-
-// ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
-	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
