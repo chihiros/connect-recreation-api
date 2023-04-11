@@ -1,0 +1,12 @@
+# @HOST=https://api.topicpost.net
+@HOST=http://localhost:8686
+
+#### プロフィールの追加
+POST {{HOST}}/v1/profile
+Context-Type: application/json
+
+{
+    "uuid": "c2cc015d-5753-4132-86fe-624787ae49de",
+    "nickname": "test",
+    "icon_url": "https://example.com/icon.png"
+}
