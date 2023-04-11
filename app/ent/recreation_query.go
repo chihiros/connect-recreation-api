@@ -18,7 +18,7 @@ import (
 type RecreationQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []recreation.Order
 	inters     []Interceptor
 	predicates []predicate.Recreation
 	// intermediate query (i.e. traversal path).
@@ -52,7 +52,7 @@ func (rq *RecreationQuery) Unique(unique bool) *RecreationQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (rq *RecreationQuery) Order(o ...OrderFunc) *RecreationQuery {
+func (rq *RecreationQuery) Order(o ...recreation.Order) *RecreationQuery {
 	rq.order = append(rq.order, o...)
 	return rq
 }
@@ -246,7 +246,7 @@ func (rq *RecreationQuery) Clone() *RecreationQuery {
 	return &RecreationQuery{
 		config:     rq.config,
 		ctx:        rq.ctx.Clone(),
-		order:      append([]OrderFunc{}, rq.order...),
+		order:      append([]recreation.Order{}, rq.order...),
 		inters:     append([]Interceptor{}, rq.inters...),
 		predicates: append([]predicate.Recreation{}, rq.predicates...),
 		// clone intermediate query.

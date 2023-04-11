@@ -18,7 +18,7 @@ import (
 type ProfileQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []profile.Order
 	inters     []Interceptor
 	predicates []predicate.Profile
 	// intermediate query (i.e. traversal path).
@@ -52,7 +52,7 @@ func (pq *ProfileQuery) Unique(unique bool) *ProfileQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (pq *ProfileQuery) Order(o ...OrderFunc) *ProfileQuery {
+func (pq *ProfileQuery) Order(o ...profile.Order) *ProfileQuery {
 	pq.order = append(pq.order, o...)
 	return pq
 }
@@ -246,7 +246,7 @@ func (pq *ProfileQuery) Clone() *ProfileQuery {
 	return &ProfileQuery{
 		config:     pq.config,
 		ctx:        pq.ctx.Clone(),
-		order:      append([]OrderFunc{}, pq.order...),
+		order:      append([]profile.Order{}, pq.order...),
 		inters:     append([]Interceptor{}, pq.inters...),
 		predicates: append([]predicate.Profile{}, pq.predicates...),
 		// clone intermediate query.
@@ -261,12 +261,12 @@ func (pq *ProfileQuery) Clone() *ProfileQuery {
 // Example:
 //
 //	var v []struct {
-//		UID string `json:"uid,omitempty"`
+//		Nickname string `json:"nickname,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Profile.Query().
-//		GroupBy(profile.FieldUID).
+//		GroupBy(profile.FieldNickname).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (pq *ProfileQuery) GroupBy(field string, fields ...string) *ProfileGroupBy {
@@ -284,11 +284,11 @@ func (pq *ProfileQuery) GroupBy(field string, fields ...string) *ProfileGroupBy 
 // Example:
 //
 //	var v []struct {
-//		UID string `json:"uid,omitempty"`
+//		Nickname string `json:"nickname,omitempty"`
 //	}
 //
 //	client.Profile.Query().
-//		Select(profile.FieldUID).
+//		Select(profile.FieldNickname).
 //		Scan(ctx, &v)
 func (pq *ProfileQuery) Select(fields ...string) *ProfileSelect {
 	pq.ctx.Fields = append(pq.ctx.Fields, fields...)

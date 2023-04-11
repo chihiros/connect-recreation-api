@@ -16,6 +16,7 @@ type Profile struct {
 func (Profile) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("id").
+			Unique(),
 		field.String("nickname").
 			Unique(),
 		field.String("uuid").

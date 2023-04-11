@@ -473,7 +473,6 @@ type ProfileMutation struct {
 	op            Op
 	typ           string
 	id            *int
-	uid           *string
 	nickname      *string
 	uuid          *string
 	icon_url      *string
@@ -555,6 +554,12 @@ func (m ProfileMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Profile entities.
+func (m *ProfileMutation) SetID(id int) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
 func (m *ProfileMutation) ID() (id int, exists bool) {
@@ -581,42 +586,6 @@ func (m *ProfileMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetUID sets the "uid" field.
-func (m *ProfileMutation) SetUID(s string) {
-	m.uid = &s
-}
-
-// UID returns the value of the "uid" field in the mutation.
-func (m *ProfileMutation) UID() (r string, exists bool) {
-	v := m.uid
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUID returns the old "uid" field's value of the Profile entity.
-// If the Profile object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProfileMutation) OldUID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUID: %w", err)
-	}
-	return oldValue.UID, nil
-}
-
-// ResetUID resets all changes to the "uid" field.
-func (m *ProfileMutation) ResetUID() {
-	m.uid = nil
 }
 
 // SetNickname sets the "nickname" field.
@@ -833,10 +802,7 @@ func (m *ProfileMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ProfileMutation) Fields() []string {
-	fields := make([]string, 0, 6)
-	if m.uid != nil {
-		fields = append(fields, profile.FieldUID)
-	}
+	fields := make([]string, 0, 5)
 	if m.nickname != nil {
 		fields = append(fields, profile.FieldNickname)
 	}
@@ -860,8 +826,6 @@ func (m *ProfileMutation) Fields() []string {
 // schema.
 func (m *ProfileMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case profile.FieldUID:
-		return m.UID()
 	case profile.FieldNickname:
 		return m.Nickname()
 	case profile.FieldUUID:
@@ -881,8 +845,6 @@ func (m *ProfileMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ProfileMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case profile.FieldUID:
-		return m.OldUID(ctx)
 	case profile.FieldNickname:
 		return m.OldNickname(ctx)
 	case profile.FieldUUID:
@@ -902,13 +864,6 @@ func (m *ProfileMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type.
 func (m *ProfileMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case profile.FieldUID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUID(v)
-		return nil
 	case profile.FieldNickname:
 		v, ok := value.(string)
 		if !ok {
@@ -993,9 +948,6 @@ func (m *ProfileMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ProfileMutation) ResetField(name string) error {
 	switch name {
-	case profile.FieldUID:
-		m.ResetUID()
-		return nil
 	case profile.FieldNickname:
 		m.ResetNickname()
 		return nil

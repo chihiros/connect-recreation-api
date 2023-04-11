@@ -54,11 +54,6 @@ func IDLTE(id int) predicate.Profile {
 	return predicate.Profile(sql.FieldLTE(FieldID, id))
 }
 
-// UID applies equality check predicate on the "uid" field. It's identical to UIDEQ.
-func UID(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldEQ(FieldUID, v))
-}
-
 // Nickname applies equality check predicate on the "nickname" field. It's identical to NicknameEQ.
 func Nickname(v string) predicate.Profile {
 	return predicate.Profile(sql.FieldEQ(FieldNickname, v))
@@ -82,71 +77,6 @@ func CreatedAt(v time.Time) predicate.Profile {
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.Profile {
 	return predicate.Profile(sql.FieldEQ(FieldUpdatedAt, v))
-}
-
-// UIDEQ applies the EQ predicate on the "uid" field.
-func UIDEQ(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldEQ(FieldUID, v))
-}
-
-// UIDNEQ applies the NEQ predicate on the "uid" field.
-func UIDNEQ(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldNEQ(FieldUID, v))
-}
-
-// UIDIn applies the In predicate on the "uid" field.
-func UIDIn(vs ...string) predicate.Profile {
-	return predicate.Profile(sql.FieldIn(FieldUID, vs...))
-}
-
-// UIDNotIn applies the NotIn predicate on the "uid" field.
-func UIDNotIn(vs ...string) predicate.Profile {
-	return predicate.Profile(sql.FieldNotIn(FieldUID, vs...))
-}
-
-// UIDGT applies the GT predicate on the "uid" field.
-func UIDGT(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldGT(FieldUID, v))
-}
-
-// UIDGTE applies the GTE predicate on the "uid" field.
-func UIDGTE(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldGTE(FieldUID, v))
-}
-
-// UIDLT applies the LT predicate on the "uid" field.
-func UIDLT(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldLT(FieldUID, v))
-}
-
-// UIDLTE applies the LTE predicate on the "uid" field.
-func UIDLTE(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldLTE(FieldUID, v))
-}
-
-// UIDContains applies the Contains predicate on the "uid" field.
-func UIDContains(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldContains(FieldUID, v))
-}
-
-// UIDHasPrefix applies the HasPrefix predicate on the "uid" field.
-func UIDHasPrefix(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldHasPrefix(FieldUID, v))
-}
-
-// UIDHasSuffix applies the HasSuffix predicate on the "uid" field.
-func UIDHasSuffix(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldHasSuffix(FieldUID, v))
-}
-
-// UIDEqualFold applies the EqualFold predicate on the "uid" field.
-func UIDEqualFold(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldEqualFold(FieldUID, v))
-}
-
-// UIDContainsFold applies the ContainsFold predicate on the "uid" field.
-func UIDContainsFold(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldContainsFold(FieldUID, v))
 }
 
 // NicknameEQ applies the EQ predicate on the "nickname" field.

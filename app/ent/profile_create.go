@@ -22,12 +22,6 @@ type ProfileCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetUID sets the "uid" field.
-func (pc *ProfileCreate) SetUID(s string) *ProfileCreate {
-	pc.mutation.SetUID(s)
-	return pc
-}
-
 // SetNickname sets the "nickname" field.
 func (pc *ProfileCreate) SetNickname(s string) *ProfileCreate {
 	pc.mutation.SetNickname(s)
@@ -71,6 +65,12 @@ func (pc *ProfileCreate) SetNillableUpdatedAt(t *time.Time) *ProfileCreate {
 	if t != nil {
 		pc.SetUpdatedAt(*t)
 	}
+	return pc
+}
+
+// SetID sets the "id" field.
+func (pc *ProfileCreate) SetID(i int) *ProfileCreate {
+	pc.mutation.SetID(i)
 	return pc
 }
 
@@ -121,9 +121,6 @@ func (pc *ProfileCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (pc *ProfileCreate) check() error {
-	if _, ok := pc.mutation.UID(); !ok {
-		return &ValidationError{Name: "uid", err: errors.New(`ent: missing required field "Profile.uid"`)}
-	}
 	if _, ok := pc.mutation.Nickname(); !ok {
 		return &ValidationError{Name: "nickname", err: errors.New(`ent: missing required field "Profile.nickname"`)}
 	}
@@ -153,8 +150,10 @@ func (pc *ProfileCreate) sqlSave(ctx context.Context) (*Profile, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int(id)
+	}
 	pc.mutation.id = &_node.ID
 	pc.mutation.done = true
 	return _node, nil
@@ -166,9 +165,9 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(profile.Table, sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = pc.conflict
-	if value, ok := pc.mutation.UID(); ok {
-		_spec.SetField(profile.FieldUID, field.TypeString, value)
-		_node.UID = value
+	if id, ok := pc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := pc.mutation.Nickname(); ok {
 		_spec.SetField(profile.FieldNickname, field.TypeString, value)
@@ -197,7 +196,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Profile.Create().
-//		SetUID(v).
+//		SetNickname(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -206,7 +205,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.ProfileUpsert) {
-//			SetUID(v+v).
+//			SetNickname(v+v).
 //		}).
 //		Exec(ctx)
 func (pc *ProfileCreate) OnConflict(opts ...sql.ConflictOption) *ProfileUpsertOne {
@@ -302,19 +301,22 @@ func (u *ProfileUpsert) UpdateUpdatedAt() *ProfileUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.Profile.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(profile.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *ProfileUpsertOne) UpdateNewValues() *ProfileUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		if _, exists := u.create.mutation.UID(); exists {
-			s.SetIgnore(profile.FieldUID)
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(profile.FieldID)
 		}
 	}))
 	return u
@@ -475,8 +477,8 @@ func (pcb *ProfileCreateBulk) Save(ctx context.Context) ([]*Profile, error) {
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, pcb.builders[i+1].mutation)
 				} else {
@@ -493,7 +495,7 @@ func (pcb *ProfileCreateBulk) Save(ctx context.Context) ([]*Profile, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
 					nodes[i].ID = int(id)
 				}
@@ -548,7 +550,7 @@ func (pcb *ProfileCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.ProfileUpsert) {
-//			SetUID(v+v).
+//			SetNickname(v+v).
 //		}).
 //		Exec(ctx)
 func (pcb *ProfileCreateBulk) OnConflict(opts ...sql.ConflictOption) *ProfileUpsertBulk {
@@ -583,14 +585,17 @@ type ProfileUpsertBulk struct {
 //	client.Profile.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(profile.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *ProfileUpsertBulk) UpdateNewValues() *ProfileUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
-			if _, exists := b.mutation.UID(); exists {
-				s.SetIgnore(profile.FieldUID)
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(profile.FieldID)
 			}
 		}
 	}))
