@@ -23,7 +23,7 @@ var (
 	}
 	// ProfilesColumns holds the columns for the "profiles" table.
 	ProfilesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeInt8, Increment: true},
 		{Name: "nickname", Type: field.TypeString, Unique: true},
 		{Name: "uuid", Type: field.TypeString, Unique: true},
 		{Name: "icon_url", Type: field.TypeString},

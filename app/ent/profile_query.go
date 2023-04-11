@@ -81,8 +81,8 @@ func (pq *ProfileQuery) FirstX(ctx context.Context) *Profile {
 
 // FirstID returns the first Profile ID from the query.
 // Returns a *NotFoundError when no Profile ID was found.
-func (pq *ProfileQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (pq *ProfileQuery) FirstID(ctx context.Context) (id int8, err error) {
+	var ids []int8
 	if ids, err = pq.Limit(1).IDs(setContextOp(ctx, pq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -94,7 +94,7 @@ func (pq *ProfileQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (pq *ProfileQuery) FirstIDX(ctx context.Context) int {
+func (pq *ProfileQuery) FirstIDX(ctx context.Context) int8 {
 	id, err := pq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -132,8 +132,8 @@ func (pq *ProfileQuery) OnlyX(ctx context.Context) *Profile {
 // OnlyID is like Only, but returns the only Profile ID in the query.
 // Returns a *NotSingularError when more than one Profile ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (pq *ProfileQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (pq *ProfileQuery) OnlyID(ctx context.Context) (id int8, err error) {
+	var ids []int8
 	if ids, err = pq.Limit(2).IDs(setContextOp(ctx, pq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -149,7 +149,7 @@ func (pq *ProfileQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (pq *ProfileQuery) OnlyIDX(ctx context.Context) int {
+func (pq *ProfileQuery) OnlyIDX(ctx context.Context) int8 {
 	id, err := pq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -177,7 +177,7 @@ func (pq *ProfileQuery) AllX(ctx context.Context) []*Profile {
 }
 
 // IDs executes the query and returns a list of Profile IDs.
-func (pq *ProfileQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (pq *ProfileQuery) IDs(ctx context.Context) (ids []int8, err error) {
 	if pq.ctx.Unique == nil && pq.path != nil {
 		pq.Unique(true)
 	}
@@ -189,7 +189,7 @@ func (pq *ProfileQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (pq *ProfileQuery) IDsX(ctx context.Context) []int {
+func (pq *ProfileQuery) IDsX(ctx context.Context) []int8 {
 	ids, err := pq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -364,7 +364,7 @@ func (pq *ProfileQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (pq *ProfileQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(profile.Table, profile.Columns, sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(profile.Table, profile.Columns, sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt8))
 	_spec.From = pq.sql
 	if unique := pq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

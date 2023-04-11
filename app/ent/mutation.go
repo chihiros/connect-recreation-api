@@ -472,7 +472,7 @@ type ProfileMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *int
+	id            *int8
 	nickname      *string
 	uuid          *string
 	icon_url      *string
@@ -504,7 +504,7 @@ func newProfileMutation(c config, op Op, opts ...profileOption) *ProfileMutation
 }
 
 // withProfileID sets the ID field of the mutation.
-func withProfileID(id int) profileOption {
+func withProfileID(id int8) profileOption {
 	return func(m *ProfileMutation) {
 		var (
 			err   error
@@ -556,13 +556,13 @@ func (m ProfileMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of Profile entities.
-func (m *ProfileMutation) SetID(id int) {
+func (m *ProfileMutation) SetID(id int8) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ProfileMutation) ID() (id int, exists bool) {
+func (m *ProfileMutation) ID() (id int8, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -573,12 +573,12 @@ func (m *ProfileMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ProfileMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *ProfileMutation) IDs(ctx context.Context) ([]int8, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int8{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
