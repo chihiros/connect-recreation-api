@@ -4,13 +4,13 @@ CREATE TABLE profiles (
 	uuid uuid NOT NULL,
 	icon_url text NULL,
 	created_at timestamptz NULL DEFAULT now(),
-	updated_at timestamptz NULL DEFAULT now(),
+	updated_at timestamptz NULL DEFAULT now()
 );
 
 INSERT INTO profiles
     (nickname, uuid, icon_url)
 VALUES
-    ('suzurikawa', 'c2cc015d-5753-4132-86fe-624787ae49df', 'https://avatars.githubusercontent.com/u/1000000001')
+    ('suzurikawa', 'c2cc015d-5753-4132-86fe-624787ae49df', 'https://avatars.githubusercontent.com/u/1000000001');
 
 INSERT INTO profiles
     (nickname, uuid, icon_url)
