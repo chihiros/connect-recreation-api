@@ -16,10 +16,10 @@ type Profile struct {
 // Fields of the Profile.
 func (Profile) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("nickname").
-			Unique(),
 		field.UUID("uuid", uuid.UUID{}).
 			Immutable().
+			Unique(),
+		field.String("nickname").
 			Unique(),
 		field.String("icon_url"),
 		field.Time("created_at").
