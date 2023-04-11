@@ -7,7 +7,8 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strconv"
+
+	"github.com/google/uuid"
 )
 
 type ProfileController struct {
@@ -30,9 +31,9 @@ func NewProfileUsecase(conn *ent.Client) *usecase.ProfileUsecase {
 
 func (c *ProfileController) GetProfilesByUUID(w http.ResponseWriter, r *http.Request) {
 	// クエリパラメータからidを取得する
-	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+	uuid := uuid.MustParse(r.URL.Query().Get("uuid"))
 
-	profiles, err := c.Usecase.GetProfilesByUUID(context.Background(), id)
+	profiles, err := c.Usecase.GetProfilesByUUID(context.Background(), uuid)
 	if err != nil {
 		panic(err)
 	}
