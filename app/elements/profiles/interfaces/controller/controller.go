@@ -53,6 +53,10 @@ func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request)
 	// bodyの中身をbindする
 	req := usecase.Request{}
 	err := json.NewDecoder(r.Body).Decode(&req)
+
+	// Request.UUIDを上書きする
+	req.UUID = getUUIDWithClaims(r)
+
 	profile, err := c.Usecase.PostProfiles(context.Background(), req)
 
 	if err != nil {
