@@ -16,6 +16,7 @@ func (Profile) Fields() []ent.Field {
 		field.String("nickname").
 			Unique(),
 		field.String("uuid").
+			Immutable().
 			Unique(),
 		field.String("icon_url"),
 	}
