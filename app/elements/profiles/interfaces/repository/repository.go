@@ -6,6 +6,8 @@ import (
 	"context"
 	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type ProfileRepository struct {
@@ -33,7 +35,7 @@ func NewProfileRepository(conn *ent.Client) *ProfileRepository {
 
 func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	profile, err := r.DBConn.Profile.Create().
-		SetUUID(uuid.MustParse(req.UUID)).
+		SetUID(req.UID).
 		SetNickname(req.Nickname).
 		SetIconURL(req.IconURL).
 		SetCreatedAt(time.Now()).
