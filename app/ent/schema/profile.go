@@ -18,9 +18,6 @@ func (Profile) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("nickname").
 			Unique(),
-		// field.String("uuid").
-		// 	Immutable().
-		// 	Unique(),
 		field.UUID("uuid", uuid.UUID{}).
 			Immutable().
 			Unique(),

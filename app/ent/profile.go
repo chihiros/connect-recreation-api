@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 // Profile is the model entity for the Profile schema.
@@ -20,7 +21,7 @@ type Profile struct {
 	// Nickname holds the value of the "nickname" field.
 	Nickname string `json:"nickname,omitempty"`
 	// UUID holds the value of the "uuid" field.
-	UUID string `json:"uuid,omitempty"`
+	UUID uuid.UUID `json:"uuid,omitempty"`
 	// IconURL holds the value of the "icon_url" field.
 	IconURL string `json:"icon_url,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -37,10 +38,12 @@ func (*Profile) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case profile.FieldID:
 			values[i] = new(sql.NullInt64)
-		case profile.FieldNickname, profile.FieldUUID, profile.FieldIconURL:
+		case profile.FieldNickname, profile.FieldIconURL:
 			values[i] = new(sql.NullString)
 		case profile.FieldCreatedAt, profile.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
+		case profile.FieldUUID:
+			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -69,10 +72,10 @@ func (pr *Profile) assignValues(columns []string, values []any) error {
 				pr.Nickname = value.String
 			}
 		case profile.FieldUUID:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field uuid", values[i])
-			} else if value.Valid {
-				pr.UUID = value.String
+			} else if value != nil {
+				pr.UUID = *value
 			}
 		case profile.FieldIconURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -132,7 +135,7 @@ func (pr *Profile) String() string {
 	builder.WriteString(pr.Nickname)
 	builder.WriteString(", ")
 	builder.WriteString("uuid=")
-	builder.WriteString(pr.UUID)
+	builder.WriteString(fmt.Sprintf("%v", pr.UUID))
 	builder.WriteString(", ")
 	builder.WriteString("icon_url=")
 	builder.WriteString(pr.IconURL)

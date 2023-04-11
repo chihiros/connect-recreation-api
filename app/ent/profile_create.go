@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // ProfileCreate is the builder for creating a Profile entity.
@@ -29,8 +30,8 @@ func (pc *ProfileCreate) SetNickname(s string) *ProfileCreate {
 }
 
 // SetUUID sets the "uuid" field.
-func (pc *ProfileCreate) SetUUID(s string) *ProfileCreate {
-	pc.mutation.SetUUID(s)
+func (pc *ProfileCreate) SetUUID(u uuid.UUID) *ProfileCreate {
+	pc.mutation.SetUUID(u)
 	return pc
 }
 
@@ -162,7 +163,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 		_node.Nickname = value
 	}
 	if value, ok := pc.mutation.UUID(); ok {
-		_spec.SetField(profile.FieldUUID, field.TypeString, value)
+		_spec.SetField(profile.FieldUUID, field.TypeUUID, value)
 		_node.UUID = value
 	}
 	if value, ok := pc.mutation.IconURL(); ok {

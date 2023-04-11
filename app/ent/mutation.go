@@ -16,6 +16,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 const (
@@ -474,7 +475,7 @@ type ProfileMutation struct {
 	typ           string
 	id            *int
 	nickname      *string
-	uuid          *string
+	uuid          *uuid.UUID
 	icon_url      *string
 	created_at    *time.Time
 	updated_at    *time.Time
@@ -619,12 +620,12 @@ func (m *ProfileMutation) ResetNickname() {
 }
 
 // SetUUID sets the "uuid" field.
-func (m *ProfileMutation) SetUUID(s string) {
-	m.uuid = &s
+func (m *ProfileMutation) SetUUID(u uuid.UUID) {
+	m.uuid = &u
 }
 
 // UUID returns the value of the "uuid" field in the mutation.
-func (m *ProfileMutation) UUID() (r string, exists bool) {
+func (m *ProfileMutation) UUID() (r uuid.UUID, exists bool) {
 	v := m.uuid
 	if v == nil {
 		return
@@ -635,7 +636,7 @@ func (m *ProfileMutation) UUID() (r string, exists bool) {
 // OldUUID returns the old "uuid" field's value of the Profile entity.
 // If the Profile object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProfileMutation) OldUUID(ctx context.Context) (v string, err error) {
+func (m *ProfileMutation) OldUUID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUUID is only allowed on UpdateOne operations")
 	}
@@ -866,7 +867,7 @@ func (m *ProfileMutation) SetField(name string, value ent.Value) error {
 		m.SetNickname(v)
 		return nil
 	case profile.FieldUUID:
-		v, ok := value.(string)
+		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

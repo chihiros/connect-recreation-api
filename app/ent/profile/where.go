@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 // ID filters vertices based on their ID field.
@@ -60,7 +61,7 @@ func Nickname(v string) predicate.Profile {
 }
 
 // UUID applies equality check predicate on the "uuid" field. It's identical to UUIDEQ.
-func UUID(v string) predicate.Profile {
+func UUID(v uuid.UUID) predicate.Profile {
 	return predicate.Profile(sql.FieldEQ(FieldUUID, v))
 }
 
@@ -145,68 +146,43 @@ func NicknameContainsFold(v string) predicate.Profile {
 }
 
 // UUIDEQ applies the EQ predicate on the "uuid" field.
-func UUIDEQ(v string) predicate.Profile {
+func UUIDEQ(v uuid.UUID) predicate.Profile {
 	return predicate.Profile(sql.FieldEQ(FieldUUID, v))
 }
 
 // UUIDNEQ applies the NEQ predicate on the "uuid" field.
-func UUIDNEQ(v string) predicate.Profile {
+func UUIDNEQ(v uuid.UUID) predicate.Profile {
 	return predicate.Profile(sql.FieldNEQ(FieldUUID, v))
 }
 
 // UUIDIn applies the In predicate on the "uuid" field.
-func UUIDIn(vs ...string) predicate.Profile {
+func UUIDIn(vs ...uuid.UUID) predicate.Profile {
 	return predicate.Profile(sql.FieldIn(FieldUUID, vs...))
 }
 
 // UUIDNotIn applies the NotIn predicate on the "uuid" field.
-func UUIDNotIn(vs ...string) predicate.Profile {
+func UUIDNotIn(vs ...uuid.UUID) predicate.Profile {
 	return predicate.Profile(sql.FieldNotIn(FieldUUID, vs...))
 }
 
 // UUIDGT applies the GT predicate on the "uuid" field.
-func UUIDGT(v string) predicate.Profile {
+func UUIDGT(v uuid.UUID) predicate.Profile {
 	return predicate.Profile(sql.FieldGT(FieldUUID, v))
 }
 
 // UUIDGTE applies the GTE predicate on the "uuid" field.
-func UUIDGTE(v string) predicate.Profile {
+func UUIDGTE(v uuid.UUID) predicate.Profile {
 	return predicate.Profile(sql.FieldGTE(FieldUUID, v))
 }
 
 // UUIDLT applies the LT predicate on the "uuid" field.
-func UUIDLT(v string) predicate.Profile {
+func UUIDLT(v uuid.UUID) predicate.Profile {
 	return predicate.Profile(sql.FieldLT(FieldUUID, v))
 }
 
 // UUIDLTE applies the LTE predicate on the "uuid" field.
-func UUIDLTE(v string) predicate.Profile {
+func UUIDLTE(v uuid.UUID) predicate.Profile {
 	return predicate.Profile(sql.FieldLTE(FieldUUID, v))
-}
-
-// UUIDContains applies the Contains predicate on the "uuid" field.
-func UUIDContains(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldContains(FieldUUID, v))
-}
-
-// UUIDHasPrefix applies the HasPrefix predicate on the "uuid" field.
-func UUIDHasPrefix(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldHasPrefix(FieldUUID, v))
-}
-
-// UUIDHasSuffix applies the HasSuffix predicate on the "uuid" field.
-func UUIDHasSuffix(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldHasSuffix(FieldUUID, v))
-}
-
-// UUIDEqualFold applies the EqualFold predicate on the "uuid" field.
-func UUIDEqualFold(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldEqualFold(FieldUUID, v))
-}
-
-// UUIDContainsFold applies the ContainsFold predicate on the "uuid" field.
-func UUIDContainsFold(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldContainsFold(FieldUUID, v))
 }
 
 // IconURLEQ applies the EQ predicate on the "icon_url" field.
