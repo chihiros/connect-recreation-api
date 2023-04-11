@@ -1,51 +1,51 @@
 package repository
 
 import (
-	"app/elements/users/usecase"
+	"app/elements/profiles/usecase"
 	"app/ent"
-	"app/ent/user"
+	"app/ent/profile"
 	"context"
 	"fmt"
 	"time"
 )
 
-type UserRepository struct {
+type ProfileRepository struct {
 	DBConn *ent.Client
 }
 
-func NewUserRepository(conn *ent.Client) *UserRepository {
-	return &UserRepository{
+func NewProfileRepository(conn *ent.Client) *ProfileRepository {
+	return &ProfileRepository{
 		DBConn: conn,
 	}
 }
 
-func (r *UserRepository) GetUsers(ctx context.Context) (usecase.Response, error) {
-	users, err := r.DBConn.User.Query().All(ctx)
+func (r *ProfileRepository) GetProfiles(ctx context.Context) (usecase.Response, error) {
+	profiles, err := r.DBConn.Profile.Query().All(ctx)
 	if err != nil {
 		panic(err)
 	}
 
-	res := usecase.Response{Data: users}
+	res := usecase.Response{Data: profiles}
 	return res, err
 }
 
-func (r *UserRepository) GetUsersByID(ctx context.Context, id int) (usecase.Response, error) {
-	user, err := r.DBConn.User.Query().
-		Where(user.IDEQ(id)).
+func (r *ProfileRepository) GetProfilesByID(ctx context.Context, id int) (usecase.Response, error) {
+	profile, err := r.DBConn.Profile.Query().
+		Where(profile.IDEQ(id)).
 		All(ctx)
 
 	if err != nil {
 		panic(err)
 	}
 
-	res := usecase.Response{Data: user}
+	res := usecase.Response{Data: profile}
 	return res, err
 }
 
-func (r *UserRepository) PostUsers(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	user, err := r.DBConn.User.Create().
+func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Request) (usecase.Response, error) {
+	profile, err := r.DBConn.Profile.Create().
 		SetUID(req.UID).
-		SetUsername(req.Username).
+		SetProfilename(req.Profilename).
 		SetMail(req.Mail).
 		SetPrefectureID(req.PrefectureID).
 		SetCreatedAt(time.Now()).
@@ -63,13 +63,13 @@ func (r *UserRepository) PostUsers(ctx context.Context, req usecase.Request) (us
 		panic(err)
 	}
 
-	res := usecase.Response{Data: user}
+	res := usecase.Response{Data: profile}
 	return res, err
 }
 
-func (r *UserRepository) DeleteUsersByID(ctx context.Context, id int) error {
-	_, err := r.DBConn.User.Delete().
-		Where(user.IDEQ(id)).
+func (r *ProfileRepository) DeleteProfilesByID(ctx context.Context, id int) error {
+	_, err := r.DBConn.Profile.Delete().
+		Where(profile.IDEQ(id)).
 		Exec(ctx)
 
 	if err != nil {

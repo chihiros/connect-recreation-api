@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"app/elements/users/interfaces/repository"
-	"app/elements/users/usecase"
+	"app/elements/profiles/interfaces/repository"
+	"app/elements/profiles/usecase"
 	"app/ent"
 	"context"
 	"encoding/json"
@@ -10,71 +10,71 @@ import (
 	"strconv"
 )
 
-type UserController struct {
-	Usecase usecase.UserUseCase
+type ProfileController struct {
+	Usecase usecase.ProfileUseCase
 }
 
-func NewUserController(conn *ent.Client) *UserController {
-	u := NewUserUsecase(conn)
-	return &UserController{
+func NewProfileController(conn *ent.Client) *ProfileController {
+	u := NewProfileUsecase(conn)
+	return &ProfileController{
 		Usecase: u,
 	}
 }
 
-func NewUserUsecase(conn *ent.Client) *usecase.UserUsecase {
-	repo := repository.NewUserRepository(conn)
-	return &usecase.UserUsecase{
+func NewProfileUsecase(conn *ent.Client) *usecase.ProfileUsecase {
+	repo := repository.NewProfileRepository(conn)
+	return &usecase.ProfileUsecase{
 		Repository: repo,
 	}
 }
 
-func (c *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := c.Usecase.GetUsers(context.Background())
+func (c *ProfileController) GetProfiles(w http.ResponseWriter, r *http.Request) {
+	profiles, err := c.Usecase.GetProfiles(context.Background())
 	if err != nil {
 		panic(err)
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(profiles)
 }
 
-func (c *UserController) GetUsersByID(w http.ResponseWriter, r *http.Request) {
+func (c *ProfileController) GetProfilesByID(w http.ResponseWriter, r *http.Request) {
 	// クエリパラメータからidを取得する
 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
 
-	users, err := c.Usecase.GetUsersByID(context.Background(), id)
+	profiles, err := c.Usecase.GetProfilesByID(context.Background(), id)
 	if err != nil {
 		panic(err)
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(profiles)
 }
 
-func (c *UserController) PostUsers(w http.ResponseWriter, r *http.Request) {
+func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする
 	req := usecase.Request{}
 	err := json.NewDecoder(r.Body).Decode(&req)
-	user, err := c.Usecase.PostUsers(context.Background(), req)
+	profile, err := c.Usecase.PostProfiles(context.Background(), req)
 
 	if err != nil {
 		switch err.Error() {
 		case "duplicate":
 			w.WriteHeader(http.StatusConflict)
-			json.NewEncoder(w).Encode(user)
+			json.NewEncoder(w).Encode(profile)
 		default:
 			panic(err)
 		}
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(profile)
 }
 
-func (c *UserController) DeleteUsersByID(w http.ResponseWriter, r *http.Request) {
+func (c *ProfileController) DeleteProfilesByID(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
-	user := c.Usecase.DeleteUsersByID(context.Background(), id)
+	profile := c.Usecase.DeleteProfilesByID(context.Background(), id)
 
 	w.WriteHeader(http.StatusNoContent)
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(profile)
 }
