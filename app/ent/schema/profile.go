@@ -5,6 +5,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // Profile holds the schema definition for the Profile entity.
@@ -17,7 +18,10 @@ func (Profile) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("nickname").
 			Unique(),
-		field.String("uuid").
+		// field.String("uuid").
+		// 	Immutable().
+		// 	Unique(),
+		field.UUID("uuid", uuid.UUID{}).
 			Immutable().
 			Unique(),
 		field.String("icon_url"),
