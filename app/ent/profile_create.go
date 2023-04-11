@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -39,6 +40,34 @@ func (pc *ProfileCreate) SetIconURL(s string) *ProfileCreate {
 	return pc
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (pc *ProfileCreate) SetCreatedAt(t time.Time) *ProfileCreate {
+	pc.mutation.SetCreatedAt(t)
+	return pc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (pc *ProfileCreate) SetNillableCreatedAt(t *time.Time) *ProfileCreate {
+	if t != nil {
+		pc.SetCreatedAt(*t)
+	}
+	return pc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (pc *ProfileCreate) SetUpdatedAt(t time.Time) *ProfileCreate {
+	pc.mutation.SetUpdatedAt(t)
+	return pc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (pc *ProfileCreate) SetNillableUpdatedAt(t *time.Time) *ProfileCreate {
+	if t != nil {
+		pc.SetUpdatedAt(*t)
+	}
+	return pc
+}
+
 // Mutation returns the ProfileMutation object of the builder.
 func (pc *ProfileCreate) Mutation() *ProfileMutation {
 	return pc.mutation
@@ -46,6 +75,7 @@ func (pc *ProfileCreate) Mutation() *ProfileMutation {
 
 // Save creates the Profile in the database.
 func (pc *ProfileCreate) Save(ctx context.Context) (*Profile, error) {
+	pc.defaults()
 	return withHooks[*Profile, ProfileMutation](ctx, pc.sqlSave, pc.mutation, pc.hooks)
 }
 
@@ -71,6 +101,18 @@ func (pc *ProfileCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (pc *ProfileCreate) defaults() {
+	if _, ok := pc.mutation.CreatedAt(); !ok {
+		v := profile.DefaultCreatedAt()
+		pc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := pc.mutation.UpdatedAt(); !ok {
+		v := profile.DefaultUpdatedAt()
+		pc.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (pc *ProfileCreate) check() error {
 	if _, ok := pc.mutation.Nickname(); !ok {
@@ -81,6 +123,12 @@ func (pc *ProfileCreate) check() error {
 	}
 	if _, ok := pc.mutation.IconURL(); !ok {
 		return &ValidationError{Name: "icon_url", err: errors.New(`ent: missing required field "Profile.icon_url"`)}
+	}
+	if _, ok := pc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Profile.created_at"`)}
+	}
+	if _, ok := pc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Profile.updated_at"`)}
 	}
 	return nil
 }
@@ -120,6 +168,14 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.IconURL(); ok {
 		_spec.SetField(profile.FieldIconURL, field.TypeString, value)
 		_node.IconURL = value
+	}
+	if value, ok := pc.mutation.CreatedAt(); ok {
+		_spec.SetField(profile.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := pc.mutation.UpdatedAt(); ok {
+		_spec.SetField(profile.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
 	}
 	return _node, _spec
 }
@@ -197,6 +253,30 @@ func (u *ProfileUpsert) UpdateIconURL() *ProfileUpsert {
 	return u
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (u *ProfileUpsert) SetCreatedAt(v time.Time) *ProfileUpsert {
+	u.Set(profile.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *ProfileUpsert) UpdateCreatedAt() *ProfileUpsert {
+	u.SetExcluded(profile.FieldCreatedAt)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *ProfileUpsert) SetUpdatedAt(v time.Time) *ProfileUpsert {
+	u.Set(profile.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *ProfileUpsert) UpdateUpdatedAt() *ProfileUpsert {
+	u.SetExcluded(profile.FieldUpdatedAt)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -270,6 +350,34 @@ func (u *ProfileUpsertOne) UpdateIconURL() *ProfileUpsertOne {
 	})
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (u *ProfileUpsertOne) SetCreatedAt(v time.Time) *ProfileUpsertOne {
+	return u.Update(func(s *ProfileUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *ProfileUpsertOne) UpdateCreatedAt() *ProfileUpsertOne {
+	return u.Update(func(s *ProfileUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *ProfileUpsertOne) SetUpdatedAt(v time.Time) *ProfileUpsertOne {
+	return u.Update(func(s *ProfileUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *ProfileUpsertOne) UpdateUpdatedAt() *ProfileUpsertOne {
+	return u.Update(func(s *ProfileUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
 // Exec executes the query.
 func (u *ProfileUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -318,6 +426,7 @@ func (pcb *ProfileCreateBulk) Save(ctx context.Context) ([]*Profile, error) {
 	for i := range pcb.builders {
 		func(i int, root context.Context) {
 			builder := pcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ProfileMutation)
 				if !ok {
@@ -501,6 +610,34 @@ func (u *ProfileUpsertBulk) SetIconURL(v string) *ProfileUpsertBulk {
 func (u *ProfileUpsertBulk) UpdateIconURL() *ProfileUpsertBulk {
 	return u.Update(func(s *ProfileUpsert) {
 		s.UpdateIconURL()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *ProfileUpsertBulk) SetCreatedAt(v time.Time) *ProfileUpsertBulk {
+	return u.Update(func(s *ProfileUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *ProfileUpsertBulk) UpdateCreatedAt() *ProfileUpsertBulk {
+	return u.Update(func(s *ProfileUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *ProfileUpsertBulk) SetUpdatedAt(v time.Time) *ProfileUpsertBulk {
+	return u.Update(func(s *ProfileUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *ProfileUpsertBulk) UpdateUpdatedAt() *ProfileUpsertBulk {
+	return u.Update(func(s *ProfileUpsert) {
+		s.UpdateUpdatedAt()
 	})
 }
 

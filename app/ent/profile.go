@@ -6,6 +6,7 @@ import (
 	"app/ent/profile"
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -21,7 +22,11 @@ type Profile struct {
 	// UUID holds the value of the "uuid" field.
 	UUID string `json:"uuid,omitempty"`
 	// IconURL holds the value of the "icon_url" field.
-	IconURL      string `json:"icon_url,omitempty"`
+	IconURL string `json:"icon_url,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt    time.Time `json:"updated_at,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -34,6 +39,8 @@ func (*Profile) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case profile.FieldNickname, profile.FieldUUID, profile.FieldIconURL:
 			values[i] = new(sql.NullString)
+		case profile.FieldCreatedAt, profile.FieldUpdatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -72,6 +79,18 @@ func (pr *Profile) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field icon_url", values[i])
 			} else if value.Valid {
 				pr.IconURL = value.String
+			}
+		case profile.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				pr.CreatedAt = value.Time
+			}
+		case profile.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				pr.UpdatedAt = value.Time
 			}
 		default:
 			pr.selectValues.Set(columns[i], values[i])
@@ -117,6 +136,12 @@ func (pr *Profile) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("icon_url=")
 	builder.WriteString(pr.IconURL)
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(pr.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(pr.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

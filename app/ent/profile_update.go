@@ -8,6 +8,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -36,6 +37,34 @@ func (pu *ProfileUpdate) SetNickname(s string) *ProfileUpdate {
 // SetIconURL sets the "icon_url" field.
 func (pu *ProfileUpdate) SetIconURL(s string) *ProfileUpdate {
 	pu.mutation.SetIconURL(s)
+	return pu
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (pu *ProfileUpdate) SetCreatedAt(t time.Time) *ProfileUpdate {
+	pu.mutation.SetCreatedAt(t)
+	return pu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (pu *ProfileUpdate) SetNillableCreatedAt(t *time.Time) *ProfileUpdate {
+	if t != nil {
+		pu.SetCreatedAt(*t)
+	}
+	return pu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (pu *ProfileUpdate) SetUpdatedAt(t time.Time) *ProfileUpdate {
+	pu.mutation.SetUpdatedAt(t)
+	return pu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (pu *ProfileUpdate) SetNillableUpdatedAt(t *time.Time) *ProfileUpdate {
+	if t != nil {
+		pu.SetUpdatedAt(*t)
+	}
 	return pu
 }
 
@@ -86,6 +115,12 @@ func (pu *ProfileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := pu.mutation.IconURL(); ok {
 		_spec.SetField(profile.FieldIconURL, field.TypeString, value)
 	}
+	if value, ok := pu.mutation.CreatedAt(); ok {
+		_spec.SetField(profile.FieldCreatedAt, field.TypeTime, value)
+	}
+	if value, ok := pu.mutation.UpdatedAt(); ok {
+		_spec.SetField(profile.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{profile.Label}
@@ -115,6 +150,34 @@ func (puo *ProfileUpdateOne) SetNickname(s string) *ProfileUpdateOne {
 // SetIconURL sets the "icon_url" field.
 func (puo *ProfileUpdateOne) SetIconURL(s string) *ProfileUpdateOne {
 	puo.mutation.SetIconURL(s)
+	return puo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (puo *ProfileUpdateOne) SetCreatedAt(t time.Time) *ProfileUpdateOne {
+	puo.mutation.SetCreatedAt(t)
+	return puo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (puo *ProfileUpdateOne) SetNillableCreatedAt(t *time.Time) *ProfileUpdateOne {
+	if t != nil {
+		puo.SetCreatedAt(*t)
+	}
+	return puo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (puo *ProfileUpdateOne) SetUpdatedAt(t time.Time) *ProfileUpdateOne {
+	puo.mutation.SetUpdatedAt(t)
+	return puo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (puo *ProfileUpdateOne) SetNillableUpdatedAt(t *time.Time) *ProfileUpdateOne {
+	if t != nil {
+		puo.SetUpdatedAt(*t)
+	}
 	return puo
 }
 
@@ -194,6 +257,12 @@ func (puo *ProfileUpdateOne) sqlSave(ctx context.Context) (_node *Profile, err e
 	}
 	if value, ok := puo.mutation.IconURL(); ok {
 		_spec.SetField(profile.FieldIconURL, field.TypeString, value)
+	}
+	if value, ok := puo.mutation.CreatedAt(); ok {
+		_spec.SetField(profile.FieldCreatedAt, field.TypeTime, value)
+	}
+	if value, ok := puo.mutation.UpdatedAt(); ok {
+		_spec.SetField(profile.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &Profile{config: puo.config}
 	_spec.Assign = _node.assignValues

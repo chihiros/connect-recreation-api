@@ -27,6 +27,8 @@ var (
 		{Name: "nickname", Type: field.TypeString, Unique: true},
 		{Name: "uuid", Type: field.TypeString, Unique: true},
 		{Name: "icon_url", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// ProfilesTable holds the schema information for the "profiles" table.
 	ProfilesTable = &schema.Table{
