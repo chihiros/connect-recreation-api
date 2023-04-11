@@ -6,6 +6,7 @@ import (
 	rec_controller "app/elements/recreations/interfaces/controller"
 	user_controller "app/elements/users/interfaces/controller"
 	"app/ent"
+	"app/middle/authrization"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -20,6 +21,7 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(logger.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(authrization.AuthMiddleware) // Dockerで開発するときはコメントアウトする
 
 	// Access-Control-Allow-Originを許可する
 	r.Use(cors.Handler(cors.Options{
