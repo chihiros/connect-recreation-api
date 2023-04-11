@@ -28,11 +28,11 @@ func NewProfileUsecase(conn *ent.Client) *usecase.ProfileUsecase {
 	}
 }
 
-func (c *ProfileController) GetProfilesByID(w http.ResponseWriter, r *http.Request) {
+func (c *ProfileController) GetProfilesByUUID(w http.ResponseWriter, r *http.Request) {
 	// クエリパラメータからidを取得する
 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
 
-	profiles, err := c.Usecase.GetProfilesByID(context.Background(), id)
+	profiles, err := c.Usecase.GetProfilesByUUID(context.Background(), id)
 	if err != nil {
 		panic(err)
 	}

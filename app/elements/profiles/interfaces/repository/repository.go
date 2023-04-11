@@ -21,7 +21,7 @@ func NewProfileRepository(conn *ent.Client) *ProfileRepository {
 	}
 }
 
-func (r *ProfileRepository) GetProfilesByID(ctx context.Context, id int) (usecase.Response, error) {
+func (r *ProfileRepository) GetProfilesByUUID(ctx context.Context, id int) (usecase.Response, error) {
 	profile, err := r.DBConn.Profile.Query().
 		Where(profile.IDEQ(id)).
 		All(ctx)
