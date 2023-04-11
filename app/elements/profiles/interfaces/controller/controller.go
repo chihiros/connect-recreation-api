@@ -4,6 +4,7 @@ import (
 	"app/elements/profiles/interfaces/repository"
 	"app/elements/profiles/usecase"
 	"app/ent"
+	"app/middle/authrization"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -38,9 +39,7 @@ func getUUIDWithClaims(r *http.Request) uuid.UUID {
 }
 
 func (c *ProfileController) GetProfilesByUUID(w http.ResponseWriter, r *http.Request) {
-	// クエリパラメータからidを取得する
-	uuid := uuid.MustParse(r.URL.Query().Get("uuid"))
-
+	uuid := getUUIDWithClaims(r)
 	profiles, err := c.Usecase.GetProfilesByUUID(context.Background(), uuid)
 	if err != nil {
 		panic(err)
@@ -71,7 +70,7 @@ func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request)
 }
 
 func (c *ProfileController) DeleteProfilesByID(w http.ResponseWriter, r *http.Request) {
-	uuid := uuid.MustParse(r.URL.Query().Get("uuid"))
+	uuid := getUUIDWithClaims(r)
 	profile := c.Usecase.DeleteProfilesByUUID(context.Background(), uuid)
 
 	w.WriteHeader(http.StatusNoContent)
