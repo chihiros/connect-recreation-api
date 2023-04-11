@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 )
@@ -19,5 +21,9 @@ func (Profile) Fields() []ent.Field {
 			Immutable().
 			Unique(),
 		field.String("icon_url"),
+		field.Time("created_at").
+			Default(time.Now),
+		field.Time("updated_at").
+			Default(time.Now),
 	}
 }
