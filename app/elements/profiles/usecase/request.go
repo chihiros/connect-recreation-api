@@ -1,7 +1,9 @@
 package usecase
 
+import "github.com/google/uuid"
+
 type Request struct {
-	UUID     string `json:"uuid"`
-	Nickname string `json:"nickname"`
-	IconURL  string `json:"icon_url"`
+	UUID     uuid.UUID `json:"uuid"`
+	Nickname string    `json:"nickname"`
+	IconURL  string    `json:"icon_url"`
 }
