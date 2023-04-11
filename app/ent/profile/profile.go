@@ -13,10 +13,10 @@ const (
 	Label = "profile"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldNickname holds the string denoting the nickname field in the database.
-	FieldNickname = "nickname"
 	// FieldUUID holds the string denoting the uuid field in the database.
 	FieldUUID = "uuid"
+	// FieldNickname holds the string denoting the nickname field in the database.
+	FieldNickname = "nickname"
 	// FieldIconURL holds the string denoting the icon_url field in the database.
 	FieldIconURL = "icon_url"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -30,8 +30,8 @@ const (
 // Columns holds all SQL columns for profile fields.
 var Columns = []string{
 	FieldID,
-	FieldNickname,
 	FieldUUID,
+	FieldNickname,
 	FieldIconURL,
 	FieldCreatedAt,
 	FieldUpdatedAt,
@@ -62,14 +62,14 @@ func ByID(opts ...sql.OrderTermOption) Order {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByNickname orders the results by the nickname field.
-func ByNickname(opts ...sql.OrderTermOption) Order {
-	return sql.OrderByField(FieldNickname, opts...).ToFunc()
-}
-
 // ByUUID orders the results by the uuid field.
 func ByUUID(opts ...sql.OrderTermOption) Order {
 	return sql.OrderByField(FieldUUID, opts...).ToFunc()
+}
+
+// ByNickname orders the results by the nickname field.
+func ByNickname(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldNickname, opts...).ToFunc()
 }
 
 // ByIconURL orders the results by the icon_url field.

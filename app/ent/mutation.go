@@ -474,8 +474,8 @@ type ProfileMutation struct {
 	op            Op
 	typ           string
 	id            *int
-	nickname      *string
 	uuid          *uuid.UUID
+	nickname      *string
 	icon_url      *string
 	created_at    *time.Time
 	updated_at    *time.Time
@@ -583,42 +583,6 @@ func (m *ProfileMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetNickname sets the "nickname" field.
-func (m *ProfileMutation) SetNickname(s string) {
-	m.nickname = &s
-}
-
-// Nickname returns the value of the "nickname" field in the mutation.
-func (m *ProfileMutation) Nickname() (r string, exists bool) {
-	v := m.nickname
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldNickname returns the old "nickname" field's value of the Profile entity.
-// If the Profile object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ProfileMutation) OldNickname(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldNickname is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldNickname requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldNickname: %w", err)
-	}
-	return oldValue.Nickname, nil
-}
-
-// ResetNickname resets all changes to the "nickname" field.
-func (m *ProfileMutation) ResetNickname() {
-	m.nickname = nil
-}
-
 // SetUUID sets the "uuid" field.
 func (m *ProfileMutation) SetUUID(u uuid.UUID) {
 	m.uuid = &u
@@ -653,6 +617,42 @@ func (m *ProfileMutation) OldUUID(ctx context.Context) (v uuid.UUID, err error) 
 // ResetUUID resets all changes to the "uuid" field.
 func (m *ProfileMutation) ResetUUID() {
 	m.uuid = nil
+}
+
+// SetNickname sets the "nickname" field.
+func (m *ProfileMutation) SetNickname(s string) {
+	m.nickname = &s
+}
+
+// Nickname returns the value of the "nickname" field in the mutation.
+func (m *ProfileMutation) Nickname() (r string, exists bool) {
+	v := m.nickname
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNickname returns the old "nickname" field's value of the Profile entity.
+// If the Profile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProfileMutation) OldNickname(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNickname is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNickname requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNickname: %w", err)
+	}
+	return oldValue.Nickname, nil
+}
+
+// ResetNickname resets all changes to the "nickname" field.
+func (m *ProfileMutation) ResetNickname() {
+	m.nickname = nil
 }
 
 // SetIconURL sets the "icon_url" field.
@@ -798,11 +798,11 @@ func (m *ProfileMutation) Type() string {
 // AddedFields().
 func (m *ProfileMutation) Fields() []string {
 	fields := make([]string, 0, 5)
-	if m.nickname != nil {
-		fields = append(fields, profile.FieldNickname)
-	}
 	if m.uuid != nil {
 		fields = append(fields, profile.FieldUUID)
+	}
+	if m.nickname != nil {
+		fields = append(fields, profile.FieldNickname)
 	}
 	if m.icon_url != nil {
 		fields = append(fields, profile.FieldIconURL)
@@ -821,10 +821,10 @@ func (m *ProfileMutation) Fields() []string {
 // schema.
 func (m *ProfileMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case profile.FieldNickname:
-		return m.Nickname()
 	case profile.FieldUUID:
 		return m.UUID()
+	case profile.FieldNickname:
+		return m.Nickname()
 	case profile.FieldIconURL:
 		return m.IconURL()
 	case profile.FieldCreatedAt:
@@ -840,10 +840,10 @@ func (m *ProfileMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ProfileMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case profile.FieldNickname:
-		return m.OldNickname(ctx)
 	case profile.FieldUUID:
 		return m.OldUUID(ctx)
+	case profile.FieldNickname:
+		return m.OldNickname(ctx)
 	case profile.FieldIconURL:
 		return m.OldIconURL(ctx)
 	case profile.FieldCreatedAt:
@@ -859,19 +859,19 @@ func (m *ProfileMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type.
 func (m *ProfileMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case profile.FieldNickname:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetNickname(v)
-		return nil
 	case profile.FieldUUID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUUID(v)
+		return nil
+	case profile.FieldNickname:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNickname(v)
 		return nil
 	case profile.FieldIconURL:
 		v, ok := value.(string)
@@ -943,11 +943,11 @@ func (m *ProfileMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ProfileMutation) ResetField(name string) error {
 	switch name {
-	case profile.FieldNickname:
-		m.ResetNickname()
-		return nil
 	case profile.FieldUUID:
 		m.ResetUUID()
+		return nil
+	case profile.FieldNickname:
+		m.ResetNickname()
 		return nil
 	case profile.FieldIconURL:
 		m.ResetIconURL()

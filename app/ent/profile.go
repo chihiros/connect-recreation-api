@@ -18,10 +18,10 @@ type Profile struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// Nickname holds the value of the "nickname" field.
-	Nickname string `json:"nickname,omitempty"`
 	// UUID holds the value of the "uuid" field.
 	UUID uuid.UUID `json:"uuid,omitempty"`
+	// Nickname holds the value of the "nickname" field.
+	Nickname string `json:"nickname,omitempty"`
 	// IconURL holds the value of the "icon_url" field.
 	IconURL string `json:"icon_url,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -65,17 +65,17 @@ func (pr *Profile) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			pr.ID = int(value.Int64)
-		case profile.FieldNickname:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field nickname", values[i])
-			} else if value.Valid {
-				pr.Nickname = value.String
-			}
 		case profile.FieldUUID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field uuid", values[i])
 			} else if value != nil {
 				pr.UUID = *value
+			}
+		case profile.FieldNickname:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field nickname", values[i])
+			} else if value.Valid {
+				pr.Nickname = value.String
 			}
 		case profile.FieldIconURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -131,11 +131,11 @@ func (pr *Profile) String() string {
 	var builder strings.Builder
 	builder.WriteString("Profile(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", pr.ID))
-	builder.WriteString("nickname=")
-	builder.WriteString(pr.Nickname)
-	builder.WriteString(", ")
 	builder.WriteString("uuid=")
 	builder.WriteString(fmt.Sprintf("%v", pr.UUID))
+	builder.WriteString(", ")
+	builder.WriteString("nickname=")
+	builder.WriteString(pr.Nickname)
 	builder.WriteString(", ")
 	builder.WriteString("icon_url=")
 	builder.WriteString(pr.IconURL)

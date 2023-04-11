@@ -23,15 +23,15 @@ type ProfileCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetNickname sets the "nickname" field.
-func (pc *ProfileCreate) SetNickname(s string) *ProfileCreate {
-	pc.mutation.SetNickname(s)
-	return pc
-}
-
 // SetUUID sets the "uuid" field.
 func (pc *ProfileCreate) SetUUID(u uuid.UUID) *ProfileCreate {
 	pc.mutation.SetUUID(u)
+	return pc
+}
+
+// SetNickname sets the "nickname" field.
+func (pc *ProfileCreate) SetNickname(s string) *ProfileCreate {
+	pc.mutation.SetNickname(s)
 	return pc
 }
 
@@ -116,11 +116,11 @@ func (pc *ProfileCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (pc *ProfileCreate) check() error {
-	if _, ok := pc.mutation.Nickname(); !ok {
-		return &ValidationError{Name: "nickname", err: errors.New(`ent: missing required field "Profile.nickname"`)}
-	}
 	if _, ok := pc.mutation.UUID(); !ok {
 		return &ValidationError{Name: "uuid", err: errors.New(`ent: missing required field "Profile.uuid"`)}
+	}
+	if _, ok := pc.mutation.Nickname(); !ok {
+		return &ValidationError{Name: "nickname", err: errors.New(`ent: missing required field "Profile.nickname"`)}
 	}
 	if _, ok := pc.mutation.IconURL(); !ok {
 		return &ValidationError{Name: "icon_url", err: errors.New(`ent: missing required field "Profile.icon_url"`)}
@@ -158,13 +158,13 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(profile.Table, sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = pc.conflict
-	if value, ok := pc.mutation.Nickname(); ok {
-		_spec.SetField(profile.FieldNickname, field.TypeString, value)
-		_node.Nickname = value
-	}
 	if value, ok := pc.mutation.UUID(); ok {
 		_spec.SetField(profile.FieldUUID, field.TypeUUID, value)
 		_node.UUID = value
+	}
+	if value, ok := pc.mutation.Nickname(); ok {
+		_spec.SetField(profile.FieldNickname, field.TypeString, value)
+		_node.Nickname = value
 	}
 	if value, ok := pc.mutation.IconURL(); ok {
 		_spec.SetField(profile.FieldIconURL, field.TypeString, value)
@@ -185,7 +185,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Profile.Create().
-//		SetNickname(v).
+//		SetUUID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -194,7 +194,7 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.ProfileUpsert) {
-//			SetNickname(v+v).
+//			SetUUID(v+v).
 //		}).
 //		Exec(ctx)
 func (pc *ProfileCreate) OnConflict(opts ...sql.ConflictOption) *ProfileUpsertOne {
@@ -510,7 +510,7 @@ func (pcb *ProfileCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.ProfileUpsert) {
-//			SetNickname(v+v).
+//			SetUUID(v+v).
 //		}).
 //		Exec(ctx)
 func (pcb *ProfileCreateBulk) OnConflict(opts ...sql.ConflictOption) *ProfileUpsertBulk {

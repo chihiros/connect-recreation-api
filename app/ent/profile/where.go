@@ -55,14 +55,14 @@ func IDLTE(id int) predicate.Profile {
 	return predicate.Profile(sql.FieldLTE(FieldID, id))
 }
 
-// Nickname applies equality check predicate on the "nickname" field. It's identical to NicknameEQ.
-func Nickname(v string) predicate.Profile {
-	return predicate.Profile(sql.FieldEQ(FieldNickname, v))
-}
-
 // UUID applies equality check predicate on the "uuid" field. It's identical to UUIDEQ.
 func UUID(v uuid.UUID) predicate.Profile {
 	return predicate.Profile(sql.FieldEQ(FieldUUID, v))
+}
+
+// Nickname applies equality check predicate on the "nickname" field. It's identical to NicknameEQ.
+func Nickname(v string) predicate.Profile {
+	return predicate.Profile(sql.FieldEQ(FieldNickname, v))
 }
 
 // IconURL applies equality check predicate on the "icon_url" field. It's identical to IconURLEQ.
@@ -78,6 +78,46 @@ func CreatedAt(v time.Time) predicate.Profile {
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.Profile {
 	return predicate.Profile(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// UUIDEQ applies the EQ predicate on the "uuid" field.
+func UUIDEQ(v uuid.UUID) predicate.Profile {
+	return predicate.Profile(sql.FieldEQ(FieldUUID, v))
+}
+
+// UUIDNEQ applies the NEQ predicate on the "uuid" field.
+func UUIDNEQ(v uuid.UUID) predicate.Profile {
+	return predicate.Profile(sql.FieldNEQ(FieldUUID, v))
+}
+
+// UUIDIn applies the In predicate on the "uuid" field.
+func UUIDIn(vs ...uuid.UUID) predicate.Profile {
+	return predicate.Profile(sql.FieldIn(FieldUUID, vs...))
+}
+
+// UUIDNotIn applies the NotIn predicate on the "uuid" field.
+func UUIDNotIn(vs ...uuid.UUID) predicate.Profile {
+	return predicate.Profile(sql.FieldNotIn(FieldUUID, vs...))
+}
+
+// UUIDGT applies the GT predicate on the "uuid" field.
+func UUIDGT(v uuid.UUID) predicate.Profile {
+	return predicate.Profile(sql.FieldGT(FieldUUID, v))
+}
+
+// UUIDGTE applies the GTE predicate on the "uuid" field.
+func UUIDGTE(v uuid.UUID) predicate.Profile {
+	return predicate.Profile(sql.FieldGTE(FieldUUID, v))
+}
+
+// UUIDLT applies the LT predicate on the "uuid" field.
+func UUIDLT(v uuid.UUID) predicate.Profile {
+	return predicate.Profile(sql.FieldLT(FieldUUID, v))
+}
+
+// UUIDLTE applies the LTE predicate on the "uuid" field.
+func UUIDLTE(v uuid.UUID) predicate.Profile {
+	return predicate.Profile(sql.FieldLTE(FieldUUID, v))
 }
 
 // NicknameEQ applies the EQ predicate on the "nickname" field.
@@ -143,46 +183,6 @@ func NicknameEqualFold(v string) predicate.Profile {
 // NicknameContainsFold applies the ContainsFold predicate on the "nickname" field.
 func NicknameContainsFold(v string) predicate.Profile {
 	return predicate.Profile(sql.FieldContainsFold(FieldNickname, v))
-}
-
-// UUIDEQ applies the EQ predicate on the "uuid" field.
-func UUIDEQ(v uuid.UUID) predicate.Profile {
-	return predicate.Profile(sql.FieldEQ(FieldUUID, v))
-}
-
-// UUIDNEQ applies the NEQ predicate on the "uuid" field.
-func UUIDNEQ(v uuid.UUID) predicate.Profile {
-	return predicate.Profile(sql.FieldNEQ(FieldUUID, v))
-}
-
-// UUIDIn applies the In predicate on the "uuid" field.
-func UUIDIn(vs ...uuid.UUID) predicate.Profile {
-	return predicate.Profile(sql.FieldIn(FieldUUID, vs...))
-}
-
-// UUIDNotIn applies the NotIn predicate on the "uuid" field.
-func UUIDNotIn(vs ...uuid.UUID) predicate.Profile {
-	return predicate.Profile(sql.FieldNotIn(FieldUUID, vs...))
-}
-
-// UUIDGT applies the GT predicate on the "uuid" field.
-func UUIDGT(v uuid.UUID) predicate.Profile {
-	return predicate.Profile(sql.FieldGT(FieldUUID, v))
-}
-
-// UUIDGTE applies the GTE predicate on the "uuid" field.
-func UUIDGTE(v uuid.UUID) predicate.Profile {
-	return predicate.Profile(sql.FieldGTE(FieldUUID, v))
-}
-
-// UUIDLT applies the LT predicate on the "uuid" field.
-func UUIDLT(v uuid.UUID) predicate.Profile {
-	return predicate.Profile(sql.FieldLT(FieldUUID, v))
-}
-
-// UUIDLTE applies the LTE predicate on the "uuid" field.
-func UUIDLTE(v uuid.UUID) predicate.Profile {
-	return predicate.Profile(sql.FieldLTE(FieldUUID, v))
 }
 
 // IconURLEQ applies the EQ predicate on the "icon_url" field.

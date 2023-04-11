@@ -261,12 +261,12 @@ func (pq *ProfileQuery) Clone() *ProfileQuery {
 // Example:
 //
 //	var v []struct {
-//		Nickname string `json:"nickname,omitempty"`
+//		UUID uuid.UUID `json:"uuid,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Profile.Query().
-//		GroupBy(profile.FieldNickname).
+//		GroupBy(profile.FieldUUID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (pq *ProfileQuery) GroupBy(field string, fields ...string) *ProfileGroupBy {
@@ -284,11 +284,11 @@ func (pq *ProfileQuery) GroupBy(field string, fields ...string) *ProfileGroupBy 
 // Example:
 //
 //	var v []struct {
-//		Nickname string `json:"nickname,omitempty"`
+//		UUID uuid.UUID `json:"uuid,omitempty"`
 //	}
 //
 //	client.Profile.Query().
-//		Select(profile.FieldNickname).
+//		Select(profile.FieldUUID).
 //		Scan(ctx, &v)
 func (pq *ProfileQuery) Select(fields ...string) *ProfileSelect {
 	pq.ctx.Fields = append(pq.ctx.Fields, fields...)
