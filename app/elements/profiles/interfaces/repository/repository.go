@@ -3,6 +3,7 @@ package repository
 import (
 	"app/elements/profiles/usecase"
 	"app/ent"
+	"app/ent/profile"
 	"context"
 	"fmt"
 	"time"
@@ -20,18 +21,18 @@ func NewProfileRepository(conn *ent.Client) *ProfileRepository {
 	}
 }
 
-// func (r *ProfileRepository) GetProfilesByID(ctx context.Context, id int) (usecase.Response, error) {
-// 	profile, err := r.DBConn.Profile.Query().
-// 		Where(profile.IDEQ(id)).
-// 		All(ctx)
+func (r *ProfileRepository) GetProfilesByID(ctx context.Context, id int) (usecase.Response, error) {
+	profile, err := r.DBConn.Profile.Query().
+		Where(profile.IDEQ(id)).
+		All(ctx)
 
-// 	if err != nil {
-// 		panic(err)
-// 	}
+	if err != nil {
+		panic(err)
+	}
 
-// 	res := usecase.Response{Data: profile}
-// 	return res, err
-// }
+	res := usecase.Response{Data: profile}
+	return res, err
+}
 
 func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	profile, err := r.DBConn.Profile.Create().

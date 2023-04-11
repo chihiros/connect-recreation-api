@@ -43,8 +43,8 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 		})
 
 		r.Route("/profile", func(r chi.Router) {
+			r.Get("/", pcon.GetProfilesByID)
 			r.Post("/", pcon.PostProfiles)
-			// r.Get("/", pcon.GetProfilesByID)
 		})
 
 		r.Route("/users", func(r chi.Router) {

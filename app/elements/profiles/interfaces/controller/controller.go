@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 )
 
 type ProfileController struct {
@@ -27,18 +28,18 @@ func NewProfileUsecase(conn *ent.Client) *usecase.ProfileUsecase {
 	}
 }
 
-// func (c *ProfileController) GetProfilesByID(w http.ResponseWriter, r *http.Request) {
-// 	// クエリパラメータからidを取得する
-// 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+func (c *ProfileController) GetProfilesByID(w http.ResponseWriter, r *http.Request) {
+	// クエリパラメータからidを取得する
+	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
 
-// 	profiles, err := c.Usecase.GetProfilesByID(context.Background(), id)
-// 	if err != nil {
-// 		panic(err)
-// 	}
+	profiles, err := c.Usecase.GetProfilesByID(context.Background(), id)
+	if err != nil {
+		panic(err)
+	}
 
-// 	w.WriteHeader(http.StatusOK)
-// 	json.NewEncoder(w).Encode(profiles)
-// }
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(profiles)
+}
 
 func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする
