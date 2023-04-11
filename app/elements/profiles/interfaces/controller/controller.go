@@ -29,6 +29,14 @@ func NewProfileUsecase(conn *ent.Client) *usecase.ProfileUsecase {
 	}
 }
 
+func getUUIDWithClaims(r *http.Request) uuid.UUID {
+	claims, ok := r.Context().Value("claims").(*authrization.CustomClaims)
+	if !ok {
+		panic("Invalid user claims")
+	}
+	return uuid.MustParse(claims.Subject)
+}
+
 func (c *ProfileController) GetProfilesByUUID(w http.ResponseWriter, r *http.Request) {
 	// クエリパラメータからidを取得する
 	uuid := uuid.MustParse(r.URL.Query().Get("uuid"))
