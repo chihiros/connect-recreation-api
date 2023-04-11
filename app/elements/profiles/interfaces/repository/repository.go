@@ -35,7 +35,7 @@ func NewProfileRepository(conn *ent.Client) *ProfileRepository {
 
 func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	profile, err := r.DBConn.Profile.Create().
-		SetUID(req.UID).
+		SetUUID(uuid.MustParse(req.UUID)).
 		SetNickname(req.Nickname).
 		SetIconURL(req.IconURL).
 		SetCreatedAt(time.Now()).
