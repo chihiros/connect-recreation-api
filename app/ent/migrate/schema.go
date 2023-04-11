@@ -21,6 +21,21 @@ var (
 		Columns:    PrefecturesColumns,
 		PrimaryKey: []*schema.Column{PrefecturesColumns[0]},
 	}
+	// ProfilesColumns holds the columns for the "profiles" table.
+	ProfilesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "uuid", Type: field.TypeUUID, Unique: true},
+		{Name: "nickname", Type: field.TypeString, Unique: true},
+		{Name: "icon_url", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// ProfilesTable holds the schema information for the "profiles" table.
+	ProfilesTable = &schema.Table{
+		Name:       "profiles",
+		Columns:    ProfilesColumns,
+		PrimaryKey: []*schema.Column{ProfilesColumns[0]},
+	}
 	// RecreationsColumns holds the columns for the "recreations" table.
 	RecreationsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -56,6 +71,7 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		PrefecturesTable,
+		ProfilesTable,
 		RecreationsTable,
 		UsersTable,
 	}
