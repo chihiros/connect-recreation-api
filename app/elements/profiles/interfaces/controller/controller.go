@@ -7,7 +7,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/google/uuid"
 )
@@ -64,8 +63,8 @@ func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request)
 }
 
 func (c *ProfileController) DeleteProfilesByID(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
-	profile := c.Usecase.DeleteProfilesByID(context.Background(), id)
+	uuid := uuid.MustParse(r.URL.Query().Get("uuid"))
+	profile := c.Usecase.DeleteProfilesByUUID(context.Background(), uuid)
 
 	w.WriteHeader(http.StatusNoContent)
 	json.NewEncoder(w).Encode(profile)

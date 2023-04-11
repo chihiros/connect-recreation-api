@@ -9,13 +9,13 @@ import (
 type ProfileUseCase interface {
 	GetProfilesByUUID(context.Context, uuid.UUID) (Response, error)
 	PostProfiles(context.Context, Request) (Response, error)
-	DeleteProfilesByID(context.Context, int) error
+	DeleteProfilesByUUID(context.Context, uuid.UUID) error
 }
 
 type ProfileRepository interface {
 	GetProfilesByUUID(context.Context, uuid.UUID) (Response, error)
 	PostProfiles(context.Context, Request) (Response, error)
-	DeleteProfilesByID(context.Context, int) error
+	DeleteProfilesByUUID(context.Context, uuid.UUID) error
 }
 
 type ProfileUsecase struct {
@@ -30,6 +30,6 @@ func (u *ProfileUsecase) PostProfiles(ctx context.Context, req Request) (Respons
 	return u.Repository.PostProfiles(ctx, req)
 }
 
-func (u *ProfileUsecase) DeleteProfilesByID(ctx context.Context, id int) error {
-	return u.Repository.DeleteProfilesByID(ctx, id)
+func (u *ProfileUsecase) DeleteProfilesByUUID(ctx context.Context, uuid uuid.UUID) error {
+	return u.Repository.DeleteProfilesByUUID(ctx, uuid)
 }

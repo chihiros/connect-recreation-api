@@ -58,9 +58,9 @@ func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Reques
 	return res, err
 }
 
-func (r *ProfileRepository) DeleteProfilesByID(ctx context.Context, id int) error {
+func (r *ProfileRepository) DeleteProfilesByUUID(ctx context.Context, uuid uuid.UUID) error {
 	_, err := r.DBConn.Profile.Delete().
-		Where(profile.IDEQ(id)).
+		Where(profile.UUIDEQ(uuid)).
 		Exec(ctx)
 
 	if err != nil {
