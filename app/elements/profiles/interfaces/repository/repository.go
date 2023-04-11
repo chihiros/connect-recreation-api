@@ -58,14 +58,14 @@ func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Reques
 	return res, err
 }
 
-// func (r *ProfileRepository) DeleteProfilesByID(ctx context.Context, id int) error {
-// 	_, err := r.DBConn.Profile.Delete().
-// 		Where(profile.IDEQ(id)).
-// 		Exec(ctx)
+func (r *ProfileRepository) DeleteProfilesByID(ctx context.Context, id int) error {
+	_, err := r.DBConn.Profile.Delete().
+		Where(profile.IDEQ(id)).
+		Exec(ctx)
 
-// 	if err != nil {
-// 		panic(err)
-// 	}
+	if err != nil {
+		panic(err)
+	}
 
-// 	return err
-// }
+	return err
+}
