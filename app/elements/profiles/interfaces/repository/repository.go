@@ -36,7 +36,7 @@ func (r *ProfileRepository) GetProfilesByUUID(ctx context.Context, uuid uuid.UUI
 
 func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	profile, err := r.DBConn.Profile.Create().
-		SetUUID(uuid.MustParse(req.UUID)).
+		SetUUID(req.UUID).
 		SetNickname(req.Nickname).
 		SetIconURL(req.IconURL).
 		SetCreatedAt(time.Now()).
