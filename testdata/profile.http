@@ -1,12 +1,15 @@
 # @HOST=https://api.topicpost.net
 @HOST=http://localhost:8686
+@TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNjgxMjM3NDA2LCJzdWIiOiJjMmNjMDE1ZC01NzUzLTQxMzItODZmZS02MjQ3ODdhZTQ5ZGYiLCJlbWFpbCI6InN6cmt3MnVpMmFAZ21haWwuY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6e30sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE2ODEyMzM4MDZ9XSwic2Vzc2lvbl9pZCI6IjhiNmRhZGM0LTE0YTQtNDQ2NC05OGYxLTJjOTk0ZWRhZjA2OSJ9.8W_9mQ1cHtJl-7L4ula5dbO7OyV8H7h0Hbo2UMoXoOA
 
 ### プロフィールの取得
 GET {{HOST}}/v1/profile?uuid=c2cc015d-5753-4132-86fe-624787ae49de
+Authorization: Bearer {{TOKEN}}
 
 #### プロフィールの追加
 POST {{HOST}}/v1/profile
 Context-Type: application/json
+Authorization: Bearer {{TOKEN}}
 
 {
     "nickname": "test",
@@ -15,3 +18,4 @@ Context-Type: application/json
 
 #### プロフィールの削除
 DELETE {{HOST}}/v1/profile?uuid=c2cc015d-5753-4132-86fe-624787ae49de
+Authorization: Bearer {{TOKEN}}
