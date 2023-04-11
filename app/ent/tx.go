@@ -14,6 +14,8 @@ type Tx struct {
 	config
 	// Prefecture is the client for interacting with the Prefecture builders.
 	Prefecture *PrefectureClient
+	// Profile is the client for interacting with the Profile builders.
+	Profile *ProfileClient
 	// Recreation is the client for interacting with the Recreation builders.
 	Recreation *RecreationClient
 	// User is the client for interacting with the User builders.
@@ -150,6 +152,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Prefecture = NewPrefectureClient(tx.config)
+	tx.Profile = NewProfileClient(tx.config)
 	tx.Recreation = NewRecreationClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }

@@ -4,7 +4,7 @@ package ent
 
 import (
 	"app/ent/predicate"
-	"app/ent/prefecture"
+	"app/ent/profile"
 	"context"
 	"fmt"
 	"math"
@@ -14,64 +14,64 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// PrefectureQuery is the builder for querying Prefecture entities.
-type PrefectureQuery struct {
+// ProfileQuery is the builder for querying Profile entities.
+type ProfileQuery struct {
 	config
 	ctx        *QueryContext
-	order      []prefecture.Order
+	order      []profile.Order
 	inters     []Interceptor
-	predicates []predicate.Prefecture
+	predicates []predicate.Profile
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the PrefectureQuery builder.
-func (pq *PrefectureQuery) Where(ps ...predicate.Prefecture) *PrefectureQuery {
+// Where adds a new predicate for the ProfileQuery builder.
+func (pq *ProfileQuery) Where(ps ...predicate.Profile) *ProfileQuery {
 	pq.predicates = append(pq.predicates, ps...)
 	return pq
 }
 
 // Limit the number of records to be returned by this query.
-func (pq *PrefectureQuery) Limit(limit int) *PrefectureQuery {
+func (pq *ProfileQuery) Limit(limit int) *ProfileQuery {
 	pq.ctx.Limit = &limit
 	return pq
 }
 
 // Offset to start from.
-func (pq *PrefectureQuery) Offset(offset int) *PrefectureQuery {
+func (pq *ProfileQuery) Offset(offset int) *ProfileQuery {
 	pq.ctx.Offset = &offset
 	return pq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (pq *PrefectureQuery) Unique(unique bool) *PrefectureQuery {
+func (pq *ProfileQuery) Unique(unique bool) *ProfileQuery {
 	pq.ctx.Unique = &unique
 	return pq
 }
 
 // Order specifies how the records should be ordered.
-func (pq *PrefectureQuery) Order(o ...prefecture.Order) *PrefectureQuery {
+func (pq *ProfileQuery) Order(o ...profile.Order) *ProfileQuery {
 	pq.order = append(pq.order, o...)
 	return pq
 }
 
-// First returns the first Prefecture entity from the query.
-// Returns a *NotFoundError when no Prefecture was found.
-func (pq *PrefectureQuery) First(ctx context.Context) (*Prefecture, error) {
+// First returns the first Profile entity from the query.
+// Returns a *NotFoundError when no Profile was found.
+func (pq *ProfileQuery) First(ctx context.Context) (*Profile, error) {
 	nodes, err := pq.Limit(1).All(setContextOp(ctx, pq.ctx, "First"))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{prefecture.Label}
+		return nil, &NotFoundError{profile.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (pq *PrefectureQuery) FirstX(ctx context.Context) *Prefecture {
+func (pq *ProfileQuery) FirstX(ctx context.Context) *Profile {
 	node, err := pq.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -79,22 +79,22 @@ func (pq *PrefectureQuery) FirstX(ctx context.Context) *Prefecture {
 	return node
 }
 
-// FirstID returns the first Prefecture ID from the query.
-// Returns a *NotFoundError when no Prefecture ID was found.
-func (pq *PrefectureQuery) FirstID(ctx context.Context) (id int, err error) {
+// FirstID returns the first Profile ID from the query.
+// Returns a *NotFoundError when no Profile ID was found.
+func (pq *ProfileQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
 	if ids, err = pq.Limit(1).IDs(setContextOp(ctx, pq.ctx, "FirstID")); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{prefecture.Label}
+		err = &NotFoundError{profile.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (pq *PrefectureQuery) FirstIDX(ctx context.Context) int {
+func (pq *ProfileQuery) FirstIDX(ctx context.Context) int {
 	id, err := pq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -102,10 +102,10 @@ func (pq *PrefectureQuery) FirstIDX(ctx context.Context) int {
 	return id
 }
 
-// Only returns a single Prefecture entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one Prefecture entity is found.
-// Returns a *NotFoundError when no Prefecture entities are found.
-func (pq *PrefectureQuery) Only(ctx context.Context) (*Prefecture, error) {
+// Only returns a single Profile entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one Profile entity is found.
+// Returns a *NotFoundError when no Profile entities are found.
+func (pq *ProfileQuery) Only(ctx context.Context) (*Profile, error) {
 	nodes, err := pq.Limit(2).All(setContextOp(ctx, pq.ctx, "Only"))
 	if err != nil {
 		return nil, err
@@ -114,14 +114,14 @@ func (pq *PrefectureQuery) Only(ctx context.Context) (*Prefecture, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{prefecture.Label}
+		return nil, &NotFoundError{profile.Label}
 	default:
-		return nil, &NotSingularError{prefecture.Label}
+		return nil, &NotSingularError{profile.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (pq *PrefectureQuery) OnlyX(ctx context.Context) *Prefecture {
+func (pq *ProfileQuery) OnlyX(ctx context.Context) *Profile {
 	node, err := pq.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -129,10 +129,10 @@ func (pq *PrefectureQuery) OnlyX(ctx context.Context) *Prefecture {
 	return node
 }
 
-// OnlyID is like Only, but returns the only Prefecture ID in the query.
-// Returns a *NotSingularError when more than one Prefecture ID is found.
+// OnlyID is like Only, but returns the only Profile ID in the query.
+// Returns a *NotSingularError when more than one Profile ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (pq *PrefectureQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (pq *ProfileQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
 	if ids, err = pq.Limit(2).IDs(setContextOp(ctx, pq.ctx, "OnlyID")); err != nil {
 		return
@@ -141,15 +141,15 @@ func (pq *PrefectureQuery) OnlyID(ctx context.Context) (id int, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{prefecture.Label}
+		err = &NotFoundError{profile.Label}
 	default:
-		err = &NotSingularError{prefecture.Label}
+		err = &NotSingularError{profile.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (pq *PrefectureQuery) OnlyIDX(ctx context.Context) int {
+func (pq *ProfileQuery) OnlyIDX(ctx context.Context) int {
 	id, err := pq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -157,18 +157,18 @@ func (pq *PrefectureQuery) OnlyIDX(ctx context.Context) int {
 	return id
 }
 
-// All executes the query and returns a list of Prefectures.
-func (pq *PrefectureQuery) All(ctx context.Context) ([]*Prefecture, error) {
+// All executes the query and returns a list of Profiles.
+func (pq *ProfileQuery) All(ctx context.Context) ([]*Profile, error) {
 	ctx = setContextOp(ctx, pq.ctx, "All")
 	if err := pq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*Prefecture, *PrefectureQuery]()
-	return withInterceptors[[]*Prefecture](ctx, pq, qr, pq.inters)
+	qr := querierAll[[]*Profile, *ProfileQuery]()
+	return withInterceptors[[]*Profile](ctx, pq, qr, pq.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (pq *PrefectureQuery) AllX(ctx context.Context) []*Prefecture {
+func (pq *ProfileQuery) AllX(ctx context.Context) []*Profile {
 	nodes, err := pq.All(ctx)
 	if err != nil {
 		panic(err)
@@ -176,20 +176,20 @@ func (pq *PrefectureQuery) AllX(ctx context.Context) []*Prefecture {
 	return nodes
 }
 
-// IDs executes the query and returns a list of Prefecture IDs.
-func (pq *PrefectureQuery) IDs(ctx context.Context) (ids []int, err error) {
+// IDs executes the query and returns a list of Profile IDs.
+func (pq *ProfileQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if pq.ctx.Unique == nil && pq.path != nil {
 		pq.Unique(true)
 	}
 	ctx = setContextOp(ctx, pq.ctx, "IDs")
-	if err = pq.Select(prefecture.FieldID).Scan(ctx, &ids); err != nil {
+	if err = pq.Select(profile.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (pq *PrefectureQuery) IDsX(ctx context.Context) []int {
+func (pq *ProfileQuery) IDsX(ctx context.Context) []int {
 	ids, err := pq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -198,16 +198,16 @@ func (pq *PrefectureQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (pq *PrefectureQuery) Count(ctx context.Context) (int, error) {
+func (pq *ProfileQuery) Count(ctx context.Context) (int, error) {
 	ctx = setContextOp(ctx, pq.ctx, "Count")
 	if err := pq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, pq, querierCount[*PrefectureQuery](), pq.inters)
+	return withInterceptors[int](ctx, pq, querierCount[*ProfileQuery](), pq.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (pq *PrefectureQuery) CountX(ctx context.Context) int {
+func (pq *ProfileQuery) CountX(ctx context.Context) int {
 	count, err := pq.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -216,7 +216,7 @@ func (pq *PrefectureQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (pq *PrefectureQuery) Exist(ctx context.Context) (bool, error) {
+func (pq *ProfileQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, pq.ctx, "Exist")
 	switch _, err := pq.FirstID(ctx); {
 	case IsNotFound(err):
@@ -229,7 +229,7 @@ func (pq *PrefectureQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (pq *PrefectureQuery) ExistX(ctx context.Context) bool {
+func (pq *ProfileQuery) ExistX(ctx context.Context) bool {
 	exist, err := pq.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -237,18 +237,18 @@ func (pq *PrefectureQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the PrefectureQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the ProfileQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (pq *PrefectureQuery) Clone() *PrefectureQuery {
+func (pq *ProfileQuery) Clone() *ProfileQuery {
 	if pq == nil {
 		return nil
 	}
-	return &PrefectureQuery{
+	return &ProfileQuery{
 		config:     pq.config,
 		ctx:        pq.ctx.Clone(),
-		order:      append([]prefecture.Order{}, pq.order...),
+		order:      append([]profile.Order{}, pq.order...),
 		inters:     append([]Interceptor{}, pq.inters...),
-		predicates: append([]predicate.Prefecture{}, pq.predicates...),
+		predicates: append([]predicate.Profile{}, pq.predicates...),
 		// clone intermediate query.
 		sql:  pq.sql.Clone(),
 		path: pq.path,
@@ -261,19 +261,19 @@ func (pq *PrefectureQuery) Clone() *PrefectureQuery {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		UUID uuid.UUID `json:"uuid,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.Prefecture.Query().
-//		GroupBy(prefecture.FieldName).
+//	client.Profile.Query().
+//		GroupBy(profile.FieldUUID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (pq *PrefectureQuery) GroupBy(field string, fields ...string) *PrefectureGroupBy {
+func (pq *ProfileQuery) GroupBy(field string, fields ...string) *ProfileGroupBy {
 	pq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &PrefectureGroupBy{build: pq}
+	grbuild := &ProfileGroupBy{build: pq}
 	grbuild.flds = &pq.ctx.Fields
-	grbuild.label = prefecture.Label
+	grbuild.label = profile.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -284,26 +284,26 @@ func (pq *PrefectureQuery) GroupBy(field string, fields ...string) *PrefectureGr
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		UUID uuid.UUID `json:"uuid,omitempty"`
 //	}
 //
-//	client.Prefecture.Query().
-//		Select(prefecture.FieldName).
+//	client.Profile.Query().
+//		Select(profile.FieldUUID).
 //		Scan(ctx, &v)
-func (pq *PrefectureQuery) Select(fields ...string) *PrefectureSelect {
+func (pq *ProfileQuery) Select(fields ...string) *ProfileSelect {
 	pq.ctx.Fields = append(pq.ctx.Fields, fields...)
-	sbuild := &PrefectureSelect{PrefectureQuery: pq}
-	sbuild.label = prefecture.Label
+	sbuild := &ProfileSelect{ProfileQuery: pq}
+	sbuild.label = profile.Label
 	sbuild.flds, sbuild.scan = &pq.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a PrefectureSelect configured with the given aggregations.
-func (pq *PrefectureQuery) Aggregate(fns ...AggregateFunc) *PrefectureSelect {
+// Aggregate returns a ProfileSelect configured with the given aggregations.
+func (pq *ProfileQuery) Aggregate(fns ...AggregateFunc) *ProfileSelect {
 	return pq.Select().Aggregate(fns...)
 }
 
-func (pq *PrefectureQuery) prepareQuery(ctx context.Context) error {
+func (pq *ProfileQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range pq.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -315,7 +315,7 @@ func (pq *PrefectureQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range pq.ctx.Fields {
-		if !prefecture.ValidColumn(f) {
+		if !profile.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -329,16 +329,16 @@ func (pq *PrefectureQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (pq *PrefectureQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Prefecture, error) {
+func (pq *ProfileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Profile, error) {
 	var (
-		nodes = []*Prefecture{}
+		nodes = []*Profile{}
 		_spec = pq.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*Prefecture).scanValues(nil, columns)
+		return (*Profile).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Prefecture{config: pq.config}
+		node := &Profile{config: pq.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
@@ -354,7 +354,7 @@ func (pq *PrefectureQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*P
 	return nodes, nil
 }
 
-func (pq *PrefectureQuery) sqlCount(ctx context.Context) (int, error) {
+func (pq *ProfileQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := pq.querySpec()
 	_spec.Node.Columns = pq.ctx.Fields
 	if len(pq.ctx.Fields) > 0 {
@@ -363,8 +363,8 @@ func (pq *PrefectureQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, pq.driver, _spec)
 }
 
-func (pq *PrefectureQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(prefecture.Table, prefecture.Columns, sqlgraph.NewFieldSpec(prefecture.FieldID, field.TypeInt))
+func (pq *ProfileQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := sqlgraph.NewQuerySpec(profile.Table, profile.Columns, sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt))
 	_spec.From = pq.sql
 	if unique := pq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -373,9 +373,9 @@ func (pq *PrefectureQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := pq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, prefecture.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, profile.FieldID)
 		for i := range fields {
-			if fields[i] != prefecture.FieldID {
+			if fields[i] != profile.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -403,12 +403,12 @@ func (pq *PrefectureQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (pq *PrefectureQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (pq *ProfileQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(pq.driver.Dialect())
-	t1 := builder.Table(prefecture.Table)
+	t1 := builder.Table(profile.Table)
 	columns := pq.ctx.Fields
 	if len(columns) == 0 {
-		columns = prefecture.Columns
+		columns = profile.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if pq.sql != nil {
@@ -435,28 +435,28 @@ func (pq *PrefectureQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// PrefectureGroupBy is the group-by builder for Prefecture entities.
-type PrefectureGroupBy struct {
+// ProfileGroupBy is the group-by builder for Profile entities.
+type ProfileGroupBy struct {
 	selector
-	build *PrefectureQuery
+	build *ProfileQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (pgb *PrefectureGroupBy) Aggregate(fns ...AggregateFunc) *PrefectureGroupBy {
+func (pgb *ProfileGroupBy) Aggregate(fns ...AggregateFunc) *ProfileGroupBy {
 	pgb.fns = append(pgb.fns, fns...)
 	return pgb
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (pgb *PrefectureGroupBy) Scan(ctx context.Context, v any) error {
+func (pgb *ProfileGroupBy) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, pgb.build.ctx, "GroupBy")
 	if err := pgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*PrefectureQuery, *PrefectureGroupBy](ctx, pgb.build, pgb, pgb.build.inters, v)
+	return scanWithInterceptors[*ProfileQuery, *ProfileGroupBy](ctx, pgb.build, pgb, pgb.build.inters, v)
 }
 
-func (pgb *PrefectureGroupBy) sqlScan(ctx context.Context, root *PrefectureQuery, v any) error {
+func (pgb *ProfileGroupBy) sqlScan(ctx context.Context, root *ProfileQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(pgb.fns))
 	for _, fn := range pgb.fns {
@@ -483,28 +483,28 @@ func (pgb *PrefectureGroupBy) sqlScan(ctx context.Context, root *PrefectureQuery
 	return sql.ScanSlice(rows, v)
 }
 
-// PrefectureSelect is the builder for selecting fields of Prefecture entities.
-type PrefectureSelect struct {
-	*PrefectureQuery
+// ProfileSelect is the builder for selecting fields of Profile entities.
+type ProfileSelect struct {
+	*ProfileQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ps *PrefectureSelect) Aggregate(fns ...AggregateFunc) *PrefectureSelect {
+func (ps *ProfileSelect) Aggregate(fns ...AggregateFunc) *ProfileSelect {
 	ps.fns = append(ps.fns, fns...)
 	return ps
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ps *PrefectureSelect) Scan(ctx context.Context, v any) error {
+func (ps *ProfileSelect) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, ps.ctx, "Select")
 	if err := ps.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*PrefectureQuery, *PrefectureSelect](ctx, ps.PrefectureQuery, ps, ps.inters, v)
+	return scanWithInterceptors[*ProfileQuery, *ProfileSelect](ctx, ps.ProfileQuery, ps, ps.inters, v)
 }
 
-func (ps *PrefectureSelect) sqlScan(ctx context.Context, root *PrefectureQuery, v any) error {
+func (ps *ProfileSelect) sqlScan(ctx context.Context, root *ProfileQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(ps.fns))
 	for _, fn := range ps.fns {

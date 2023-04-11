@@ -3,22 +3,27 @@
 package ent
 
 import (
-	"app/ent/prefecture"
+	"app/ent/profile"
 	"fmt"
 	"strings"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
-// Prefecture is the model entity for the Prefecture schema.
-type Prefecture struct {
+// Profile is the model entity for the Profile schema.
+type Profile struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// Name holds the value of the "name" field.
-	Name string `json:"name,omitempty"`
+	// UUID holds the value of the "uuid" field.
+	UUID uuid.UUID `json:"uuid,omitempty"`
+	// Nickname holds the value of the "nickname" field.
+	Nickname string `json:"nickname,omitempty"`
+	// IconURL holds the value of the "icon_url" field.
+	IconURL string `json:"icon_url,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -27,16 +32,18 @@ type Prefecture struct {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*Prefecture) scanValues(columns []string) ([]any, error) {
+func (*Profile) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case prefecture.FieldID:
+		case profile.FieldID:
 			values[i] = new(sql.NullInt64)
-		case prefecture.FieldName:
+		case profile.FieldNickname, profile.FieldIconURL:
 			values[i] = new(sql.NullString)
-		case prefecture.FieldCreatedAt, prefecture.FieldUpdatedAt:
+		case profile.FieldCreatedAt, profile.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
+		case profile.FieldUUID:
+			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -45,32 +52,44 @@ func (*Prefecture) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the Prefecture fields.
-func (pr *Prefecture) assignValues(columns []string, values []any) error {
+// to the Profile fields.
+func (pr *Profile) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case prefecture.FieldID:
+		case profile.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			pr.ID = int(value.Int64)
-		case prefecture.FieldName:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field name", values[i])
-			} else if value.Valid {
-				pr.Name = value.String
+		case profile.FieldUUID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field uuid", values[i])
+			} else if value != nil {
+				pr.UUID = *value
 			}
-		case prefecture.FieldCreatedAt:
+		case profile.FieldNickname:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field nickname", values[i])
+			} else if value.Valid {
+				pr.Nickname = value.String
+			}
+		case profile.FieldIconURL:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field icon_url", values[i])
+			} else if value.Valid {
+				pr.IconURL = value.String
+			}
+		case profile.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
 				pr.CreatedAt = value.Time
 			}
-		case prefecture.FieldUpdatedAt:
+		case profile.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
@@ -83,37 +102,43 @@ func (pr *Prefecture) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the Prefecture.
+// Value returns the ent.Value that was dynamically selected and assigned to the Profile.
 // This includes values selected through modifiers, order, etc.
-func (pr *Prefecture) Value(name string) (ent.Value, error) {
+func (pr *Profile) Value(name string) (ent.Value, error) {
 	return pr.selectValues.Get(name)
 }
 
-// Update returns a builder for updating this Prefecture.
-// Note that you need to call Prefecture.Unwrap() before calling this method if this Prefecture
+// Update returns a builder for updating this Profile.
+// Note that you need to call Profile.Unwrap() before calling this method if this Profile
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (pr *Prefecture) Update() *PrefectureUpdateOne {
-	return NewPrefectureClient(pr.config).UpdateOne(pr)
+func (pr *Profile) Update() *ProfileUpdateOne {
+	return NewProfileClient(pr.config).UpdateOne(pr)
 }
 
-// Unwrap unwraps the Prefecture entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the Profile entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (pr *Prefecture) Unwrap() *Prefecture {
+func (pr *Profile) Unwrap() *Profile {
 	_tx, ok := pr.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: Prefecture is not a transactional entity")
+		panic("ent: Profile is not a transactional entity")
 	}
 	pr.config.driver = _tx.drv
 	return pr
 }
 
 // String implements the fmt.Stringer.
-func (pr *Prefecture) String() string {
+func (pr *Profile) String() string {
 	var builder strings.Builder
-	builder.WriteString("Prefecture(")
+	builder.WriteString("Profile(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", pr.ID))
-	builder.WriteString("name=")
-	builder.WriteString(pr.Name)
+	builder.WriteString("uuid=")
+	builder.WriteString(fmt.Sprintf("%v", pr.UUID))
+	builder.WriteString(", ")
+	builder.WriteString("nickname=")
+	builder.WriteString(pr.Nickname)
+	builder.WriteString(", ")
+	builder.WriteString("icon_url=")
+	builder.WriteString(pr.IconURL)
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(pr.CreatedAt.Format(time.ANSIC))
@@ -124,5 +149,5 @@ func (pr *Prefecture) String() string {
 	return builder.String()
 }
 
-// Prefectures is a parsable slice of Prefecture.
-type Prefectures []*Prefecture
+// Profiles is a parsable slice of Profile.
+type Profiles []*Profile

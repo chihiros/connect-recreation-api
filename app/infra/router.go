@@ -2,9 +2,11 @@ package infra
 
 import (
 	contact_controller "app/elements/contact/interfaces/controller"
+	profile_controller "app/elements/profiles/interfaces/controller"
 	rec_controller "app/elements/recreations/interfaces/controller"
 	user_controller "app/elements/users/interfaces/controller"
 	"app/ent"
+	"app/middle/authrization"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -19,6 +21,7 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(logger.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(authrization.AuthMiddleware) // Dockerで開発するときはコメントアウトする
 
 	// Access-Control-Allow-Originを許可する
 	r.Use(cors.Handler(cors.Options{
@@ -35,11 +38,21 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 	ucon := user_controller.NewUserController(conn)
 	ccon := contact_controller.NewContactController()
 	rcon := rec_controller.NewRecreationController(conn)
+	pcon := profile_controller.NewProfileController(conn)
 	r.Route("/v1", func(r chi.Router) {
+		// お問い合わせ用のAPI
 		r.Route("/contact", func(r chi.Router) {
 			r.Post("/", ccon.PostContact)
 		})
 
+		// プロフィール用のAPI
+		r.Route("/profile", func(r chi.Router) {
+			r.Get("/", pcon.GetProfilesByUUID)
+			r.Post("/", pcon.PostProfiles)
+			r.Delete("/", pcon.DeleteProfilesByID)
+		})
+
+		// ダミーで使っていたAPI（いずれ削除されると思う）
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", ucon.GetUsers)
 			r.Get("/query", ucon.GetUsersByID)
@@ -47,6 +60,7 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 			r.Delete("/", ucon.DeleteUsersByID)
 		})
 
+		// 疎通確認用のAPI
 		r.Route("/now", func(r chi.Router) {
 			r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 				jst, err := time.LoadLocation("Asia/Tokyo")
@@ -59,8 +73,12 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 			})
 		})
 
+		// レクリエーション用のAPI
 		r.Route("/recreation", func(r chi.Router) {
+			// r.Get("/", ucon.GetUsers)
+			// r.Get("/query", ucon.GetUsersByID)
 			r.Post("/", rcon.PostRecreations)
+			// r.Delete("/", ucon.DeleteUsersByID)
 		})
 	})
 
