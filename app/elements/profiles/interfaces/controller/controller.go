@@ -7,7 +7,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strconv"
 )
 
 type ProfileController struct {
@@ -28,18 +27,18 @@ func NewProfileUsecase(conn *ent.Client) *usecase.ProfileUsecase {
 	}
 }
 
-func (c *ProfileController) GetProfilesByID(w http.ResponseWriter, r *http.Request) {
-	// クエリパラメータからidを取得する
-	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+// func (c *ProfileController) GetProfilesByID(w http.ResponseWriter, r *http.Request) {
+// 	// クエリパラメータからidを取得する
+// 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
 
-	profiles, err := c.Usecase.GetProfilesByID(context.Background(), id)
-	if err != nil {
-		panic(err)
-	}
+// 	profiles, err := c.Usecase.GetProfilesByID(context.Background(), id)
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(profiles)
-}
+// 	w.WriteHeader(http.StatusOK)
+// 	json.NewEncoder(w).Encode(profiles)
+// }
 
 func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする
@@ -61,10 +60,10 @@ func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request)
 	json.NewEncoder(w).Encode(profile)
 }
 
-func (c *ProfileController) DeleteProfilesByID(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
-	profile := c.Usecase.DeleteProfilesByID(context.Background(), id)
+// func (c *ProfileController) DeleteProfilesByID(w http.ResponseWriter, r *http.Request) {
+// 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+// 	profile := c.Usecase.DeleteProfilesByID(context.Background(), id)
 
-	w.WriteHeader(http.StatusNoContent)
-	json.NewEncoder(w).Encode(profile)
-}
+// 	w.WriteHeader(http.StatusNoContent)
+// 	json.NewEncoder(w).Encode(profile)
+// }
