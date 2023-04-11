@@ -1,6 +1,9 @@
 # @HOST=https://api.topicpost.net
 @HOST=http://localhost:8686
 
+### プロフィールの取得
+GET {{HOST}}/v1/profile?uuid=c2cc015d-5753-4132-86fe-624787ae49de
+
 #### プロフィールの追加
 POST {{HOST}}/v1/profile
 Context-Type: application/json
