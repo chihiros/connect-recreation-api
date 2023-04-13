@@ -23,3 +23,6 @@ deploy:
 
 kushi:
 	flyctl proxy 5432:5433 -a topicpost-api-db
+
+setFlyEnv:
+	flyctl -c ./.github/workflows/fly.staging.toml secrets set $1=$2
