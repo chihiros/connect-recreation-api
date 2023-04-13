@@ -21,7 +21,6 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(logger.Logger)
 	r.Use(middleware.Recoverer)
-	r.Use(authrization.AuthMiddleware) // Dockerで開発するときはコメントアウトする
 
 	// Access-Control-Allow-Originを許可する
 	r.Use(cors.Handler(cors.Options{
@@ -47,6 +46,8 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 
 		// プロフィール用のAPI
 		r.Route("/profile", func(r chi.Router) {
+			r.Use(authrization.AuthMiddleware) // Dockerで開発するときはコメントアウトする
+
 			r.Get("/", pcon.GetProfilesByUUID)
 			r.Post("/", pcon.PostProfiles)
 			r.Delete("/", pcon.DeleteProfilesByID)
