@@ -1,5 +1,8 @@
 up:
-	DOCKER_BUILDKIT=1 docker compose up --build
+	DOCKER_BUILDKIT=1 docker compose up --build $(filter-out $@,$(MAKECMDGOALS))
+
+%:
+	@:
 
 down:
 	docker compose down
@@ -24,5 +27,18 @@ deploy:
 kushi:
 	flyctl proxy 5432:5433 -a topicpost-api-db
 
+
 setFlyEnv:
-	flyctl -c ./.github/workflows/fly.staging.toml secrets set $1=$2
+	ifeq ($(key),)
+	$(error key is not set)
+	endif
+	ifeq ($(value),)
+	$(error value is not set)
+	endif
+	flyctl -c ./.github/workflows/fly.staging.toml secrets set $(key)=$(value)
+
+unsetFlyEnv:
+	ifeq ($(key),)
+	$(error key is not set)
+	endif
+	flyctl -c ./.github/workflows/fly.staging.toml secrets unset $(key)
