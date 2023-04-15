@@ -3,7 +3,7 @@
 @TOKEN=
 
 ### プロフィールの取得
-GET {{HOST}}/v1/profile?uuid=c2cc015d-5753-4132-86fe-624787ae49de
+GET {{HOST}}/v1/profile
 Authorization: Bearer {{TOKEN}}
 
 #### プロフィールの追加
@@ -17,5 +17,5 @@ Authorization: Bearer {{TOKEN}}
 }
 
 #### プロフィールの削除
-DELETE {{HOST}}/v1/profile?uuid=c2cc015d-5753-4132-86fe-624787ae49de
+DELETE {{HOST}}/v1/profile
 Authorization: Bearer {{TOKEN}}
