@@ -27,15 +27,18 @@ deploy:
 kushi:
 	flyctl proxy 5432:5433 -a topicpost-api-db
 
-ifeq ($(key),)
-$(error key is not set)
-endif
-ifeq ($(value),)
-$(error value is not set)
-endif
 
 setFlyEnv:
+	ifeq ($(key),)
+	$(error key is not set)
+	endif
+	ifeq ($(value),)
+	$(error value is not set)
+	endif
 	flyctl -c ./.github/workflows/fly.staging.toml secrets set $(key)=$(value)
 
 unsetFlyEnv:
+	ifeq ($(key),)
+	$(error key is not set)
+	endif
 	flyctl -c ./.github/workflows/fly.staging.toml secrets unset $(key)
