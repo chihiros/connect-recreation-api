@@ -12,7 +12,7 @@ import (
 func NewPostgresConnection() (*ent.Client, error) {
 	var DB_URL string
 	if _, exist := os.LookupEnv("DATABASE_URL"); !exist {
-		DB_URL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		DB_URL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s",
 			os.Getenv("DB_USER"),
 			os.Getenv("DB_PASSWORD"),
 			os.Getenv("DB_HOST"),
