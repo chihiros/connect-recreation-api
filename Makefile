@@ -1,5 +1,8 @@
 up:
-	DOCKER_BUILDKIT=1 docker compose up --build
+	DOCKER_BUILDKIT=1 docker compose up --build $(filter-out $@,$(MAKECMDGOALS))
+
+%:
+	@:
 
 down:
 	docker compose down
