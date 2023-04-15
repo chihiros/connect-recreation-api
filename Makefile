@@ -36,3 +36,6 @@ endif
 
 setFlyEnv:
 	flyctl -c ./.github/workflows/fly.staging.toml secrets set $(key)=$(value)
+
+unsetFlyEnv:
+	flyctl -c ./.github/workflows/fly.staging.toml secrets unset $(key)
