@@ -59,7 +59,7 @@ func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Reques
 }
 
 func (r *ProfileRepository) PutProfiles(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	profile, err := r.DBConn.Profile.Update().
+	_, err := r.DBConn.Profile.Update().
 		Where(profile.UUIDEQ(req.UUID)).
 		SetNickname(req.Nickname).
 		SetIconURL(req.IconURL).
