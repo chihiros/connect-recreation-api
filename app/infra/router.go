@@ -48,9 +48,9 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 		r.Route("/profile", func(r chi.Router) {
 			r.Use(authrization.AuthMiddleware) // Dockerで開発するときはコメントアウトする
 
-			r.Get("/", pcon.GetProfilesByUUID)
+			r.Get("/", pcon.GetProfiles)
 			r.Post("/", pcon.PostProfiles)
-			r.Delete("/", pcon.DeleteProfilesByID)
+			r.Delete("/", pcon.DeleteProfiles)
 		})
 
 		// ダミーで使っていたAPI（いずれ削除されると思う）
