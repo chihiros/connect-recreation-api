@@ -16,6 +16,16 @@ Authorization: Bearer {{TOKEN}}
     "icon_url": "https://example.com/icon.png"
 }
 
+### プロフィールの更新
+PUT {{HOST}}/v1/profile
+Context-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+    "nickname": "tarou",
+    "icon_url": "https://example.com/icon.png"
+}
+
 #### プロフィールの削除
 DELETE {{HOST}}/v1/profile
 Authorization: Bearer {{TOKEN}}

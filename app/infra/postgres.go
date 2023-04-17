@@ -18,6 +18,11 @@ func NewPostgresConnection() (*ent.Client, error) {
 		os.Getenv("DB_NAME"),
 	)
 
+	// Dockerでの開発環境ではSSLを無効化する
+	if os.Getenv("DB_HOST") == "db" {
+		DB_URL += "?sslmode=disable"
+	}
+
 	client, err := ent.Open("postgres", DB_URL)
 	if err != nil {
 		log.Printf("failed opening connection to postgres: %v", err)
