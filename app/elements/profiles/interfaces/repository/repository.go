@@ -58,6 +58,22 @@ func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Reques
 	return res, err
 }
 
+func (r *ProfileRepository) PutProfiles(ctx context.Context, req usecase.Request) (usecase.Response, error) {
+	profile, err := r.DBConn.Profile.Update().
+		Where(profile.UUIDEQ(req.UUID)).
+		SetNickname(req.Nickname).
+		SetIconURL(req.IconURL).
+		SetUpdatedAt(time.Now()).
+		Save(ctx)
+
+	if err != nil {
+		panic(err)
+	}
+
+	res := usecase.Response{Data: profile}
+	return res, err
+}
+
 func (r *ProfileRepository) DeleteProfiles(ctx context.Context, uuid uuid.UUID) error {
 	_, err := r.DBConn.Profile.Delete().
 		Where(profile.UUIDEQ(uuid)).
