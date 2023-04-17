@@ -73,6 +73,30 @@ func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request)
 	json.NewEncoder(w).Encode(profile)
 }
 
+func (c *ProfileController) PutProfiles(w http.ResponseWriter, r *http.Request) {
+	// bodyの中身をbindする
+	req := usecase.Request{}
+	err := json.NewDecoder(r.Body).Decode(&req)
+
+	// Request.UUIDを上書きする
+	req.UUID = getUUIDWithClaims(r)
+
+	profile, err := c.Usecase.PutProfiles(context.Background(), req)
+
+	if err != nil {
+		switch err.Error() {
+		case "duplicate":
+			w.WriteHeader(http.StatusConflict)
+			json.NewEncoder(w).Encode(profile)
+		default:
+			panic(err)
+		}
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(profile)
+}
+
 func (c *ProfileController) DeleteProfiles(w http.ResponseWriter, r *http.Request) {
 	uuid := getUUIDWithClaims(r)
 	profile := c.Usecase.DeleteProfiles(context.Background(), uuid)
