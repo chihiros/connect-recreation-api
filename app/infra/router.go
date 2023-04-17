@@ -50,6 +50,7 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 
 			r.Get("/", pcon.GetProfiles)
 			r.Post("/", pcon.PostProfiles)
+			r.Put("/", pcon.PutProfiles)
 			r.Delete("/", pcon.DeleteProfiles)
 		})
 
