@@ -70,6 +70,11 @@ func (r *ProfileRepository) PutProfiles(ctx context.Context, req usecase.Request
 		panic(err)
 	}
 
+	// 更新に成功したら、更新後のデータを返す
+	profile, err := r.DBConn.Profile.Query().
+		Where(profile.UUIDEQ(req.UUID)).
+		All(ctx)
+
 	res := usecase.Response{Data: profile}
 	return res, err
 }
