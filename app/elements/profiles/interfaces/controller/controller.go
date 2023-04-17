@@ -38,9 +38,9 @@ func getUUIDWithClaims(r *http.Request) uuid.UUID {
 	return uuid.MustParse(claims.Subject)
 }
 
-func (c *ProfileController) GetProfilesByUUID(w http.ResponseWriter, r *http.Request) {
+func (c *ProfileController) GetProfiles(w http.ResponseWriter, r *http.Request) {
 	uuid := getUUIDWithClaims(r)
-	profiles, err := c.Usecase.GetProfilesByUUID(context.Background(), uuid)
+	profiles, err := c.Usecase.GetProfiles(context.Background(), uuid)
 	if err != nil {
 		panic(err)
 	}
@@ -73,9 +73,9 @@ func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request)
 	json.NewEncoder(w).Encode(profile)
 }
 
-func (c *ProfileController) DeleteProfilesByID(w http.ResponseWriter, r *http.Request) {
+func (c *ProfileController) DeleteProfiles(w http.ResponseWriter, r *http.Request) {
 	uuid := getUUIDWithClaims(r)
-	profile := c.Usecase.DeleteProfilesByUUID(context.Background(), uuid)
+	profile := c.Usecase.DeleteProfiles(context.Background(), uuid)
 
 	w.WriteHeader(http.StatusNoContent)
 	json.NewEncoder(w).Encode(profile)

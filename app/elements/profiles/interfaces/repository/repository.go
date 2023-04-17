@@ -21,7 +21,7 @@ func NewProfileRepository(conn *ent.Client) *ProfileRepository {
 	}
 }
 
-func (r *ProfileRepository) GetProfilesByUUID(ctx context.Context, uuid uuid.UUID) (usecase.Response, error) {
+func (r *ProfileRepository) GetProfiles(ctx context.Context, uuid uuid.UUID) (usecase.Response, error) {
 	profile, err := r.DBConn.Profile.Query().
 		Where(profile.UUIDEQ(uuid)).
 		All(ctx)
@@ -58,7 +58,7 @@ func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Reques
 	return res, err
 }
 
-func (r *ProfileRepository) DeleteProfilesByUUID(ctx context.Context, uuid uuid.UUID) error {
+func (r *ProfileRepository) DeleteProfiles(ctx context.Context, uuid uuid.UUID) error {
 	_, err := r.DBConn.Profile.Delete().
 		Where(profile.UUIDEQ(uuid)).
 		Exec(ctx)
