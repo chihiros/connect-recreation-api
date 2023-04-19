@@ -1,7 +1,8 @@
 package usecase
 
 type Response struct {
-	Data interface{} `json:"data"`
+	Data          interface{} `json:"data"`
+	ErrorResponse `json:"errors"`
 }
 
 type ErrorResponse struct {
