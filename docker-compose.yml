@@ -13,20 +13,26 @@ services:
     env_file:
       - .env
     environment:
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_NAME: postgres
+      # DB_USER: postgres
+      # DB_PASSWORD: postgres
+      # DB_HOST: db
+      # DB_PORT: 5432
+      # DB_NAME: postgres
       DB_TIMEZONE: Asia/Tokyo
       PROJECT_ENV: docker
       SUPABASE_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      # .envファイルを読み込む場合
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
     depends_on:
       db:
         condition: service_healthy
 
   db:
-    image: postgres:14.6-bullseye
+    image: postgres:15.1-bullseye
     ports:
       - 5432:5432
     environment:
