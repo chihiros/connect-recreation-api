@@ -90,6 +90,21 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 				r.Delete("/", ucon.DeleteUsersByID)
 			})
 		})
+
+		// Example
+		r.Route("/example", func(r chi.Router) {
+			r.Get("/nojwt", func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusOK)
+				json.NewEncoder(w).Encode("This is NOT JWT protected API.")
+			})
+
+			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
+				r.Get("/jwt", func(w http.ResponseWriter, r *http.Request) {
+					w.WriteHeader(http.StatusOK)
+					json.NewEncoder(w).Encode("This is JWT protected API.")
+				})
+			})
+		})
 	})
 
 	return r
