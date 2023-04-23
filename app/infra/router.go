@@ -78,14 +78,11 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 		// レクリエーション用のAPI
 		r.Route("/recreation", func(r chi.Router) {
 			// JWTが不要なやつ
-			r.Group(func(r chi.Router) {
-				r.Get("/", ucon.GetUsers)
-				r.Get("/query", ucon.GetUsersByID)
-			})
+			r.Get("/", ucon.GetUsers)
+			r.Get("/query", ucon.GetUsersByID)
 
 			// JWTが必要なやつ
-			r.Group(func(r chi.Router) {
-				r.Use(authrization.AuthMiddleware) // Dockerで開発するときはコメントアウトする
+			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
 				r.Post("/", rcon.PostRecreations)
 				r.Delete("/", ucon.DeleteUsersByID)
 			})
