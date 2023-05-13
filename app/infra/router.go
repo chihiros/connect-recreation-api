@@ -77,10 +77,30 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 
 		// レクリエーション用のAPI
 		r.Route("/recreation", func(r chi.Router) {
-			// r.Get("/", ucon.GetUsers)
-			// r.Get("/query", ucon.GetUsersByID)
-			r.Post("/", rcon.PostRecreations)
-			// r.Delete("/", ucon.DeleteUsersByID)
+			// JWTが不要なやつ
+			r.Get("/", ucon.GetUsers)
+			r.Get("/query", ucon.GetUsersByID)
+
+			// JWTが必要なやつ
+			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
+				r.Post("/", rcon.PostRecreations)
+				r.Delete("/", ucon.DeleteUsersByID)
+			})
+		})
+
+		// Example
+		r.Route("/example", func(r chi.Router) {
+			r.Get("/nojwt", func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusOK)
+				json.NewEncoder(w).Encode("This is NOT JWT protected API.")
+			})
+
+			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
+				r.Get("/jwt", func(w http.ResponseWriter, r *http.Request) {
+					w.WriteHeader(http.StatusOK)
+					json.NewEncoder(w).Encode("This is JWT protected API.")
+				})
+			})
 		})
 	})
 
