@@ -1,31 +1,34 @@
-# @HOST=https://topicpost-api.fly.dev
+# @HOST=https://api.topicpost.net
 @HOST=http://localhost:8686
 ### 疎通確認
-GET {{HOST}}/api/now
+GET {{HOST}}/v1/now
 
 ### ユーザー一覧の取得
-GET {{HOST}}/api/users
+GET {{HOST}}/v1/users
 
 ### ユーザー一覧の取得
-GET {{HOST}}/api/users/query?id=1
+GET {{HOST}}/v1/users/query?id=1
 
 #### ユーザーの追加
-POST {{HOST}}/api/users
+POST {{HOST}}/v1/users
 Context-Type: application/json
 
 {
-    "username": "User2",
-    "age": 20
-}
-
-#### ユーザーの追加・更新
-PUT {{HOST}}/api/users
-Context-Type: application/json
-
-{
-    "username": "User2",
-    "age": 20
+    "uid": "1000000006",
+    "username": "hayasi",
+    "mail": "hayashi@example.com",
+    "prefecture_id": 6
 }
 
 ### ユーザー一覧の取得
-DELETE {{HOST}}/api/users?id=1
+DELETE {{HOST}}/v1/users?id=1
+
+### お問い合わせ用のAPI
+POST {{HOST}}/v1/contact
+Context-Type: application/json
+
+{
+    "name": "テスト太郎",
+    "email": "contact@example.com",
+    "content": "これってなんですか？"
+}
