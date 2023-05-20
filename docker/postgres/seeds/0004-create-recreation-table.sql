@@ -2,7 +2,7 @@
 CREATE TABLE recreations (
   id SERIAL PRIMARY KEY,
   user_id UUID NOT NULL,
-  uuid UUID NOT NULL UNIQUE,
+  recreation_id UUID NOT NULL UNIQUE,
   genre JSONB,
   title VARCHAR(255),
   content TEXT,
