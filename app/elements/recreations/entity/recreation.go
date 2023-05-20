@@ -12,7 +12,7 @@ type Recreation struct {
 	UUID         uuid.UUID `json:"uid"`          // レクリエーションのユニークID
 	Title        string    `json:"title"`        // レクリエーションの名前
 	Content      string    `json:"content"`      // レクリエーションの説明
-	TargetNumber int       `json:"target"`       // レクリエーションの対象人数
+	TargetNumber int       `json:"target_number"`       // レクリエーションの対象人数
 	RequredTime  int       `json:"requred_time"` // レクリエーションの所要時間
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
