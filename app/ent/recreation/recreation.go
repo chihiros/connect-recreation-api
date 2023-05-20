@@ -15,8 +15,8 @@ const (
 	FieldID = "id"
 	// FieldUserID holds the string denoting the user_id field in the database.
 	FieldUserID = "user_id"
-	// FieldUUID holds the string denoting the uuid field in the database.
-	FieldUUID = "uuid"
+	// FieldRecreationID holds the string denoting the recreation_id field in the database.
+	FieldRecreationID = "recreation_id"
 	// FieldGenre holds the string denoting the genre field in the database.
 	FieldGenre = "genre"
 	// FieldTitle holds the string denoting the title field in the database.
@@ -39,7 +39,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldUserID,
-	FieldUUID,
+	FieldRecreationID,
 	FieldGenre,
 	FieldTitle,
 	FieldContent,
@@ -81,9 +81,9 @@ func ByUserID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
-// ByUUID orders the results by the uuid field.
-func ByUUID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUUID, opts...).ToFunc()
+// ByRecreationID orders the results by the recreation_id field.
+func ByRecreationID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRecreationID, opts...).ToFunc()
 }
 
 // ByTitle orders the results by the title field.

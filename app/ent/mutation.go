@@ -1017,7 +1017,7 @@ type RecreationMutation struct {
 	typ              string
 	id               *int
 	user_id          *uuid.UUID
-	uuid             *uuid.UUID
+	recreation_id    *uuid.UUID
 	genre            *[]int
 	appendgenre      []int
 	title            *string
@@ -1168,40 +1168,40 @@ func (m *RecreationMutation) ResetUserID() {
 	m.user_id = nil
 }
 
-// SetUUID sets the "uuid" field.
-func (m *RecreationMutation) SetUUID(u uuid.UUID) {
-	m.uuid = &u
+// SetRecreationID sets the "recreation_id" field.
+func (m *RecreationMutation) SetRecreationID(u uuid.UUID) {
+	m.recreation_id = &u
 }
 
-// UUID returns the value of the "uuid" field in the mutation.
-func (m *RecreationMutation) UUID() (r uuid.UUID, exists bool) {
-	v := m.uuid
+// RecreationID returns the value of the "recreation_id" field in the mutation.
+func (m *RecreationMutation) RecreationID() (r uuid.UUID, exists bool) {
+	v := m.recreation_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUUID returns the old "uuid" field's value of the Recreation entity.
+// OldRecreationID returns the old "recreation_id" field's value of the Recreation entity.
 // If the Recreation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RecreationMutation) OldUUID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *RecreationMutation) OldRecreationID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUUID is only allowed on UpdateOne operations")
+		return v, errors.New("OldRecreationID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUUID requires an ID field in the mutation")
+		return v, errors.New("OldRecreationID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUUID: %w", err)
+		return v, fmt.Errorf("querying old value for OldRecreationID: %w", err)
 	}
-	return oldValue.UUID, nil
+	return oldValue.RecreationID, nil
 }
 
-// ResetUUID resets all changes to the "uuid" field.
-func (m *RecreationMutation) ResetUUID() {
-	m.uuid = nil
+// ResetRecreationID resets all changes to the "recreation_id" field.
+func (m *RecreationMutation) ResetRecreationID() {
+	m.recreation_id = nil
 }
 
 // SetGenre sets the "genre" field.
@@ -1549,8 +1549,8 @@ func (m *RecreationMutation) Fields() []string {
 	if m.user_id != nil {
 		fields = append(fields, recreation.FieldUserID)
 	}
-	if m.uuid != nil {
-		fields = append(fields, recreation.FieldUUID)
+	if m.recreation_id != nil {
+		fields = append(fields, recreation.FieldRecreationID)
 	}
 	if m.genre != nil {
 		fields = append(fields, recreation.FieldGenre)
@@ -1583,8 +1583,8 @@ func (m *RecreationMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case recreation.FieldUserID:
 		return m.UserID()
-	case recreation.FieldUUID:
-		return m.UUID()
+	case recreation.FieldRecreationID:
+		return m.RecreationID()
 	case recreation.FieldGenre:
 		return m.Genre()
 	case recreation.FieldTitle:
@@ -1610,8 +1610,8 @@ func (m *RecreationMutation) OldField(ctx context.Context, name string) (ent.Val
 	switch name {
 	case recreation.FieldUserID:
 		return m.OldUserID(ctx)
-	case recreation.FieldUUID:
-		return m.OldUUID(ctx)
+	case recreation.FieldRecreationID:
+		return m.OldRecreationID(ctx)
 	case recreation.FieldGenre:
 		return m.OldGenre(ctx)
 	case recreation.FieldTitle:
@@ -1642,12 +1642,12 @@ func (m *RecreationMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUserID(v)
 		return nil
-	case recreation.FieldUUID:
+	case recreation.FieldRecreationID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUUID(v)
+		m.SetRecreationID(v)
 		return nil
 	case recreation.FieldGenre:
 		v, ok := value.([]int)
@@ -1777,8 +1777,8 @@ func (m *RecreationMutation) ResetField(name string) error {
 	case recreation.FieldUserID:
 		m.ResetUserID()
 		return nil
-	case recreation.FieldUUID:
-		m.ResetUUID()
+	case recreation.FieldRecreationID:
+		m.ResetRecreationID()
 		return nil
 	case recreation.FieldGenre:
 		m.ResetGenre()

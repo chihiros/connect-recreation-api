@@ -29,9 +29,9 @@ func (rc *RecreationCreate) SetUserID(u uuid.UUID) *RecreationCreate {
 	return rc
 }
 
-// SetUUID sets the "uuid" field.
-func (rc *RecreationCreate) SetUUID(u uuid.UUID) *RecreationCreate {
-	rc.mutation.SetUUID(u)
+// SetRecreationID sets the "recreation_id" field.
+func (rc *RecreationCreate) SetRecreationID(u uuid.UUID) *RecreationCreate {
+	rc.mutation.SetRecreationID(u)
 	return rc
 }
 
@@ -143,8 +143,8 @@ func (rc *RecreationCreate) check() error {
 	if _, ok := rc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Recreation.user_id"`)}
 	}
-	if _, ok := rc.mutation.UUID(); !ok {
-		return &ValidationError{Name: "uuid", err: errors.New(`ent: missing required field "Recreation.uuid"`)}
+	if _, ok := rc.mutation.RecreationID(); !ok {
+		return &ValidationError{Name: "recreation_id", err: errors.New(`ent: missing required field "Recreation.recreation_id"`)}
 	}
 	if _, ok := rc.mutation.Genre(); !ok {
 		return &ValidationError{Name: "genre", err: errors.New(`ent: missing required field "Recreation.genre"`)}
@@ -198,9 +198,9 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 		_spec.SetField(recreation.FieldUserID, field.TypeUUID, value)
 		_node.UserID = value
 	}
-	if value, ok := rc.mutation.UUID(); ok {
-		_spec.SetField(recreation.FieldUUID, field.TypeUUID, value)
-		_node.UUID = value
+	if value, ok := rc.mutation.RecreationID(); ok {
+		_spec.SetField(recreation.FieldRecreationID, field.TypeUUID, value)
+		_node.RecreationID = value
 	}
 	if value, ok := rc.mutation.Genre(); ok {
 		_spec.SetField(recreation.FieldGenre, field.TypeJSON, value)
@@ -380,8 +380,8 @@ func (u *RecreationUpsertOne) UpdateNewValues() *RecreationUpsertOne {
 		if _, exists := u.create.mutation.UserID(); exists {
 			s.SetIgnore(recreation.FieldUserID)
 		}
-		if _, exists := u.create.mutation.UUID(); exists {
-			s.SetIgnore(recreation.FieldUUID)
+		if _, exists := u.create.mutation.RecreationID(); exists {
+			s.SetIgnore(recreation.FieldRecreationID)
 		}
 		if _, exists := u.create.mutation.CreatedAt(); exists {
 			s.SetIgnore(recreation.FieldCreatedAt)
@@ -690,8 +690,8 @@ func (u *RecreationUpsertBulk) UpdateNewValues() *RecreationUpsertBulk {
 			if _, exists := b.mutation.UserID(); exists {
 				s.SetIgnore(recreation.FieldUserID)
 			}
-			if _, exists := b.mutation.UUID(); exists {
-				s.SetIgnore(recreation.FieldUUID)
+			if _, exists := b.mutation.RecreationID(); exists {
+				s.SetIgnore(recreation.FieldRecreationID)
 			}
 			if _, exists := b.mutation.CreatedAt(); exists {
 				s.SetIgnore(recreation.FieldCreatedAt)

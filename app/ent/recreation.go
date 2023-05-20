@@ -21,8 +21,8 @@ type Recreation struct {
 	ID int `json:"id,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID uuid.UUID `json:"user_id,omitempty"`
-	// UUID holds the value of the "uuid" field.
-	UUID uuid.UUID `json:"uuid,omitempty"`
+	// RecreationID holds the value of the "recreation_id" field.
+	RecreationID uuid.UUID `json:"recreation_id,omitempty"`
 	// Genre holds the value of the "genre" field.
 	Genre []int `json:"genre,omitempty"`
 	// Title holds the value of the "title" field.
@@ -53,7 +53,7 @@ func (*Recreation) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case recreation.FieldCreatedAt, recreation.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case recreation.FieldUserID, recreation.FieldUUID:
+		case recreation.FieldUserID, recreation.FieldRecreationID:
 			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -82,11 +82,11 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 			} else if value != nil {
 				r.UserID = *value
 			}
-		case recreation.FieldUUID:
+		case recreation.FieldRecreationID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field uuid", values[i])
+				return fmt.Errorf("unexpected type %T for field recreation_id", values[i])
 			} else if value != nil {
-				r.UUID = *value
+				r.RecreationID = *value
 			}
 		case recreation.FieldGenre:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -171,8 +171,8 @@ func (r *Recreation) String() string {
 	builder.WriteString("user_id=")
 	builder.WriteString(fmt.Sprintf("%v", r.UserID))
 	builder.WriteString(", ")
-	builder.WriteString("uuid=")
-	builder.WriteString(fmt.Sprintf("%v", r.UUID))
+	builder.WriteString("recreation_id=")
+	builder.WriteString(fmt.Sprintf("%v", r.RecreationID))
 	builder.WriteString(", ")
 	builder.WriteString("genre=")
 	builder.WriteString(fmt.Sprintf("%v", r.Genre))

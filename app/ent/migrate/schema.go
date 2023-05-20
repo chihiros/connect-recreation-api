@@ -40,7 +40,7 @@ var (
 	RecreationsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "user_id", Type: field.TypeUUID, Unique: true},
-		{Name: "uuid", Type: field.TypeUUID, Unique: true},
+		{Name: "recreation_id", Type: field.TypeUUID, Unique: true},
 		{Name: "genre", Type: field.TypeJSON},
 		{Name: "title", Type: field.TypeString},
 		{Name: "content", Type: field.TypeString},

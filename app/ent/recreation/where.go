@@ -60,9 +60,9 @@ func UserID(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldUserID, v))
 }
 
-// UUID applies equality check predicate on the "uuid" field. It's identical to UUIDEQ.
-func UUID(v uuid.UUID) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldUUID, v))
+// RecreationID applies equality check predicate on the "recreation_id" field. It's identical to RecreationIDEQ.
+func RecreationID(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldRecreationID, v))
 }
 
 // Title applies equality check predicate on the "title" field. It's identical to TitleEQ.
@@ -135,44 +135,44 @@ func UserIDLTE(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldLTE(FieldUserID, v))
 }
 
-// UUIDEQ applies the EQ predicate on the "uuid" field.
-func UUIDEQ(v uuid.UUID) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldUUID, v))
+// RecreationIDEQ applies the EQ predicate on the "recreation_id" field.
+func RecreationIDEQ(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldRecreationID, v))
 }
 
-// UUIDNEQ applies the NEQ predicate on the "uuid" field.
-func UUIDNEQ(v uuid.UUID) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNEQ(FieldUUID, v))
+// RecreationIDNEQ applies the NEQ predicate on the "recreation_id" field.
+func RecreationIDNEQ(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldRecreationID, v))
 }
 
-// UUIDIn applies the In predicate on the "uuid" field.
-func UUIDIn(vs ...uuid.UUID) predicate.Recreation {
-	return predicate.Recreation(sql.FieldIn(FieldUUID, vs...))
+// RecreationIDIn applies the In predicate on the "recreation_id" field.
+func RecreationIDIn(vs ...uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldIn(FieldRecreationID, vs...))
 }
 
-// UUIDNotIn applies the NotIn predicate on the "uuid" field.
-func UUIDNotIn(vs ...uuid.UUID) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNotIn(FieldUUID, vs...))
+// RecreationIDNotIn applies the NotIn predicate on the "recreation_id" field.
+func RecreationIDNotIn(vs ...uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotIn(FieldRecreationID, vs...))
 }
 
-// UUIDGT applies the GT predicate on the "uuid" field.
-func UUIDGT(v uuid.UUID) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGT(FieldUUID, v))
+// RecreationIDGT applies the GT predicate on the "recreation_id" field.
+func RecreationIDGT(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGT(FieldRecreationID, v))
 }
 
-// UUIDGTE applies the GTE predicate on the "uuid" field.
-func UUIDGTE(v uuid.UUID) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGTE(FieldUUID, v))
+// RecreationIDGTE applies the GTE predicate on the "recreation_id" field.
+func RecreationIDGTE(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGTE(FieldRecreationID, v))
 }
 
-// UUIDLT applies the LT predicate on the "uuid" field.
-func UUIDLT(v uuid.UUID) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLT(FieldUUID, v))
+// RecreationIDLT applies the LT predicate on the "recreation_id" field.
+func RecreationIDLT(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLT(FieldRecreationID, v))
 }
 
-// UUIDLTE applies the LTE predicate on the "uuid" field.
-func UUIDLTE(v uuid.UUID) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLTE(FieldUUID, v))
+// RecreationIDLTE applies the LTE predicate on the "recreation_id" field.
+func RecreationIDLTE(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLTE(FieldRecreationID, v))
 }
 
 // TitleEQ applies the EQ predicate on the "title" field.
