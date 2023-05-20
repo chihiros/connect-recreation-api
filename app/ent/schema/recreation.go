@@ -18,7 +18,7 @@ func (Recreation) Fields() []ent.Field {
 		field.UUID("user_id", uuid.UUID{}).
 			Immutable().
 			Unique(),
-		field.UUID("uuid", uuid.UUID{}).
+		field.UUID("recreation_id", uuid.UUID{}).
 			Immutable().
 			Unique(),
 		field.JSON("genre", []int{}),

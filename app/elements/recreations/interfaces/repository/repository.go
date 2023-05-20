@@ -44,7 +44,7 @@ func NewRecreationRepository(conn *ent.Client) *RecreationRepository {
 func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	user, err := r.DBConn.Recreation.Create().
 		SetUserID(req.UserID).
-		SetUUID(req.UUID).
+		SetRecreationID(req.RecreationID).
 		SetGenre(req.Genre).
 		SetTitle(req.Title).
 		SetContent(req.Content).
