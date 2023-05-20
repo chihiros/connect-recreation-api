@@ -1018,9 +1018,10 @@ type RecreationMutation struct {
 	id               *int
 	user_id          *uuid.UUID
 	uuid             *uuid.UUID
-	genre            *[]int
-	appendgenre      []int
+	genre            *[]string
+	appendgenre      []string
 	title            *string
+	content          *string
 	target_number    *int
 	addtarget_number *int
 	requred_time     *int
@@ -1204,13 +1205,13 @@ func (m *RecreationMutation) ResetUUID() {
 }
 
 // SetGenre sets the "genre" field.
-func (m *RecreationMutation) SetGenre(i []int) {
-	m.genre = &i
+func (m *RecreationMutation) SetGenre(s []string) {
+	m.genre = &s
 	m.appendgenre = nil
 }
 
 // Genre returns the value of the "genre" field in the mutation.
-func (m *RecreationMutation) Genre() (r []int, exists bool) {
+func (m *RecreationMutation) Genre() (r []string, exists bool) {
 	v := m.genre
 	if v == nil {
 		return
@@ -1221,7 +1222,7 @@ func (m *RecreationMutation) Genre() (r []int, exists bool) {
 // OldGenre returns the old "genre" field's value of the Recreation entity.
 // If the Recreation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RecreationMutation) OldGenre(ctx context.Context) (v []int, err error) {
+func (m *RecreationMutation) OldGenre(ctx context.Context) (v []string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldGenre is only allowed on UpdateOne operations")
 	}
@@ -1235,13 +1236,13 @@ func (m *RecreationMutation) OldGenre(ctx context.Context) (v []int, err error) 
 	return oldValue.Genre, nil
 }
 
-// AppendGenre adds i to the "genre" field.
-func (m *RecreationMutation) AppendGenre(i []int) {
-	m.appendgenre = append(m.appendgenre, i...)
+// AppendGenre adds s to the "genre" field.
+func (m *RecreationMutation) AppendGenre(s []string) {
+	m.appendgenre = append(m.appendgenre, s...)
 }
 
 // AppendedGenre returns the list of values that were appended to the "genre" field in this mutation.
-func (m *RecreationMutation) AppendedGenre() ([]int, bool) {
+func (m *RecreationMutation) AppendedGenre() ([]string, bool) {
 	if len(m.appendgenre) == 0 {
 		return nil, false
 	}
@@ -1288,6 +1289,42 @@ func (m *RecreationMutation) OldTitle(ctx context.Context) (v string, err error)
 // ResetTitle resets all changes to the "title" field.
 func (m *RecreationMutation) ResetTitle() {
 	m.title = nil
+}
+
+// SetContent sets the "content" field.
+func (m *RecreationMutation) SetContent(s string) {
+	m.content = &s
+}
+
+// Content returns the value of the "content" field in the mutation.
+func (m *RecreationMutation) Content() (r string, exists bool) {
+	v := m.content
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldContent returns the old "content" field's value of the Recreation entity.
+// If the Recreation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecreationMutation) OldContent(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldContent is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldContent requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldContent: %w", err)
+	}
+	return oldValue.Content, nil
+}
+
+// ResetContent resets all changes to the "content" field.
+func (m *RecreationMutation) ResetContent() {
+	m.content = nil
 }
 
 // SetTargetNumber sets the "target_number" field.
@@ -1508,7 +1545,7 @@ func (m *RecreationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RecreationMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.user_id != nil {
 		fields = append(fields, recreation.FieldUserID)
 	}
@@ -1520,6 +1557,9 @@ func (m *RecreationMutation) Fields() []string {
 	}
 	if m.title != nil {
 		fields = append(fields, recreation.FieldTitle)
+	}
+	if m.content != nil {
+		fields = append(fields, recreation.FieldContent)
 	}
 	if m.target_number != nil {
 		fields = append(fields, recreation.FieldTargetNumber)
@@ -1549,6 +1589,8 @@ func (m *RecreationMutation) Field(name string) (ent.Value, bool) {
 		return m.Genre()
 	case recreation.FieldTitle:
 		return m.Title()
+	case recreation.FieldContent:
+		return m.Content()
 	case recreation.FieldTargetNumber:
 		return m.TargetNumber()
 	case recreation.FieldRequredTime:
@@ -1574,6 +1616,8 @@ func (m *RecreationMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldGenre(ctx)
 	case recreation.FieldTitle:
 		return m.OldTitle(ctx)
+	case recreation.FieldContent:
+		return m.OldContent(ctx)
 	case recreation.FieldTargetNumber:
 		return m.OldTargetNumber(ctx)
 	case recreation.FieldRequredTime:
@@ -1606,7 +1650,7 @@ func (m *RecreationMutation) SetField(name string, value ent.Value) error {
 		m.SetUUID(v)
 		return nil
 	case recreation.FieldGenre:
-		v, ok := value.([]int)
+		v, ok := value.([]string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1618,6 +1662,13 @@ func (m *RecreationMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTitle(v)
+		return nil
+	case recreation.FieldContent:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetContent(v)
 		return nil
 	case recreation.FieldTargetNumber:
 		v, ok := value.(int)
@@ -1734,6 +1785,9 @@ func (m *RecreationMutation) ResetField(name string) error {
 		return nil
 	case recreation.FieldTitle:
 		m.ResetTitle()
+		return nil
+	case recreation.FieldContent:
+		m.ResetContent()
 		return nil
 	case recreation.FieldTargetNumber:
 		m.ResetTargetNumber()

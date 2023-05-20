@@ -43,6 +43,7 @@ var (
 		{Name: "uuid", Type: field.TypeUUID, Unique: true},
 		{Name: "genre", Type: field.TypeJSON},
 		{Name: "title", Type: field.TypeString},
+		{Name: "content", Type: field.TypeString},
 		{Name: "target_number", Type: field.TypeInt},
 		{Name: "requred_time", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},

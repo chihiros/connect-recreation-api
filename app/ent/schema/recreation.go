@@ -21,7 +21,7 @@ func (Recreation) Fields() []ent.Field {
 		field.UUID("uuid", uuid.UUID{}).
 			Immutable().
 			Unique(),
-		field.JSON("genre", []int{}), // Use JSON field for 'genre'.
+		field.JSON("genre", []string{}), // Use JSON field for 'genre'.
 		field.String("title"),
 		field.String("content"),
 		field.Int("target_number"),

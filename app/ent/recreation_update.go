@@ -30,20 +30,26 @@ func (ru *RecreationUpdate) Where(ps ...predicate.Recreation) *RecreationUpdate 
 }
 
 // SetGenre sets the "genre" field.
-func (ru *RecreationUpdate) SetGenre(i []int) *RecreationUpdate {
-	ru.mutation.SetGenre(i)
+func (ru *RecreationUpdate) SetGenre(s []string) *RecreationUpdate {
+	ru.mutation.SetGenre(s)
 	return ru
 }
 
-// AppendGenre appends i to the "genre" field.
-func (ru *RecreationUpdate) AppendGenre(i []int) *RecreationUpdate {
-	ru.mutation.AppendGenre(i)
+// AppendGenre appends s to the "genre" field.
+func (ru *RecreationUpdate) AppendGenre(s []string) *RecreationUpdate {
+	ru.mutation.AppendGenre(s)
 	return ru
 }
 
 // SetTitle sets the "title" field.
 func (ru *RecreationUpdate) SetTitle(s string) *RecreationUpdate {
 	ru.mutation.SetTitle(s)
+	return ru
+}
+
+// SetContent sets the "content" field.
+func (ru *RecreationUpdate) SetContent(s string) *RecreationUpdate {
+	ru.mutation.SetContent(s)
 	return ru
 }
 
@@ -140,6 +146,9 @@ func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ru.mutation.Title(); ok {
 		_spec.SetField(recreation.FieldTitle, field.TypeString, value)
 	}
+	if value, ok := ru.mutation.Content(); ok {
+		_spec.SetField(recreation.FieldContent, field.TypeString, value)
+	}
 	if value, ok := ru.mutation.TargetNumber(); ok {
 		_spec.SetField(recreation.FieldTargetNumber, field.TypeInt, value)
 	}
@@ -176,20 +185,26 @@ type RecreationUpdateOne struct {
 }
 
 // SetGenre sets the "genre" field.
-func (ruo *RecreationUpdateOne) SetGenre(i []int) *RecreationUpdateOne {
-	ruo.mutation.SetGenre(i)
+func (ruo *RecreationUpdateOne) SetGenre(s []string) *RecreationUpdateOne {
+	ruo.mutation.SetGenre(s)
 	return ruo
 }
 
-// AppendGenre appends i to the "genre" field.
-func (ruo *RecreationUpdateOne) AppendGenre(i []int) *RecreationUpdateOne {
-	ruo.mutation.AppendGenre(i)
+// AppendGenre appends s to the "genre" field.
+func (ruo *RecreationUpdateOne) AppendGenre(s []string) *RecreationUpdateOne {
+	ruo.mutation.AppendGenre(s)
 	return ruo
 }
 
 // SetTitle sets the "title" field.
 func (ruo *RecreationUpdateOne) SetTitle(s string) *RecreationUpdateOne {
 	ruo.mutation.SetTitle(s)
+	return ruo
+}
+
+// SetContent sets the "content" field.
+func (ruo *RecreationUpdateOne) SetContent(s string) *RecreationUpdateOne {
+	ruo.mutation.SetContent(s)
 	return ruo
 }
 
@@ -315,6 +330,9 @@ func (ruo *RecreationUpdateOne) sqlSave(ctx context.Context) (_node *Recreation,
 	}
 	if value, ok := ruo.mutation.Title(); ok {
 		_spec.SetField(recreation.FieldTitle, field.TypeString, value)
+	}
+	if value, ok := ruo.mutation.Content(); ok {
+		_spec.SetField(recreation.FieldContent, field.TypeString, value)
 	}
 	if value, ok := ruo.mutation.TargetNumber(); ok {
 		_spec.SetField(recreation.FieldTargetNumber, field.TypeInt, value)

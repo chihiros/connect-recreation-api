@@ -70,6 +70,11 @@ func Title(v string) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldTitle, v))
 }
 
+// Content applies equality check predicate on the "content" field. It's identical to ContentEQ.
+func Content(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldContent, v))
+}
+
 // TargetNumber applies equality check predicate on the "target_number" field. It's identical to TargetNumberEQ.
 func TargetNumber(v int) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldTargetNumber, v))
@@ -233,6 +238,71 @@ func TitleEqualFold(v string) predicate.Recreation {
 // TitleContainsFold applies the ContainsFold predicate on the "title" field.
 func TitleContainsFold(v string) predicate.Recreation {
 	return predicate.Recreation(sql.FieldContainsFold(FieldTitle, v))
+}
+
+// ContentEQ applies the EQ predicate on the "content" field.
+func ContentEQ(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldContent, v))
+}
+
+// ContentNEQ applies the NEQ predicate on the "content" field.
+func ContentNEQ(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldContent, v))
+}
+
+// ContentIn applies the In predicate on the "content" field.
+func ContentIn(vs ...string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldIn(FieldContent, vs...))
+}
+
+// ContentNotIn applies the NotIn predicate on the "content" field.
+func ContentNotIn(vs ...string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotIn(FieldContent, vs...))
+}
+
+// ContentGT applies the GT predicate on the "content" field.
+func ContentGT(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGT(FieldContent, v))
+}
+
+// ContentGTE applies the GTE predicate on the "content" field.
+func ContentGTE(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGTE(FieldContent, v))
+}
+
+// ContentLT applies the LT predicate on the "content" field.
+func ContentLT(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLT(FieldContent, v))
+}
+
+// ContentLTE applies the LTE predicate on the "content" field.
+func ContentLTE(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLTE(FieldContent, v))
+}
+
+// ContentContains applies the Contains predicate on the "content" field.
+func ContentContains(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldContains(FieldContent, v))
+}
+
+// ContentHasPrefix applies the HasPrefix predicate on the "content" field.
+func ContentHasPrefix(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldHasPrefix(FieldContent, v))
+}
+
+// ContentHasSuffix applies the HasSuffix predicate on the "content" field.
+func ContentHasSuffix(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldHasSuffix(FieldContent, v))
+}
+
+// ContentEqualFold applies the EqualFold predicate on the "content" field.
+func ContentEqualFold(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEqualFold(FieldContent, v))
+}
+
+// ContentContainsFold applies the ContainsFold predicate on the "content" field.
+func ContentContainsFold(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldContainsFold(FieldContent, v))
 }
 
 // TargetNumberEQ applies the EQ predicate on the "target_number" field.

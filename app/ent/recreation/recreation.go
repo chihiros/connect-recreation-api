@@ -21,6 +21,8 @@ const (
 	FieldGenre = "genre"
 	// FieldTitle holds the string denoting the title field in the database.
 	FieldTitle = "title"
+	// FieldContent holds the string denoting the content field in the database.
+	FieldContent = "content"
 	// FieldTargetNumber holds the string denoting the target_number field in the database.
 	FieldTargetNumber = "target_number"
 	// FieldRequredTime holds the string denoting the requred_time field in the database.
@@ -40,6 +42,7 @@ var Columns = []string{
 	FieldUUID,
 	FieldGenre,
 	FieldTitle,
+	FieldContent,
 	FieldTargetNumber,
 	FieldRequredTime,
 	FieldCreatedAt,
@@ -86,6 +89,11 @@ func ByUUID(opts ...sql.OrderTermOption) OrderOption {
 // ByTitle orders the results by the title field.
 func ByTitle(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTitle, opts...).ToFunc()
+}
+
+// ByContent orders the results by the content field.
+func ByContent(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldContent, opts...).ToFunc()
 }
 
 // ByTargetNumber orders the results by the target_number field.

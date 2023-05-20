@@ -24,9 +24,11 @@ type Recreation struct {
 	// UUID holds the value of the "uuid" field.
 	UUID uuid.UUID `json:"uuid,omitempty"`
 	// Genre holds the value of the "genre" field.
-	Genre []int `json:"genre,omitempty"`
+	Genre []string `json:"genre,omitempty"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
+	// Content holds the value of the "content" field.
+	Content string `json:"content,omitempty"`
 	// TargetNumber holds the value of the "target_number" field.
 	TargetNumber int `json:"target_number,omitempty"`
 	// RequredTime holds the value of the "requred_time" field.
@@ -47,7 +49,7 @@ func (*Recreation) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case recreation.FieldID, recreation.FieldTargetNumber, recreation.FieldRequredTime:
 			values[i] = new(sql.NullInt64)
-		case recreation.FieldTitle:
+		case recreation.FieldTitle, recreation.FieldContent:
 			values[i] = new(sql.NullString)
 		case recreation.FieldCreatedAt, recreation.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -99,6 +101,12 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
 				r.Title = value.String
+			}
+		case recreation.FieldContent:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field content", values[i])
+			} else if value.Valid {
+				r.Content = value.String
 			}
 		case recreation.FieldTargetNumber:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -171,6 +179,9 @@ func (r *Recreation) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("title=")
 	builder.WriteString(r.Title)
+	builder.WriteString(", ")
+	builder.WriteString("content=")
+	builder.WriteString(r.Content)
 	builder.WriteString(", ")
 	builder.WriteString("target_number=")
 	builder.WriteString(fmt.Sprintf("%v", r.TargetNumber))

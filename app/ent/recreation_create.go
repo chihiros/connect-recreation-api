@@ -36,14 +36,20 @@ func (rc *RecreationCreate) SetUUID(u uuid.UUID) *RecreationCreate {
 }
 
 // SetGenre sets the "genre" field.
-func (rc *RecreationCreate) SetGenre(i []int) *RecreationCreate {
-	rc.mutation.SetGenre(i)
+func (rc *RecreationCreate) SetGenre(s []string) *RecreationCreate {
+	rc.mutation.SetGenre(s)
 	return rc
 }
 
 // SetTitle sets the "title" field.
 func (rc *RecreationCreate) SetTitle(s string) *RecreationCreate {
 	rc.mutation.SetTitle(s)
+	return rc
+}
+
+// SetContent sets the "content" field.
+func (rc *RecreationCreate) SetContent(s string) *RecreationCreate {
+	rc.mutation.SetContent(s)
 	return rc
 }
 
@@ -146,6 +152,9 @@ func (rc *RecreationCreate) check() error {
 	if _, ok := rc.mutation.Title(); !ok {
 		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "Recreation.title"`)}
 	}
+	if _, ok := rc.mutation.Content(); !ok {
+		return &ValidationError{Name: "content", err: errors.New(`ent: missing required field "Recreation.content"`)}
+	}
 	if _, ok := rc.mutation.TargetNumber(); !ok {
 		return &ValidationError{Name: "target_number", err: errors.New(`ent: missing required field "Recreation.target_number"`)}
 	}
@@ -200,6 +209,10 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 	if value, ok := rc.mutation.Title(); ok {
 		_spec.SetField(recreation.FieldTitle, field.TypeString, value)
 		_node.Title = value
+	}
+	if value, ok := rc.mutation.Content(); ok {
+		_spec.SetField(recreation.FieldContent, field.TypeString, value)
+		_node.Content = value
 	}
 	if value, ok := rc.mutation.TargetNumber(); ok {
 		_spec.SetField(recreation.FieldTargetNumber, field.TypeInt, value)
@@ -270,7 +283,7 @@ type (
 )
 
 // SetGenre sets the "genre" field.
-func (u *RecreationUpsert) SetGenre(v []int) *RecreationUpsert {
+func (u *RecreationUpsert) SetGenre(v []string) *RecreationUpsert {
 	u.Set(recreation.FieldGenre, v)
 	return u
 }
@@ -290,6 +303,18 @@ func (u *RecreationUpsert) SetTitle(v string) *RecreationUpsert {
 // UpdateTitle sets the "title" field to the value that was provided on create.
 func (u *RecreationUpsert) UpdateTitle() *RecreationUpsert {
 	u.SetExcluded(recreation.FieldTitle)
+	return u
+}
+
+// SetContent sets the "content" field.
+func (u *RecreationUpsert) SetContent(v string) *RecreationUpsert {
+	u.Set(recreation.FieldContent, v)
+	return u
+}
+
+// UpdateContent sets the "content" field to the value that was provided on create.
+func (u *RecreationUpsert) UpdateContent() *RecreationUpsert {
+	u.SetExcluded(recreation.FieldContent)
 	return u
 }
 
@@ -393,7 +418,7 @@ func (u *RecreationUpsertOne) Update(set func(*RecreationUpsert)) *RecreationUps
 }
 
 // SetGenre sets the "genre" field.
-func (u *RecreationUpsertOne) SetGenre(v []int) *RecreationUpsertOne {
+func (u *RecreationUpsertOne) SetGenre(v []string) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
 		s.SetGenre(v)
 	})
@@ -417,6 +442,20 @@ func (u *RecreationUpsertOne) SetTitle(v string) *RecreationUpsertOne {
 func (u *RecreationUpsertOne) UpdateTitle() *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
 		s.UpdateTitle()
+	})
+}
+
+// SetContent sets the "content" field.
+func (u *RecreationUpsertOne) SetContent(v string) *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.SetContent(v)
+	})
+}
+
+// UpdateContent sets the "content" field to the value that was provided on create.
+func (u *RecreationUpsertOne) UpdateContent() *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.UpdateContent()
 	})
 }
 
@@ -690,7 +729,7 @@ func (u *RecreationUpsertBulk) Update(set func(*RecreationUpsert)) *RecreationUp
 }
 
 // SetGenre sets the "genre" field.
-func (u *RecreationUpsertBulk) SetGenre(v []int) *RecreationUpsertBulk {
+func (u *RecreationUpsertBulk) SetGenre(v []string) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
 		s.SetGenre(v)
 	})
@@ -714,6 +753,20 @@ func (u *RecreationUpsertBulk) SetTitle(v string) *RecreationUpsertBulk {
 func (u *RecreationUpsertBulk) UpdateTitle() *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
 		s.UpdateTitle()
+	})
+}
+
+// SetContent sets the "content" field.
+func (u *RecreationUpsertBulk) SetContent(v string) *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.SetContent(v)
+	})
+}
+
+// UpdateContent sets the "content" field to the value that was provided on create.
+func (u *RecreationUpsertBulk) UpdateContent() *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.UpdateContent()
 	})
 }
 
