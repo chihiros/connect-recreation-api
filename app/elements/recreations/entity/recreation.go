@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Genreは[]int{}で表現する
 type Recreation struct {
 	ID           int       `json:"id"`
 	UserID       uuid.UUID `json:"user_id"`       // レクリエーションを登録したユーザーのID
