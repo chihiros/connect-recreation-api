@@ -23,6 +23,7 @@ func (Recreation) Fields() []ent.Field {
 			Unique(),
 		field.JSON("genre", []int{}), // Use JSON field for 'genre'.
 		field.String("title"),
+		field.String("content"),
 		field.Int("target_number"),
 		field.Int("requred_time"),
 		field.Time("created_at").
