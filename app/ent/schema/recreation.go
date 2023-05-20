@@ -20,8 +20,7 @@ func (Recreation) Fields() []ent.Field {
 		field.String("uuid").
 			Immutable().
 			Unique(),
-		field.String("genre").
-			Unique(),
+		field.JSON("genre", []int{}), // Use JSON field for 'genre'.
 		field.String("title"),
 		field.Int("target_number"),
 		field.Int("requred_time"),
