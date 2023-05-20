@@ -53,8 +53,14 @@ func NewRecreationUsecase(conn *ent.Client) *usecase.RecreationUsecase {
 func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする
 	req := usecase.Request{}
-	err := json.NewDecoder(r.Body).Decode(&req)
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		fmt.Printf("%v\n", err)
+	}
+
 	user, err := c.Usecase.PostRecreations(context.Background(), req)
+	if err != nil {
+		fmt.Printf("%v\n", err)
+	}
 
 	if err != nil {
 		switch err.Error() {
