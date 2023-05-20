@@ -25,7 +25,7 @@ func (Recreation) Fields() []ent.Field {
 		field.String("title"),
 		field.String("content"),
 		field.Int("target_number"),
-		field.Int("requred_time"),
+		field.Int("required_time"),
 		field.Time("created_at").
 			Immutable().
 			Default(time.Now),
