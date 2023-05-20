@@ -49,7 +49,7 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 		SetTitle(req.Title).
 		SetContent(req.Content).
 		SetTargetNumber(req.TargetNumber).
-		SetRequredTime(req.RequiredTime).
+		SetRequiredTime(req.RequiredTime).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
 		Save(ctx)
