@@ -24,7 +24,7 @@ type Recreation struct {
 	// UUID holds the value of the "uuid" field.
 	UUID uuid.UUID `json:"uuid,omitempty"`
 	// Genre holds the value of the "genre" field.
-	Genre []string `json:"genre,omitempty"`
+	Genre []int `json:"genre,omitempty"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// Content holds the value of the "content" field.

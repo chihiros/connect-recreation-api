@@ -30,14 +30,14 @@ func (ru *RecreationUpdate) Where(ps ...predicate.Recreation) *RecreationUpdate 
 }
 
 // SetGenre sets the "genre" field.
-func (ru *RecreationUpdate) SetGenre(s []string) *RecreationUpdate {
-	ru.mutation.SetGenre(s)
+func (ru *RecreationUpdate) SetGenre(i []int) *RecreationUpdate {
+	ru.mutation.SetGenre(i)
 	return ru
 }
 
-// AppendGenre appends s to the "genre" field.
-func (ru *RecreationUpdate) AppendGenre(s []string) *RecreationUpdate {
-	ru.mutation.AppendGenre(s)
+// AppendGenre appends i to the "genre" field.
+func (ru *RecreationUpdate) AppendGenre(i []int) *RecreationUpdate {
+	ru.mutation.AppendGenre(i)
 	return ru
 }
 
@@ -185,14 +185,14 @@ type RecreationUpdateOne struct {
 }
 
 // SetGenre sets the "genre" field.
-func (ruo *RecreationUpdateOne) SetGenre(s []string) *RecreationUpdateOne {
-	ruo.mutation.SetGenre(s)
+func (ruo *RecreationUpdateOne) SetGenre(i []int) *RecreationUpdateOne {
+	ruo.mutation.SetGenre(i)
 	return ruo
 }
 
-// AppendGenre appends s to the "genre" field.
-func (ruo *RecreationUpdateOne) AppendGenre(s []string) *RecreationUpdateOne {
-	ruo.mutation.AppendGenre(s)
+// AppendGenre appends i to the "genre" field.
+func (ruo *RecreationUpdateOne) AppendGenre(i []int) *RecreationUpdateOne {
+	ruo.mutation.AppendGenre(i)
 	return ruo
 }
 

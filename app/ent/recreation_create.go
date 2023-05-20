@@ -36,8 +36,8 @@ func (rc *RecreationCreate) SetUUID(u uuid.UUID) *RecreationCreate {
 }
 
 // SetGenre sets the "genre" field.
-func (rc *RecreationCreate) SetGenre(s []string) *RecreationCreate {
-	rc.mutation.SetGenre(s)
+func (rc *RecreationCreate) SetGenre(i []int) *RecreationCreate {
+	rc.mutation.SetGenre(i)
 	return rc
 }
 
@@ -283,7 +283,7 @@ type (
 )
 
 // SetGenre sets the "genre" field.
-func (u *RecreationUpsert) SetGenre(v []string) *RecreationUpsert {
+func (u *RecreationUpsert) SetGenre(v []int) *RecreationUpsert {
 	u.Set(recreation.FieldGenre, v)
 	return u
 }
@@ -418,7 +418,7 @@ func (u *RecreationUpsertOne) Update(set func(*RecreationUpsert)) *RecreationUps
 }
 
 // SetGenre sets the "genre" field.
-func (u *RecreationUpsertOne) SetGenre(v []string) *RecreationUpsertOne {
+func (u *RecreationUpsertOne) SetGenre(v []int) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
 		s.SetGenre(v)
 	})
@@ -729,7 +729,7 @@ func (u *RecreationUpsertBulk) Update(set func(*RecreationUpsert)) *RecreationUp
 }
 
 // SetGenre sets the "genre" field.
-func (u *RecreationUpsertBulk) SetGenre(v []string) *RecreationUpsertBulk {
+func (u *RecreationUpsertBulk) SetGenre(v []int) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
 		s.SetGenre(v)
 	})
