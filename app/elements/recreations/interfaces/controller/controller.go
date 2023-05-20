@@ -28,15 +28,15 @@ func NewRecreationUsecase(conn *ent.Client) *usecase.RecreationUsecase {
 	}
 }
 
-// func (c *RecreationController) GetRecreations(w http.ResponseWriter, r *http.Request) {
-// 	users, err := c.Usecase.GetRecreations(context.Background())
-// 	if err != nil {
-// 		panic(err)
-// 	}
+func (c *RecreationController) GetRecreations(w http.ResponseWriter, r *http.Request) {
+	users, err := c.Usecase.GetRecreations(context.Background())
+	if err != nil {
+		panic(err)
+	}
 
-// 	w.WriteHeader(http.StatusOK)
-// 	json.NewEncoder(w).Encode(users)
-// }
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(users)
+}
 
 // func (c *RecreationController) GetRecreationsByID(w http.ResponseWriter, r *http.Request) {
 // 	// クエリパラメータからidを取得する

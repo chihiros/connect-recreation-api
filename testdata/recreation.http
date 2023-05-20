@@ -2,6 +2,9 @@
 @HOST=http://localhost:8686
 @TOKEN=
 
+#### レクリエーションの取得
+GET {{HOST}}/v1/recreation
+
 #### レクリエーションの追加
 POST {{HOST}}/v1/recreation
 Context-Type: application/json

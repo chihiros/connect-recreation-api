@@ -18,15 +18,15 @@ func NewRecreationRepository(conn *ent.Client) *RecreationRepository {
 	}
 }
 
-// func (r *RecreationRepository) GetRecreations(ctx context.Context) (usecase.Response, error) {
-// 	users, err := r.DBConn.Recreation.Query().All(ctx)
-// 	if err != nil {
-// 		panic(err)
-// 	}
+func (r *RecreationRepository) GetRecreations(ctx context.Context) (usecase.Response, error) {
+	users, err := r.DBConn.Recreation.Query().All(ctx)
+	if err != nil {
+		panic(err)
+	}
 
-// 	res := usecase.Response{Data: users}
-// 	return res, err
-// }
+	res := usecase.Response{Data: users}
+	return res, err
+}
 
 // func (r *RecreationRepository) GetRecreationsByID(ctx context.Context, id int) (usecase.Response, error) {
 // 	user, err := r.DBConn.Recreation.Query().
