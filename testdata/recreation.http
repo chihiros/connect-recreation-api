@@ -14,5 +14,5 @@ Context-Type: application/json
     "title":"ジョン・ブラウンのおじさん",
     "content":"ジョン・ブラウンのおじさんは〜〜",
     "target_number":1,
-    "requred_time":2
+    "required_time":2
 }
