@@ -14,16 +14,19 @@ type Recreation struct {
 // Fields of the User.
 func (Recreation) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("uid").
+		field.String("user_id").
 			Immutable().
 			Unique(),
-		field.String("username").
+		field.String("uuid").
+			Immutable().
 			Unique(),
-		field.String("mail").
+		field.String("genre").
 			Unique(),
-		field.Int("prefecture_id").
-			Nillable(),
+		field.String("title"),
+		field.Int("target_number"),
+		field.Int("requred_time"),
 		field.Time("created_at").
+			Immutable().
 			Default(time.Now),
 		field.Time("updated_at").
 			Default(time.Now),
