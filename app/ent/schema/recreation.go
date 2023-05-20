@@ -11,7 +11,7 @@ type Recreation struct {
 	ent.Schema
 }
 
-// Fields of the User.
+// Fields of the Recreation.
 func (Recreation) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("user_id").
@@ -29,6 +29,7 @@ func (Recreation) Fields() []ent.Field {
 			Immutable().
 			Default(time.Now),
 		field.Time("updated_at").
-			Default(time.Now),
+			Default(time.Now).
+			UpdateDefault(time.Now),
 	}
 }
