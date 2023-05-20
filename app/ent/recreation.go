@@ -4,6 +4,7 @@ package ent
 
 import (
 	"app/ent/recreation"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -22,7 +23,7 @@ type Recreation struct {
 	// UUID holds the value of the "uuid" field.
 	UUID string `json:"uuid,omitempty"`
 	// Genre holds the value of the "genre" field.
-	Genre string `json:"genre,omitempty"`
+	Genre []int `json:"genre,omitempty"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// TargetNumber holds the value of the "target_number" field.
@@ -41,9 +42,11 @@ func (*Recreation) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case recreation.FieldGenre:
+			values[i] = new([]byte)
 		case recreation.FieldID, recreation.FieldTargetNumber, recreation.FieldRequredTime:
 			values[i] = new(sql.NullInt64)
-		case recreation.FieldUserID, recreation.FieldUUID, recreation.FieldGenre, recreation.FieldTitle:
+		case recreation.FieldUserID, recreation.FieldUUID, recreation.FieldTitle:
 			values[i] = new(sql.NullString)
 		case recreation.FieldCreatedAt, recreation.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -81,10 +84,12 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 				r.UUID = value.String
 			}
 		case recreation.FieldGenre:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field genre", values[i])
-			} else if value.Valid {
-				r.Genre = value.String
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &r.Genre); err != nil {
+					return fmt.Errorf("unmarshal field genre: %w", err)
+				}
 			}
 		case recreation.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -159,7 +164,7 @@ func (r *Recreation) String() string {
 	builder.WriteString(r.UUID)
 	builder.WriteString(", ")
 	builder.WriteString("genre=")
-	builder.WriteString(r.Genre)
+	builder.WriteString(fmt.Sprintf("%v", r.Genre))
 	builder.WriteString(", ")
 	builder.WriteString("title=")
 	builder.WriteString(r.Title)

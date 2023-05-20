@@ -61,52 +61,49 @@ var (
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
 )
 
-// Order defines the ordering method for the Recreation queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the Recreation queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByUserID orders the results by the user_id field.
-func ByUserID(opts ...sql.OrderTermOption) Order {
+func ByUserID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
 // ByUUID orders the results by the uuid field.
-func ByUUID(opts ...sql.OrderTermOption) Order {
+func ByUUID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUUID, opts...).ToFunc()
 }
 
-// ByGenre orders the results by the genre field.
-func ByGenre(opts ...sql.OrderTermOption) Order {
-	return sql.OrderByField(FieldGenre, opts...).ToFunc()
-}
-
 // ByTitle orders the results by the title field.
-func ByTitle(opts ...sql.OrderTermOption) Order {
+func ByTitle(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTitle, opts...).ToFunc()
 }
 
 // ByTargetNumber orders the results by the target_number field.
-func ByTargetNumber(opts ...sql.OrderTermOption) Order {
+func ByTargetNumber(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTargetNumber, opts...).ToFunc()
 }
 
 // ByRequredTime orders the results by the requred_time field.
-func ByRequredTime(opts ...sql.OrderTermOption) Order {
+func ByRequredTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRequredTime, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }

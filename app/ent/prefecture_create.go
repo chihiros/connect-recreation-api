@@ -64,7 +64,7 @@ func (pc *PrefectureCreate) Mutation() *PrefectureMutation {
 // Save creates the Prefecture in the database.
 func (pc *PrefectureCreate) Save(ctx context.Context) (*Prefecture, error) {
 	pc.defaults()
-	return withHooks[*Prefecture, PrefectureMutation](ctx, pc.sqlSave, pc.mutation, pc.hooks)
+	return withHooks(ctx, pc.sqlSave, pc.mutation, pc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

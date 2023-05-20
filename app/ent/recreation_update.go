@@ -12,6 +12,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 )
 
@@ -29,8 +30,14 @@ func (ru *RecreationUpdate) Where(ps ...predicate.Recreation) *RecreationUpdate 
 }
 
 // SetGenre sets the "genre" field.
-func (ru *RecreationUpdate) SetGenre(s string) *RecreationUpdate {
-	ru.mutation.SetGenre(s)
+func (ru *RecreationUpdate) SetGenre(i []int) *RecreationUpdate {
+	ru.mutation.SetGenre(i)
+	return ru
+}
+
+// AppendGenre appends i to the "genre" field.
+func (ru *RecreationUpdate) AppendGenre(i []int) *RecreationUpdate {
+	ru.mutation.AppendGenre(i)
 	return ru
 }
 
@@ -72,14 +79,6 @@ func (ru *RecreationUpdate) SetUpdatedAt(t time.Time) *RecreationUpdate {
 	return ru
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ru *RecreationUpdate) SetNillableUpdatedAt(t *time.Time) *RecreationUpdate {
-	if t != nil {
-		ru.SetUpdatedAt(*t)
-	}
-	return ru
-}
-
 // Mutation returns the RecreationMutation object of the builder.
 func (ru *RecreationUpdate) Mutation() *RecreationMutation {
 	return ru.mutation
@@ -87,7 +86,8 @@ func (ru *RecreationUpdate) Mutation() *RecreationMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (ru *RecreationUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, RecreationMutation](ctx, ru.sqlSave, ru.mutation, ru.hooks)
+	ru.defaults()
+	return withHooks(ctx, ru.sqlSave, ru.mutation, ru.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -112,6 +112,14 @@ func (ru *RecreationUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ru *RecreationUpdate) defaults() {
+	if _, ok := ru.mutation.UpdatedAt(); !ok {
+		v := recreation.UpdateDefaultUpdatedAt()
+		ru.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(recreation.Table, recreation.Columns, sqlgraph.NewFieldSpec(recreation.FieldID, field.TypeInt))
 	if ps := ru.mutation.predicates; len(ps) > 0 {
@@ -122,7 +130,12 @@ func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := ru.mutation.Genre(); ok {
-		_spec.SetField(recreation.FieldGenre, field.TypeString, value)
+		_spec.SetField(recreation.FieldGenre, field.TypeJSON, value)
+	}
+	if value, ok := ru.mutation.AppendedGenre(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, recreation.FieldGenre, value)
+		})
 	}
 	if value, ok := ru.mutation.Title(); ok {
 		_spec.SetField(recreation.FieldTitle, field.TypeString, value)
@@ -163,8 +176,14 @@ type RecreationUpdateOne struct {
 }
 
 // SetGenre sets the "genre" field.
-func (ruo *RecreationUpdateOne) SetGenre(s string) *RecreationUpdateOne {
-	ruo.mutation.SetGenre(s)
+func (ruo *RecreationUpdateOne) SetGenre(i []int) *RecreationUpdateOne {
+	ruo.mutation.SetGenre(i)
+	return ruo
+}
+
+// AppendGenre appends i to the "genre" field.
+func (ruo *RecreationUpdateOne) AppendGenre(i []int) *RecreationUpdateOne {
+	ruo.mutation.AppendGenre(i)
 	return ruo
 }
 
@@ -206,14 +225,6 @@ func (ruo *RecreationUpdateOne) SetUpdatedAt(t time.Time) *RecreationUpdateOne {
 	return ruo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ruo *RecreationUpdateOne) SetNillableUpdatedAt(t *time.Time) *RecreationUpdateOne {
-	if t != nil {
-		ruo.SetUpdatedAt(*t)
-	}
-	return ruo
-}
-
 // Mutation returns the RecreationMutation object of the builder.
 func (ruo *RecreationUpdateOne) Mutation() *RecreationMutation {
 	return ruo.mutation
@@ -234,7 +245,8 @@ func (ruo *RecreationUpdateOne) Select(field string, fields ...string) *Recreati
 
 // Save executes the query and returns the updated Recreation entity.
 func (ruo *RecreationUpdateOne) Save(ctx context.Context) (*Recreation, error) {
-	return withHooks[*Recreation, RecreationMutation](ctx, ruo.sqlSave, ruo.mutation, ruo.hooks)
+	ruo.defaults()
+	return withHooks(ctx, ruo.sqlSave, ruo.mutation, ruo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -256,6 +268,14 @@ func (ruo *RecreationUpdateOne) Exec(ctx context.Context) error {
 func (ruo *RecreationUpdateOne) ExecX(ctx context.Context) {
 	if err := ruo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (ruo *RecreationUpdateOne) defaults() {
+	if _, ok := ruo.mutation.UpdatedAt(); !ok {
+		v := recreation.UpdateDefaultUpdatedAt()
+		ruo.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -286,7 +306,12 @@ func (ruo *RecreationUpdateOne) sqlSave(ctx context.Context) (_node *Recreation,
 		}
 	}
 	if value, ok := ruo.mutation.Genre(); ok {
-		_spec.SetField(recreation.FieldGenre, field.TypeString, value)
+		_spec.SetField(recreation.FieldGenre, field.TypeJSON, value)
+	}
+	if value, ok := ruo.mutation.AppendedGenre(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, recreation.FieldGenre, value)
+		})
 	}
 	if value, ok := ruo.mutation.Title(); ok {
 		_spec.SetField(recreation.FieldTitle, field.TypeString, value)

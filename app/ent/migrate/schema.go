@@ -41,7 +41,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "user_id", Type: field.TypeString, Unique: true},
 		{Name: "uuid", Type: field.TypeString, Unique: true},
-		{Name: "genre", Type: field.TypeString, Unique: true},
+		{Name: "genre", Type: field.TypeJSON},
 		{Name: "title", Type: field.TypeString},
 		{Name: "target_number", Type: field.TypeInt},
 		{Name: "requred_time", Type: field.TypeInt},

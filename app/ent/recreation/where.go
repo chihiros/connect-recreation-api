@@ -64,11 +64,6 @@ func UUID(v string) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldUUID, v))
 }
 
-// Genre applies equality check predicate on the "genre" field. It's identical to GenreEQ.
-func Genre(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldGenre, v))
-}
-
 // Title applies equality check predicate on the "title" field. It's identical to TitleEQ.
 func Title(v string) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldTitle, v))
@@ -222,71 +217,6 @@ func UUIDEqualFold(v string) predicate.Recreation {
 // UUIDContainsFold applies the ContainsFold predicate on the "uuid" field.
 func UUIDContainsFold(v string) predicate.Recreation {
 	return predicate.Recreation(sql.FieldContainsFold(FieldUUID, v))
-}
-
-// GenreEQ applies the EQ predicate on the "genre" field.
-func GenreEQ(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldGenre, v))
-}
-
-// GenreNEQ applies the NEQ predicate on the "genre" field.
-func GenreNEQ(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNEQ(FieldGenre, v))
-}
-
-// GenreIn applies the In predicate on the "genre" field.
-func GenreIn(vs ...string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldIn(FieldGenre, vs...))
-}
-
-// GenreNotIn applies the NotIn predicate on the "genre" field.
-func GenreNotIn(vs ...string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNotIn(FieldGenre, vs...))
-}
-
-// GenreGT applies the GT predicate on the "genre" field.
-func GenreGT(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGT(FieldGenre, v))
-}
-
-// GenreGTE applies the GTE predicate on the "genre" field.
-func GenreGTE(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGTE(FieldGenre, v))
-}
-
-// GenreLT applies the LT predicate on the "genre" field.
-func GenreLT(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLT(FieldGenre, v))
-}
-
-// GenreLTE applies the LTE predicate on the "genre" field.
-func GenreLTE(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLTE(FieldGenre, v))
-}
-
-// GenreContains applies the Contains predicate on the "genre" field.
-func GenreContains(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldContains(FieldGenre, v))
-}
-
-// GenreHasPrefix applies the HasPrefix predicate on the "genre" field.
-func GenreHasPrefix(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldHasPrefix(FieldGenre, v))
-}
-
-// GenreHasSuffix applies the HasSuffix predicate on the "genre" field.
-func GenreHasSuffix(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldHasSuffix(FieldGenre, v))
-}
-
-// GenreEqualFold applies the EqualFold predicate on the "genre" field.
-func GenreEqualFold(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEqualFold(FieldGenre, v))
-}
-
-// GenreContainsFold applies the ContainsFold predicate on the "genre" field.
-func GenreContainsFold(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldContainsFold(FieldGenre, v))
 }
 
 // TitleEQ applies the EQ predicate on the "title" field.

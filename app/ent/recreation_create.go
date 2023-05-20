@@ -35,8 +35,8 @@ func (rc *RecreationCreate) SetUUID(s string) *RecreationCreate {
 }
 
 // SetGenre sets the "genre" field.
-func (rc *RecreationCreate) SetGenre(s string) *RecreationCreate {
-	rc.mutation.SetGenre(s)
+func (rc *RecreationCreate) SetGenre(i []int) *RecreationCreate {
+	rc.mutation.SetGenre(i)
 	return rc
 }
 
@@ -94,7 +94,7 @@ func (rc *RecreationCreate) Mutation() *RecreationMutation {
 // Save creates the Recreation in the database.
 func (rc *RecreationCreate) Save(ctx context.Context) (*Recreation, error) {
 	rc.defaults()
-	return withHooks[*Recreation, RecreationMutation](ctx, rc.sqlSave, rc.mutation, rc.hooks)
+	return withHooks(ctx, rc.sqlSave, rc.mutation, rc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -193,7 +193,7 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 		_node.UUID = value
 	}
 	if value, ok := rc.mutation.Genre(); ok {
-		_spec.SetField(recreation.FieldGenre, field.TypeString, value)
+		_spec.SetField(recreation.FieldGenre, field.TypeJSON, value)
 		_node.Genre = value
 	}
 	if value, ok := rc.mutation.Title(); ok {
@@ -269,7 +269,7 @@ type (
 )
 
 // SetGenre sets the "genre" field.
-func (u *RecreationUpsert) SetGenre(v string) *RecreationUpsert {
+func (u *RecreationUpsert) SetGenre(v []int) *RecreationUpsert {
 	u.Set(recreation.FieldGenre, v)
 	return u
 }
@@ -392,7 +392,7 @@ func (u *RecreationUpsertOne) Update(set func(*RecreationUpsert)) *RecreationUps
 }
 
 // SetGenre sets the "genre" field.
-func (u *RecreationUpsertOne) SetGenre(v string) *RecreationUpsertOne {
+func (u *RecreationUpsertOne) SetGenre(v []int) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
 		s.SetGenre(v)
 	})
@@ -689,7 +689,7 @@ func (u *RecreationUpsertBulk) Update(set func(*RecreationUpsert)) *RecreationUp
 }
 
 // SetGenre sets the "genre" field.
-func (u *RecreationUpsertBulk) SetGenre(v string) *RecreationUpsertBulk {
+func (u *RecreationUpsertBulk) SetGenre(v []int) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
 		s.SetGenre(v)
 	})

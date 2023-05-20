@@ -77,7 +77,7 @@ func (pc *ProfileCreate) Mutation() *ProfileMutation {
 // Save creates the Profile in the database.
 func (pc *ProfileCreate) Save(ctx context.Context) (*Profile, error) {
 	pc.defaults()
-	return withHooks[*Profile, ProfileMutation](ctx, pc.sqlSave, pc.mutation, pc.hooks)
+	return withHooks(ctx, pc.sqlSave, pc.mutation, pc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
