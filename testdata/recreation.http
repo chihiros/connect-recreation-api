@@ -6,7 +6,7 @@
 GET {{HOST}}/v1/recreation
 
 #### レクリエーションの取得
-GET {{HOST}}/v1/recreation/query?id=21efc871-386a-45ea-9f18-c3fbe07748f4
+GET {{HOST}}/v1/recreation?id=21efc871-386a-45ea-9f18-c3fbe07748f4
 
 #### レクリエーションの追加
 POST {{HOST}}/v1/recreation
