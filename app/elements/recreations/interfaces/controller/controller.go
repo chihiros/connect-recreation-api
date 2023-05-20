@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 type RecreationController struct {
@@ -38,18 +40,24 @@ func (c *RecreationController) GetRecreations(w http.ResponseWriter, r *http.Req
 	json.NewEncoder(w).Encode(users)
 }
 
-// func (c *RecreationController) GetRecreationsByID(w http.ResponseWriter, r *http.Request) {
-// 	// クエリパラメータからidを取得する
-// 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+func (c *RecreationController) GetRecreationsByID(w http.ResponseWriter, r *http.Request) {
+	// // クエリパラメータからidを取得する
+	// id, _ := strconv.Atoi(r.URL.Query().Get("id"))
 
-// 	users, err := c.Usecase.GetRecreationsByID(context.Background(), id)
-// 	if err != nil {
-// 		panic(err)
-// 	}
+	// idをUUIDに変換
+	recID, err := uuid.Parse(r.URL.Query().Get("id"))
+	if err != nil {
+		panic(err)
+	}
 
-// 	w.WriteHeader(http.StatusOK)
-// 	json.NewEncoder(w).Encode(users)
-// }
+	users, err := c.Usecase.GetRecreationsByID(context.Background(), recID)
+	if err != nil {
+		panic(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(users)
+}
 
 func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする

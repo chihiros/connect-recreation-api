@@ -3,9 +3,12 @@ package repository
 import (
 	"app/elements/recreations/usecase"
 	"app/ent"
+	"app/ent/recreation"
 	"context"
 	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type RecreationRepository struct {
@@ -28,18 +31,18 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context) (usecase.Resp
 	return res, err
 }
 
-// func (r *RecreationRepository) GetRecreationsByID(ctx context.Context, id int) (usecase.Response, error) {
-// 	user, err := r.DBConn.Recreation.Query().
-// 		Where(user.IDEQ(id)).
-// 		All(ctx)
+func (r *RecreationRepository) GetRecreationsByID(ctx context.Context, id uuid.UUID) (usecase.Response, error) {
+	user, err := r.DBConn.Recreation.Query().
+		Where(recreation.RecreationIDEQ(id)).
+		All(ctx)
 
-// 	if err != nil {
-// 		panic(err)
-// 	}
+	if err != nil {
+		panic(err)
+	}
 
-// 	res := usecase.Response{Data: user}
-// 	return res, err
-// }
+	res := usecase.Response{Data: user}
+	return res, err
+}
 
 func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	user, err := r.DBConn.Recreation.Create().

@@ -2,18 +2,20 @@ package usecase
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type RecreationUseCase interface {
 	GetRecreations(context.Context) (Response, error)
-	// GetRecreationsByID(context.Context, int) (Response, error)
+	GetRecreationsByID(context.Context, uuid.UUID) (Response, error)
 	PostRecreations(context.Context, Request) (Response, error)
 	// DeleteRecreationsByID(context.Context, int) error
 }
 
 type RecreationRepository interface {
 	GetRecreations(context.Context) (Response, error)
-	// GetRecreationsByID(context.Context, int) (Response, error)
+	GetRecreationsByID(context.Context, uuid.UUID) (Response, error)
 	PostRecreations(context.Context, Request) (Response, error)
 	// DeleteRecreationsByID(context.Context, int) error
 }
@@ -26,9 +28,9 @@ func (u *RecreationUsecase) GetRecreations(ctx context.Context) (Response, error
 	return u.Repository.GetRecreations(ctx)
 }
 
-// func (u *RecreationUsecase) GetRecreationsByID(ctx context.Context, id int) (Response, error) {
-// 	return u.Repository.GetRecreationsByID(ctx, id)
-// }
+func (u *RecreationUsecase) GetRecreationsByID(ctx context.Context, id uuid.UUID) (Response, error) {
+	return u.Repository.GetRecreationsByID(ctx, id)
+}
 
 func (u *RecreationUsecase) PostRecreations(ctx context.Context, req Request) (Response, error) {
 	return u.Repository.PostRecreations(ctx, req)
