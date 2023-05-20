@@ -1,10 +1,12 @@
 -- ユーザーのテーブルを作成する
 CREATE TABLE recreations (
   id SERIAL PRIMARY KEY,
-  uid VARCHAR(255) NOT NULL UNIQUE,
-  username VARCHAR(255) NOT NULL UNIQUE,
-  mail VARCHAR(255) NOT NULL UNIQUE,
-  prefecture_id INTEGER REFERENCES PREFECTURES(id),
+  user_id UUID NOT NULL,
+  uuid UUID NOT NULL UNIQUE,
+  genre JSONB,
+  title VARCHAR(255),
+  target_number INT,
+  required_time INT,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
