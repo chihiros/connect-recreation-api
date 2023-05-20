@@ -22,27 +22,39 @@ type RecreationCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetUID sets the "uid" field.
-func (rc *RecreationCreate) SetUID(s string) *RecreationCreate {
-	rc.mutation.SetUID(s)
+// SetUserID sets the "user_id" field.
+func (rc *RecreationCreate) SetUserID(s string) *RecreationCreate {
+	rc.mutation.SetUserID(s)
 	return rc
 }
 
-// SetUsername sets the "username" field.
-func (rc *RecreationCreate) SetUsername(s string) *RecreationCreate {
-	rc.mutation.SetUsername(s)
+// SetUUID sets the "uuid" field.
+func (rc *RecreationCreate) SetUUID(s string) *RecreationCreate {
+	rc.mutation.SetUUID(s)
 	return rc
 }
 
-// SetMail sets the "mail" field.
-func (rc *RecreationCreate) SetMail(s string) *RecreationCreate {
-	rc.mutation.SetMail(s)
+// SetGenre sets the "genre" field.
+func (rc *RecreationCreate) SetGenre(s string) *RecreationCreate {
+	rc.mutation.SetGenre(s)
 	return rc
 }
 
-// SetPrefectureID sets the "prefecture_id" field.
-func (rc *RecreationCreate) SetPrefectureID(i int) *RecreationCreate {
-	rc.mutation.SetPrefectureID(i)
+// SetTitle sets the "title" field.
+func (rc *RecreationCreate) SetTitle(s string) *RecreationCreate {
+	rc.mutation.SetTitle(s)
+	return rc
+}
+
+// SetTargetNumber sets the "target_number" field.
+func (rc *RecreationCreate) SetTargetNumber(i int) *RecreationCreate {
+	rc.mutation.SetTargetNumber(i)
+	return rc
+}
+
+// SetRequredTime sets the "requred_time" field.
+func (rc *RecreationCreate) SetRequredTime(i int) *RecreationCreate {
+	rc.mutation.SetRequredTime(i)
 	return rc
 }
 
@@ -121,17 +133,23 @@ func (rc *RecreationCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (rc *RecreationCreate) check() error {
-	if _, ok := rc.mutation.UID(); !ok {
-		return &ValidationError{Name: "uid", err: errors.New(`ent: missing required field "Recreation.uid"`)}
+	if _, ok := rc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Recreation.user_id"`)}
 	}
-	if _, ok := rc.mutation.Username(); !ok {
-		return &ValidationError{Name: "username", err: errors.New(`ent: missing required field "Recreation.username"`)}
+	if _, ok := rc.mutation.UUID(); !ok {
+		return &ValidationError{Name: "uuid", err: errors.New(`ent: missing required field "Recreation.uuid"`)}
 	}
-	if _, ok := rc.mutation.Mail(); !ok {
-		return &ValidationError{Name: "mail", err: errors.New(`ent: missing required field "Recreation.mail"`)}
+	if _, ok := rc.mutation.Genre(); !ok {
+		return &ValidationError{Name: "genre", err: errors.New(`ent: missing required field "Recreation.genre"`)}
 	}
-	if _, ok := rc.mutation.PrefectureID(); !ok {
-		return &ValidationError{Name: "prefecture_id", err: errors.New(`ent: missing required field "Recreation.prefecture_id"`)}
+	if _, ok := rc.mutation.Title(); !ok {
+		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "Recreation.title"`)}
+	}
+	if _, ok := rc.mutation.TargetNumber(); !ok {
+		return &ValidationError{Name: "target_number", err: errors.New(`ent: missing required field "Recreation.target_number"`)}
+	}
+	if _, ok := rc.mutation.RequredTime(); !ok {
+		return &ValidationError{Name: "requred_time", err: errors.New(`ent: missing required field "Recreation.requred_time"`)}
 	}
 	if _, ok := rc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Recreation.created_at"`)}
@@ -166,21 +184,29 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(recreation.Table, sqlgraph.NewFieldSpec(recreation.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = rc.conflict
-	if value, ok := rc.mutation.UID(); ok {
-		_spec.SetField(recreation.FieldUID, field.TypeString, value)
-		_node.UID = value
+	if value, ok := rc.mutation.UserID(); ok {
+		_spec.SetField(recreation.FieldUserID, field.TypeString, value)
+		_node.UserID = value
 	}
-	if value, ok := rc.mutation.Username(); ok {
-		_spec.SetField(recreation.FieldUsername, field.TypeString, value)
-		_node.Username = value
+	if value, ok := rc.mutation.UUID(); ok {
+		_spec.SetField(recreation.FieldUUID, field.TypeString, value)
+		_node.UUID = value
 	}
-	if value, ok := rc.mutation.Mail(); ok {
-		_spec.SetField(recreation.FieldMail, field.TypeString, value)
-		_node.Mail = value
+	if value, ok := rc.mutation.Genre(); ok {
+		_spec.SetField(recreation.FieldGenre, field.TypeString, value)
+		_node.Genre = value
 	}
-	if value, ok := rc.mutation.PrefectureID(); ok {
-		_spec.SetField(recreation.FieldPrefectureID, field.TypeInt, value)
-		_node.PrefectureID = &value
+	if value, ok := rc.mutation.Title(); ok {
+		_spec.SetField(recreation.FieldTitle, field.TypeString, value)
+		_node.Title = value
+	}
+	if value, ok := rc.mutation.TargetNumber(); ok {
+		_spec.SetField(recreation.FieldTargetNumber, field.TypeInt, value)
+		_node.TargetNumber = value
+	}
+	if value, ok := rc.mutation.RequredTime(); ok {
+		_spec.SetField(recreation.FieldRequredTime, field.TypeInt, value)
+		_node.RequredTime = value
 	}
 	if value, ok := rc.mutation.CreatedAt(); ok {
 		_spec.SetField(recreation.FieldCreatedAt, field.TypeTime, value)
@@ -197,7 +223,7 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Recreation.Create().
-//		SetUID(v).
+//		SetUserID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -206,7 +232,7 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.RecreationUpsert) {
-//			SetUID(v+v).
+//			SetUserID(v+v).
 //		}).
 //		Exec(ctx)
 func (rc *RecreationCreate) OnConflict(opts ...sql.ConflictOption) *RecreationUpsertOne {
@@ -242,57 +268,63 @@ type (
 	}
 )
 
-// SetUsername sets the "username" field.
-func (u *RecreationUpsert) SetUsername(v string) *RecreationUpsert {
-	u.Set(recreation.FieldUsername, v)
+// SetGenre sets the "genre" field.
+func (u *RecreationUpsert) SetGenre(v string) *RecreationUpsert {
+	u.Set(recreation.FieldGenre, v)
 	return u
 }
 
-// UpdateUsername sets the "username" field to the value that was provided on create.
-func (u *RecreationUpsert) UpdateUsername() *RecreationUpsert {
-	u.SetExcluded(recreation.FieldUsername)
+// UpdateGenre sets the "genre" field to the value that was provided on create.
+func (u *RecreationUpsert) UpdateGenre() *RecreationUpsert {
+	u.SetExcluded(recreation.FieldGenre)
 	return u
 }
 
-// SetMail sets the "mail" field.
-func (u *RecreationUpsert) SetMail(v string) *RecreationUpsert {
-	u.Set(recreation.FieldMail, v)
+// SetTitle sets the "title" field.
+func (u *RecreationUpsert) SetTitle(v string) *RecreationUpsert {
+	u.Set(recreation.FieldTitle, v)
 	return u
 }
 
-// UpdateMail sets the "mail" field to the value that was provided on create.
-func (u *RecreationUpsert) UpdateMail() *RecreationUpsert {
-	u.SetExcluded(recreation.FieldMail)
+// UpdateTitle sets the "title" field to the value that was provided on create.
+func (u *RecreationUpsert) UpdateTitle() *RecreationUpsert {
+	u.SetExcluded(recreation.FieldTitle)
 	return u
 }
 
-// SetPrefectureID sets the "prefecture_id" field.
-func (u *RecreationUpsert) SetPrefectureID(v int) *RecreationUpsert {
-	u.Set(recreation.FieldPrefectureID, v)
+// SetTargetNumber sets the "target_number" field.
+func (u *RecreationUpsert) SetTargetNumber(v int) *RecreationUpsert {
+	u.Set(recreation.FieldTargetNumber, v)
 	return u
 }
 
-// UpdatePrefectureID sets the "prefecture_id" field to the value that was provided on create.
-func (u *RecreationUpsert) UpdatePrefectureID() *RecreationUpsert {
-	u.SetExcluded(recreation.FieldPrefectureID)
+// UpdateTargetNumber sets the "target_number" field to the value that was provided on create.
+func (u *RecreationUpsert) UpdateTargetNumber() *RecreationUpsert {
+	u.SetExcluded(recreation.FieldTargetNumber)
 	return u
 }
 
-// AddPrefectureID adds v to the "prefecture_id" field.
-func (u *RecreationUpsert) AddPrefectureID(v int) *RecreationUpsert {
-	u.Add(recreation.FieldPrefectureID, v)
+// AddTargetNumber adds v to the "target_number" field.
+func (u *RecreationUpsert) AddTargetNumber(v int) *RecreationUpsert {
+	u.Add(recreation.FieldTargetNumber, v)
 	return u
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (u *RecreationUpsert) SetCreatedAt(v time.Time) *RecreationUpsert {
-	u.Set(recreation.FieldCreatedAt, v)
+// SetRequredTime sets the "requred_time" field.
+func (u *RecreationUpsert) SetRequredTime(v int) *RecreationUpsert {
+	u.Set(recreation.FieldRequredTime, v)
 	return u
 }
 
-// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
-func (u *RecreationUpsert) UpdateCreatedAt() *RecreationUpsert {
-	u.SetExcluded(recreation.FieldCreatedAt)
+// UpdateRequredTime sets the "requred_time" field to the value that was provided on create.
+func (u *RecreationUpsert) UpdateRequredTime() *RecreationUpsert {
+	u.SetExcluded(recreation.FieldRequredTime)
+	return u
+}
+
+// AddRequredTime adds v to the "requred_time" field.
+func (u *RecreationUpsert) AddRequredTime(v int) *RecreationUpsert {
+	u.Add(recreation.FieldRequredTime, v)
 	return u
 }
 
@@ -319,8 +351,14 @@ func (u *RecreationUpsert) UpdateUpdatedAt() *RecreationUpsert {
 func (u *RecreationUpsertOne) UpdateNewValues() *RecreationUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		if _, exists := u.create.mutation.UID(); exists {
-			s.SetIgnore(recreation.FieldUID)
+		if _, exists := u.create.mutation.UserID(); exists {
+			s.SetIgnore(recreation.FieldUserID)
+		}
+		if _, exists := u.create.mutation.UUID(); exists {
+			s.SetIgnore(recreation.FieldUUID)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(recreation.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -353,66 +391,73 @@ func (u *RecreationUpsertOne) Update(set func(*RecreationUpsert)) *RecreationUps
 	return u
 }
 
-// SetUsername sets the "username" field.
-func (u *RecreationUpsertOne) SetUsername(v string) *RecreationUpsertOne {
+// SetGenre sets the "genre" field.
+func (u *RecreationUpsertOne) SetGenre(v string) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
-		s.SetUsername(v)
+		s.SetGenre(v)
 	})
 }
 
-// UpdateUsername sets the "username" field to the value that was provided on create.
-func (u *RecreationUpsertOne) UpdateUsername() *RecreationUpsertOne {
+// UpdateGenre sets the "genre" field to the value that was provided on create.
+func (u *RecreationUpsertOne) UpdateGenre() *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
-		s.UpdateUsername()
+		s.UpdateGenre()
 	})
 }
 
-// SetMail sets the "mail" field.
-func (u *RecreationUpsertOne) SetMail(v string) *RecreationUpsertOne {
+// SetTitle sets the "title" field.
+func (u *RecreationUpsertOne) SetTitle(v string) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
-		s.SetMail(v)
+		s.SetTitle(v)
 	})
 }
 
-// UpdateMail sets the "mail" field to the value that was provided on create.
-func (u *RecreationUpsertOne) UpdateMail() *RecreationUpsertOne {
+// UpdateTitle sets the "title" field to the value that was provided on create.
+func (u *RecreationUpsertOne) UpdateTitle() *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
-		s.UpdateMail()
+		s.UpdateTitle()
 	})
 }
 
-// SetPrefectureID sets the "prefecture_id" field.
-func (u *RecreationUpsertOne) SetPrefectureID(v int) *RecreationUpsertOne {
+// SetTargetNumber sets the "target_number" field.
+func (u *RecreationUpsertOne) SetTargetNumber(v int) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
-		s.SetPrefectureID(v)
+		s.SetTargetNumber(v)
 	})
 }
 
-// AddPrefectureID adds v to the "prefecture_id" field.
-func (u *RecreationUpsertOne) AddPrefectureID(v int) *RecreationUpsertOne {
+// AddTargetNumber adds v to the "target_number" field.
+func (u *RecreationUpsertOne) AddTargetNumber(v int) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
-		s.AddPrefectureID(v)
+		s.AddTargetNumber(v)
 	})
 }
 
-// UpdatePrefectureID sets the "prefecture_id" field to the value that was provided on create.
-func (u *RecreationUpsertOne) UpdatePrefectureID() *RecreationUpsertOne {
+// UpdateTargetNumber sets the "target_number" field to the value that was provided on create.
+func (u *RecreationUpsertOne) UpdateTargetNumber() *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
-		s.UpdatePrefectureID()
+		s.UpdateTargetNumber()
 	})
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (u *RecreationUpsertOne) SetCreatedAt(v time.Time) *RecreationUpsertOne {
+// SetRequredTime sets the "requred_time" field.
+func (u *RecreationUpsertOne) SetRequredTime(v int) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
-		s.SetCreatedAt(v)
+		s.SetRequredTime(v)
 	})
 }
 
-// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
-func (u *RecreationUpsertOne) UpdateCreatedAt() *RecreationUpsertOne {
+// AddRequredTime adds v to the "requred_time" field.
+func (u *RecreationUpsertOne) AddRequredTime(v int) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
-		s.UpdateCreatedAt()
+		s.AddRequredTime(v)
+	})
+}
+
+// UpdateRequredTime sets the "requred_time" field to the value that was provided on create.
+func (u *RecreationUpsertOne) UpdateRequredTime() *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.UpdateRequredTime()
 	})
 }
 
@@ -561,7 +606,7 @@ func (rcb *RecreationCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.RecreationUpsert) {
-//			SetUID(v+v).
+//			SetUserID(v+v).
 //		}).
 //		Exec(ctx)
 func (rcb *RecreationCreateBulk) OnConflict(opts ...sql.ConflictOption) *RecreationUpsertBulk {
@@ -602,8 +647,14 @@ func (u *RecreationUpsertBulk) UpdateNewValues() *RecreationUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
-			if _, exists := b.mutation.UID(); exists {
-				s.SetIgnore(recreation.FieldUID)
+			if _, exists := b.mutation.UserID(); exists {
+				s.SetIgnore(recreation.FieldUserID)
+			}
+			if _, exists := b.mutation.UUID(); exists {
+				s.SetIgnore(recreation.FieldUUID)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(recreation.FieldCreatedAt)
 			}
 		}
 	}))
@@ -637,66 +688,73 @@ func (u *RecreationUpsertBulk) Update(set func(*RecreationUpsert)) *RecreationUp
 	return u
 }
 
-// SetUsername sets the "username" field.
-func (u *RecreationUpsertBulk) SetUsername(v string) *RecreationUpsertBulk {
+// SetGenre sets the "genre" field.
+func (u *RecreationUpsertBulk) SetGenre(v string) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
-		s.SetUsername(v)
+		s.SetGenre(v)
 	})
 }
 
-// UpdateUsername sets the "username" field to the value that was provided on create.
-func (u *RecreationUpsertBulk) UpdateUsername() *RecreationUpsertBulk {
+// UpdateGenre sets the "genre" field to the value that was provided on create.
+func (u *RecreationUpsertBulk) UpdateGenre() *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
-		s.UpdateUsername()
+		s.UpdateGenre()
 	})
 }
 
-// SetMail sets the "mail" field.
-func (u *RecreationUpsertBulk) SetMail(v string) *RecreationUpsertBulk {
+// SetTitle sets the "title" field.
+func (u *RecreationUpsertBulk) SetTitle(v string) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
-		s.SetMail(v)
+		s.SetTitle(v)
 	})
 }
 
-// UpdateMail sets the "mail" field to the value that was provided on create.
-func (u *RecreationUpsertBulk) UpdateMail() *RecreationUpsertBulk {
+// UpdateTitle sets the "title" field to the value that was provided on create.
+func (u *RecreationUpsertBulk) UpdateTitle() *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
-		s.UpdateMail()
+		s.UpdateTitle()
 	})
 }
 
-// SetPrefectureID sets the "prefecture_id" field.
-func (u *RecreationUpsertBulk) SetPrefectureID(v int) *RecreationUpsertBulk {
+// SetTargetNumber sets the "target_number" field.
+func (u *RecreationUpsertBulk) SetTargetNumber(v int) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
-		s.SetPrefectureID(v)
+		s.SetTargetNumber(v)
 	})
 }
 
-// AddPrefectureID adds v to the "prefecture_id" field.
-func (u *RecreationUpsertBulk) AddPrefectureID(v int) *RecreationUpsertBulk {
+// AddTargetNumber adds v to the "target_number" field.
+func (u *RecreationUpsertBulk) AddTargetNumber(v int) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
-		s.AddPrefectureID(v)
+		s.AddTargetNumber(v)
 	})
 }
 
-// UpdatePrefectureID sets the "prefecture_id" field to the value that was provided on create.
-func (u *RecreationUpsertBulk) UpdatePrefectureID() *RecreationUpsertBulk {
+// UpdateTargetNumber sets the "target_number" field to the value that was provided on create.
+func (u *RecreationUpsertBulk) UpdateTargetNumber() *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
-		s.UpdatePrefectureID()
+		s.UpdateTargetNumber()
 	})
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (u *RecreationUpsertBulk) SetCreatedAt(v time.Time) *RecreationUpsertBulk {
+// SetRequredTime sets the "requred_time" field.
+func (u *RecreationUpsertBulk) SetRequredTime(v int) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
-		s.SetCreatedAt(v)
+		s.SetRequredTime(v)
 	})
 }
 
-// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
-func (u *RecreationUpsertBulk) UpdateCreatedAt() *RecreationUpsertBulk {
+// AddRequredTime adds v to the "requred_time" field.
+func (u *RecreationUpsertBulk) AddRequredTime(v int) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
-		s.UpdateCreatedAt()
+		s.AddRequredTime(v)
+	})
+}
+
+// UpdateRequredTime sets the "requred_time" field to the value that was provided on create.
+func (u *RecreationUpsertBulk) UpdateRequredTime() *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.UpdateRequredTime()
 	})
 }
 

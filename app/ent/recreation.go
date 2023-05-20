@@ -17,14 +17,18 @@ type Recreation struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// UID holds the value of the "uid" field.
-	UID string `json:"uid,omitempty"`
-	// Username holds the value of the "username" field.
-	Username string `json:"username,omitempty"`
-	// Mail holds the value of the "mail" field.
-	Mail string `json:"mail,omitempty"`
-	// PrefectureID holds the value of the "prefecture_id" field.
-	PrefectureID *int `json:"prefecture_id,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID string `json:"user_id,omitempty"`
+	// UUID holds the value of the "uuid" field.
+	UUID string `json:"uuid,omitempty"`
+	// Genre holds the value of the "genre" field.
+	Genre string `json:"genre,omitempty"`
+	// Title holds the value of the "title" field.
+	Title string `json:"title,omitempty"`
+	// TargetNumber holds the value of the "target_number" field.
+	TargetNumber int `json:"target_number,omitempty"`
+	// RequredTime holds the value of the "requred_time" field.
+	RequredTime int `json:"requred_time,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -37,9 +41,9 @@ func (*Recreation) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case recreation.FieldID, recreation.FieldPrefectureID:
+		case recreation.FieldID, recreation.FieldTargetNumber, recreation.FieldRequredTime:
 			values[i] = new(sql.NullInt64)
-		case recreation.FieldUID, recreation.FieldUsername, recreation.FieldMail:
+		case recreation.FieldUserID, recreation.FieldUUID, recreation.FieldGenre, recreation.FieldTitle:
 			values[i] = new(sql.NullString)
 		case recreation.FieldCreatedAt, recreation.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -64,30 +68,41 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			r.ID = int(value.Int64)
-		case recreation.FieldUID:
+		case recreation.FieldUserID:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field uid", values[i])
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				r.UID = value.String
+				r.UserID = value.String
 			}
-		case recreation.FieldUsername:
+		case recreation.FieldUUID:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field username", values[i])
+				return fmt.Errorf("unexpected type %T for field uuid", values[i])
 			} else if value.Valid {
-				r.Username = value.String
+				r.UUID = value.String
 			}
-		case recreation.FieldMail:
+		case recreation.FieldGenre:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field mail", values[i])
+				return fmt.Errorf("unexpected type %T for field genre", values[i])
 			} else if value.Valid {
-				r.Mail = value.String
+				r.Genre = value.String
 			}
-		case recreation.FieldPrefectureID:
+		case recreation.FieldTitle:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field title", values[i])
+			} else if value.Valid {
+				r.Title = value.String
+			}
+		case recreation.FieldTargetNumber:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field prefecture_id", values[i])
+				return fmt.Errorf("unexpected type %T for field target_number", values[i])
 			} else if value.Valid {
-				r.PrefectureID = new(int)
-				*r.PrefectureID = int(value.Int64)
+				r.TargetNumber = int(value.Int64)
+			}
+		case recreation.FieldRequredTime:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field requred_time", values[i])
+			} else if value.Valid {
+				r.RequredTime = int(value.Int64)
 			}
 		case recreation.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -137,19 +152,23 @@ func (r *Recreation) String() string {
 	var builder strings.Builder
 	builder.WriteString("Recreation(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", r.ID))
-	builder.WriteString("uid=")
-	builder.WriteString(r.UID)
+	builder.WriteString("user_id=")
+	builder.WriteString(r.UserID)
 	builder.WriteString(", ")
-	builder.WriteString("username=")
-	builder.WriteString(r.Username)
+	builder.WriteString("uuid=")
+	builder.WriteString(r.UUID)
 	builder.WriteString(", ")
-	builder.WriteString("mail=")
-	builder.WriteString(r.Mail)
+	builder.WriteString("genre=")
+	builder.WriteString(r.Genre)
 	builder.WriteString(", ")
-	if v := r.PrefectureID; v != nil {
-		builder.WriteString("prefecture_id=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
-	}
+	builder.WriteString("title=")
+	builder.WriteString(r.Title)
+	builder.WriteString(", ")
+	builder.WriteString("target_number=")
+	builder.WriteString(fmt.Sprintf("%v", r.TargetNumber))
+	builder.WriteString(", ")
+	builder.WriteString("requred_time=")
+	builder.WriteString(fmt.Sprintf("%v", r.RequredTime))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(r.CreatedAt.Format(time.ANSIC))

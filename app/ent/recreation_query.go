@@ -261,12 +261,12 @@ func (rq *RecreationQuery) Clone() *RecreationQuery {
 // Example:
 //
 //	var v []struct {
-//		UID string `json:"uid,omitempty"`
+//		UserID string `json:"user_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Recreation.Query().
-//		GroupBy(recreation.FieldUID).
+//		GroupBy(recreation.FieldUserID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (rq *RecreationQuery) GroupBy(field string, fields ...string) *RecreationGroupBy {
@@ -284,11 +284,11 @@ func (rq *RecreationQuery) GroupBy(field string, fields ...string) *RecreationGr
 // Example:
 //
 //	var v []struct {
-//		UID string `json:"uid,omitempty"`
+//		UserID string `json:"user_id,omitempty"`
 //	}
 //
 //	client.Recreation.Query().
-//		Select(recreation.FieldUID).
+//		Select(recreation.FieldUserID).
 //		Scan(ctx, &v)
 func (rq *RecreationQuery) Select(fields ...string) *RecreationSelect {
 	rq.ctx.Fields = append(rq.ctx.Fields, fields...)

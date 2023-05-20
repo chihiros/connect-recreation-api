@@ -38,11 +38,11 @@ func init() {
 	recreationFields := schema.Recreation{}.Fields()
 	_ = recreationFields
 	// recreationDescCreatedAt is the schema descriptor for created_at field.
-	recreationDescCreatedAt := recreationFields[4].Descriptor()
+	recreationDescCreatedAt := recreationFields[6].Descriptor()
 	// recreation.DefaultCreatedAt holds the default value on creation for the created_at field.
 	recreation.DefaultCreatedAt = recreationDescCreatedAt.Default.(func() time.Time)
 	// recreationDescUpdatedAt is the schema descriptor for updated_at field.
-	recreationDescUpdatedAt := recreationFields[5].Descriptor()
+	recreationDescUpdatedAt := recreationFields[7].Descriptor()
 	// recreation.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	recreation.DefaultUpdatedAt = recreationDescUpdatedAt.Default.(func() time.Time)
 	userFields := schema.User{}.Fields()
