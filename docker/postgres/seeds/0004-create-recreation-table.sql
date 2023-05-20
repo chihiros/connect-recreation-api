@@ -12,8 +12,6 @@ CREATE TABLE recreations (
 );
 
 -- ユーザーのデータを作成する
-INSERT INTO recreations (uid, username, mail, prefecture_id) VALUES ('1000000001', 'yamada', 'yamada@example.com', 1);
-INSERT INTO recreations (uid, username, mail, prefecture_id) VALUES ('1000000002', 'suzuki', 'suzuki@example.com', 2);
-INSERT INTO recreations (uid, username, mail, prefecture_id) VALUES ('1000000003', 'tanaka', 'tanaka@example.com', 3);
-INSERT INTO recreations (uid, username, mail, prefecture_id) VALUES ('1000000004', 'sato', 'sato@example.com', 4);
-INSERT INTO recreations (uid, username, mail, prefecture_id) VALUES ('1000000005', 'ito', 'ito@example.com', 5);
+INSERT INTO recreations (user_id, uuid, genre, title, target_number, required_time) VALUES ('1000000001', 'yamada', '[1, 2]', 'Example Title 1', 10, 30);
+INSERT INTO recreations (user_id, uuid, genre, title, target_number, required_time) VALUES ('1000000002', 'suzuki', '[3, 4]', 'Example Title 2', 20, 40);
+INSERT INTO recreations (user_id, uuid, genre, title, target_number, required_time) VALUES ('1000000003', 'tanaka', '[5, 6]', 'Example Title 3', 30, 50);
