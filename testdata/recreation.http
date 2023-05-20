@@ -9,8 +9,8 @@ Context-Type: application/json
 
 {
     "user_id":"ccab5b0d-b5fb-4d7f-8c0a-6f340dcbade7",
-    "uuid":"21efc871-386a-45ea-9f18-c3fbe07748f4",
-    "genre": [1, 2, 3],
+    "recreation_id":"21efc871-386a-45ea-9f18-c3fbe07748f4",
+    "genre": [1, 2, 4],
     "title":"ジョン・ブラウンのおじさん",
     "content":"ジョン・ブラウンのおじさんは〜〜",
     "target_number":1,
