@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 // Recreation is the model entity for the Recreation schema.
@@ -19,9 +20,9 @@ type Recreation struct {
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
 	// UserID holds the value of the "user_id" field.
-	UserID string `json:"user_id,omitempty"`
+	UserID uuid.UUID `json:"user_id,omitempty"`
 	// UUID holds the value of the "uuid" field.
-	UUID string `json:"uuid,omitempty"`
+	UUID uuid.UUID `json:"uuid,omitempty"`
 	// Genre holds the value of the "genre" field.
 	Genre []int `json:"genre,omitempty"`
 	// Title holds the value of the "title" field.
@@ -46,10 +47,12 @@ func (*Recreation) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case recreation.FieldID, recreation.FieldTargetNumber, recreation.FieldRequredTime:
 			values[i] = new(sql.NullInt64)
-		case recreation.FieldUserID, recreation.FieldUUID, recreation.FieldTitle:
+		case recreation.FieldTitle:
 			values[i] = new(sql.NullString)
 		case recreation.FieldCreatedAt, recreation.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
+		case recreation.FieldUserID, recreation.FieldUUID:
+			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -72,16 +75,16 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 			}
 			r.ID = int(value.Int64)
 		case recreation.FieldUserID:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
-			} else if value.Valid {
-				r.UserID = value.String
+			} else if value != nil {
+				r.UserID = *value
 			}
 		case recreation.FieldUUID:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field uuid", values[i])
-			} else if value.Valid {
-				r.UUID = value.String
+			} else if value != nil {
+				r.UUID = *value
 			}
 		case recreation.FieldGenre:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -158,10 +161,10 @@ func (r *Recreation) String() string {
 	builder.WriteString("Recreation(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", r.ID))
 	builder.WriteString("user_id=")
-	builder.WriteString(r.UserID)
+	builder.WriteString(fmt.Sprintf("%v", r.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("uuid=")
-	builder.WriteString(r.UUID)
+	builder.WriteString(fmt.Sprintf("%v", r.UUID))
 	builder.WriteString(", ")
 	builder.WriteString("genre=")
 	builder.WriteString(fmt.Sprintf("%v", r.Genre))

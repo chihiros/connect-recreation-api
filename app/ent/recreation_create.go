@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // RecreationCreate is the builder for creating a Recreation entity.
@@ -23,14 +24,14 @@ type RecreationCreate struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (rc *RecreationCreate) SetUserID(s string) *RecreationCreate {
-	rc.mutation.SetUserID(s)
+func (rc *RecreationCreate) SetUserID(u uuid.UUID) *RecreationCreate {
+	rc.mutation.SetUserID(u)
 	return rc
 }
 
 // SetUUID sets the "uuid" field.
-func (rc *RecreationCreate) SetUUID(s string) *RecreationCreate {
-	rc.mutation.SetUUID(s)
+func (rc *RecreationCreate) SetUUID(u uuid.UUID) *RecreationCreate {
+	rc.mutation.SetUUID(u)
 	return rc
 }
 
@@ -185,11 +186,11 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 	)
 	_spec.OnConflict = rc.conflict
 	if value, ok := rc.mutation.UserID(); ok {
-		_spec.SetField(recreation.FieldUserID, field.TypeString, value)
+		_spec.SetField(recreation.FieldUserID, field.TypeUUID, value)
 		_node.UserID = value
 	}
 	if value, ok := rc.mutation.UUID(); ok {
-		_spec.SetField(recreation.FieldUUID, field.TypeString, value)
+		_spec.SetField(recreation.FieldUUID, field.TypeUUID, value)
 		_node.UUID = value
 	}
 	if value, ok := rc.mutation.Genre(); ok {

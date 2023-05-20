@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 // ID filters vertices based on their ID field.
@@ -55,12 +56,12 @@ func IDLTE(id int) predicate.Recreation {
 }
 
 // UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v string) predicate.Recreation {
+func UserID(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldUserID, v))
 }
 
 // UUID applies equality check predicate on the "uuid" field. It's identical to UUIDEQ.
-func UUID(v string) predicate.Recreation {
+func UUID(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldUUID, v))
 }
 
@@ -90,133 +91,83 @@ func UpdatedAt(v time.Time) predicate.Recreation {
 }
 
 // UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v string) predicate.Recreation {
+func UserIDEQ(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldUserID, v))
 }
 
 // UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v string) predicate.Recreation {
+func UserIDNEQ(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldNEQ(FieldUserID, v))
 }
 
 // UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...string) predicate.Recreation {
+func UserIDIn(vs ...uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldIn(FieldUserID, vs...))
 }
 
 // UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...string) predicate.Recreation {
+func UserIDNotIn(vs ...uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldNotIn(FieldUserID, vs...))
 }
 
 // UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v string) predicate.Recreation {
+func UserIDGT(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldGT(FieldUserID, v))
 }
 
 // UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v string) predicate.Recreation {
+func UserIDGTE(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldGTE(FieldUserID, v))
 }
 
 // UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v string) predicate.Recreation {
+func UserIDLT(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldLT(FieldUserID, v))
 }
 
 // UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v string) predicate.Recreation {
+func UserIDLTE(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldLTE(FieldUserID, v))
 }
 
-// UserIDContains applies the Contains predicate on the "user_id" field.
-func UserIDContains(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldContains(FieldUserID, v))
-}
-
-// UserIDHasPrefix applies the HasPrefix predicate on the "user_id" field.
-func UserIDHasPrefix(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldHasPrefix(FieldUserID, v))
-}
-
-// UserIDHasSuffix applies the HasSuffix predicate on the "user_id" field.
-func UserIDHasSuffix(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldHasSuffix(FieldUserID, v))
-}
-
-// UserIDEqualFold applies the EqualFold predicate on the "user_id" field.
-func UserIDEqualFold(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEqualFold(FieldUserID, v))
-}
-
-// UserIDContainsFold applies the ContainsFold predicate on the "user_id" field.
-func UserIDContainsFold(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldContainsFold(FieldUserID, v))
-}
-
 // UUIDEQ applies the EQ predicate on the "uuid" field.
-func UUIDEQ(v string) predicate.Recreation {
+func UUIDEQ(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldUUID, v))
 }
 
 // UUIDNEQ applies the NEQ predicate on the "uuid" field.
-func UUIDNEQ(v string) predicate.Recreation {
+func UUIDNEQ(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldNEQ(FieldUUID, v))
 }
 
 // UUIDIn applies the In predicate on the "uuid" field.
-func UUIDIn(vs ...string) predicate.Recreation {
+func UUIDIn(vs ...uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldIn(FieldUUID, vs...))
 }
 
 // UUIDNotIn applies the NotIn predicate on the "uuid" field.
-func UUIDNotIn(vs ...string) predicate.Recreation {
+func UUIDNotIn(vs ...uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldNotIn(FieldUUID, vs...))
 }
 
 // UUIDGT applies the GT predicate on the "uuid" field.
-func UUIDGT(v string) predicate.Recreation {
+func UUIDGT(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldGT(FieldUUID, v))
 }
 
 // UUIDGTE applies the GTE predicate on the "uuid" field.
-func UUIDGTE(v string) predicate.Recreation {
+func UUIDGTE(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldGTE(FieldUUID, v))
 }
 
 // UUIDLT applies the LT predicate on the "uuid" field.
-func UUIDLT(v string) predicate.Recreation {
+func UUIDLT(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldLT(FieldUUID, v))
 }
 
 // UUIDLTE applies the LTE predicate on the "uuid" field.
-func UUIDLTE(v string) predicate.Recreation {
+func UUIDLTE(v uuid.UUID) predicate.Recreation {
 	return predicate.Recreation(sql.FieldLTE(FieldUUID, v))
-}
-
-// UUIDContains applies the Contains predicate on the "uuid" field.
-func UUIDContains(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldContains(FieldUUID, v))
-}
-
-// UUIDHasPrefix applies the HasPrefix predicate on the "uuid" field.
-func UUIDHasPrefix(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldHasPrefix(FieldUUID, v))
-}
-
-// UUIDHasSuffix applies the HasSuffix predicate on the "uuid" field.
-func UUIDHasSuffix(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldHasSuffix(FieldUUID, v))
-}
-
-// UUIDEqualFold applies the EqualFold predicate on the "uuid" field.
-func UUIDEqualFold(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEqualFold(FieldUUID, v))
-}
-
-// UUIDContainsFold applies the ContainsFold predicate on the "uuid" field.
-func UUIDContainsFold(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldContainsFold(FieldUUID, v))
 }
 
 // TitleEQ applies the EQ predicate on the "title" field.

@@ -1016,8 +1016,8 @@ type RecreationMutation struct {
 	op               Op
 	typ              string
 	id               *int
-	user_id          *string
-	uuid             *string
+	user_id          *uuid.UUID
+	uuid             *uuid.UUID
 	genre            *[]int
 	appendgenre      []int
 	title            *string
@@ -1132,12 +1132,12 @@ func (m *RecreationMutation) IDs(ctx context.Context) ([]int, error) {
 }
 
 // SetUserID sets the "user_id" field.
-func (m *RecreationMutation) SetUserID(s string) {
-	m.user_id = &s
+func (m *RecreationMutation) SetUserID(u uuid.UUID) {
+	m.user_id = &u
 }
 
 // UserID returns the value of the "user_id" field in the mutation.
-func (m *RecreationMutation) UserID() (r string, exists bool) {
+func (m *RecreationMutation) UserID() (r uuid.UUID, exists bool) {
 	v := m.user_id
 	if v == nil {
 		return
@@ -1148,7 +1148,7 @@ func (m *RecreationMutation) UserID() (r string, exists bool) {
 // OldUserID returns the old "user_id" field's value of the Recreation entity.
 // If the Recreation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RecreationMutation) OldUserID(ctx context.Context) (v string, err error) {
+func (m *RecreationMutation) OldUserID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
 	}
@@ -1168,12 +1168,12 @@ func (m *RecreationMutation) ResetUserID() {
 }
 
 // SetUUID sets the "uuid" field.
-func (m *RecreationMutation) SetUUID(s string) {
-	m.uuid = &s
+func (m *RecreationMutation) SetUUID(u uuid.UUID) {
+	m.uuid = &u
 }
 
 // UUID returns the value of the "uuid" field in the mutation.
-func (m *RecreationMutation) UUID() (r string, exists bool) {
+func (m *RecreationMutation) UUID() (r uuid.UUID, exists bool) {
 	v := m.uuid
 	if v == nil {
 		return
@@ -1184,7 +1184,7 @@ func (m *RecreationMutation) UUID() (r string, exists bool) {
 // OldUUID returns the old "uuid" field's value of the Recreation entity.
 // If the Recreation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RecreationMutation) OldUUID(ctx context.Context) (v string, err error) {
+func (m *RecreationMutation) OldUUID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUUID is only allowed on UpdateOne operations")
 	}
@@ -1592,14 +1592,14 @@ func (m *RecreationMutation) OldField(ctx context.Context, name string) (ent.Val
 func (m *RecreationMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case recreation.FieldUserID:
-		v, ok := value.(string)
+		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUserID(v)
 		return nil
 	case recreation.FieldUUID:
-		v, ok := value.(string)
+		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

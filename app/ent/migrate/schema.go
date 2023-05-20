@@ -39,8 +39,8 @@ var (
 	// RecreationsColumns holds the columns for the "recreations" table.
 	RecreationsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "user_id", Type: field.TypeString, Unique: true},
-		{Name: "uuid", Type: field.TypeString, Unique: true},
+		{Name: "user_id", Type: field.TypeUUID, Unique: true},
+		{Name: "uuid", Type: field.TypeUUID, Unique: true},
 		{Name: "genre", Type: field.TypeJSON},
 		{Name: "title", Type: field.TypeString},
 		{Name: "target_number", Type: field.TypeInt},
