@@ -10,7 +10,7 @@ import (
 type Recreation struct {
 	ID           int       `json:"id"`
 	UserID       uuid.UUID `json:"user_id"`       // レクリエーションを登録したユーザーのID
-	UUID         uuid.UUID `json:"uid"`           // レクリエーションのユニークID
+	UUID         uuid.UUID `json:"uuid"`          // レクリエーションのユニークID
 	Genre        []int     `json:"genre"`         // レクリエーションのジャンル
 	Title        string    `json:"title"`         // レクリエーションの名前
 	Content      string    `json:"content"`       // レクリエーションの説明
