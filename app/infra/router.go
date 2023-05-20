@@ -81,9 +81,9 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 			r.Get("/", ucon.GetUsers)
 			r.Get("/query", ucon.GetUsersByID)
 
+			r.Post("/", rcon.PostRecreations)
 			// JWTが必要なやつ
 			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
-				r.Post("/", rcon.PostRecreations)
 				r.Delete("/", ucon.DeleteUsersByID)
 			})
 		})
