@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
@@ -12,7 +11,7 @@ type Recreation struct {
 	ID           int       `json:"id"`
 	UserID       uuid.UUID `json:"user_id"`       // レクリエーションを登録したユーザーのID
 	UUID         uuid.UUID `json:"uid"`           // レクリエーションのユニークID
-	Genre        JSON      `json:"genre"`         // レクリエーションのジャンル
+	Genre        []int     `json:"genre"`         // レクリエーションのジャンル
 	Title        string    `json:"title"`         // レクリエーションの名前
 	Content      string    `json:"content"`       // レクリエーションの説明
 	TargetNumber int       `json:"target_number"` // レクリエーションの対象人数
@@ -20,5 +19,3 @@ type Recreation struct {
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }
-
-type JSON json.RawMessage
