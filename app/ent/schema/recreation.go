@@ -5,6 +5,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 type Recreation struct {
@@ -14,10 +15,10 @@ type Recreation struct {
 // Fields of the Recreation.
 func (Recreation) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("user_id").
+		field.UUID("user_id", uuid.UUID{}).
 			Immutable().
 			Unique(),
-		field.String("uuid").
+		field.UUID("uuid", uuid.UUID{}).
 			Immutable().
 			Unique(),
 		field.JSON("genre", []int{}), // Use JSON field for 'genre'.
