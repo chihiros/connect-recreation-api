@@ -41,16 +41,21 @@ func (c *RecreationController) GetRecreations(w http.ResponseWriter, r *http.Req
 }
 
 func (c *RecreationController) GetRecreationsByID(w http.ResponseWriter, r *http.Request) {
-	// // クエリパラメータからidを取得する
-	// id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+	var users usecase.Response
+	id := r.URL.Query().Get("id")
+
+	if id == "" {
+		c.GetRecreations(w, r)
+		return
+	}
 
 	// idをUUIDに変換
-	recID, err := uuid.Parse(r.URL.Query().Get("id"))
+	recID, err := uuid.Parse(id)
 	if err != nil {
 		panic(err)
 	}
 
-	users, err := c.Usecase.GetRecreationsByID(context.Background(), recID)
+	users, err = c.Usecase.GetRecreationsByID(context.Background(), recID)
 	if err != nil {
 		panic(err)
 	}

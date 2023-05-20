@@ -78,8 +78,7 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 		// レクリエーション用のAPI
 		r.Route("/recreation", func(r chi.Router) {
 			// JWTが不要なやつ
-			r.Get("/", rcon.GetRecreations)
-			r.Get("/query", rcon.GetRecreationsByID)
+			r.Get("/", rcon.GetRecreationsByID)
 
 			r.Post("/", rcon.PostRecreations)
 			// JWTが必要なやつ
