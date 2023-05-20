@@ -59,9 +59,9 @@ func (rc *RecreationCreate) SetTargetNumber(i int) *RecreationCreate {
 	return rc
 }
 
-// SetRequredTime sets the "requred_time" field.
-func (rc *RecreationCreate) SetRequredTime(i int) *RecreationCreate {
-	rc.mutation.SetRequredTime(i)
+// SetRequiredTime sets the "required_time" field.
+func (rc *RecreationCreate) SetRequiredTime(i int) *RecreationCreate {
+	rc.mutation.SetRequiredTime(i)
 	return rc
 }
 
@@ -158,8 +158,8 @@ func (rc *RecreationCreate) check() error {
 	if _, ok := rc.mutation.TargetNumber(); !ok {
 		return &ValidationError{Name: "target_number", err: errors.New(`ent: missing required field "Recreation.target_number"`)}
 	}
-	if _, ok := rc.mutation.RequredTime(); !ok {
-		return &ValidationError{Name: "requred_time", err: errors.New(`ent: missing required field "Recreation.requred_time"`)}
+	if _, ok := rc.mutation.RequiredTime(); !ok {
+		return &ValidationError{Name: "required_time", err: errors.New(`ent: missing required field "Recreation.required_time"`)}
 	}
 	if _, ok := rc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Recreation.created_at"`)}
@@ -218,9 +218,9 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 		_spec.SetField(recreation.FieldTargetNumber, field.TypeInt, value)
 		_node.TargetNumber = value
 	}
-	if value, ok := rc.mutation.RequredTime(); ok {
-		_spec.SetField(recreation.FieldRequredTime, field.TypeInt, value)
-		_node.RequredTime = value
+	if value, ok := rc.mutation.RequiredTime(); ok {
+		_spec.SetField(recreation.FieldRequiredTime, field.TypeInt, value)
+		_node.RequiredTime = value
 	}
 	if value, ok := rc.mutation.CreatedAt(); ok {
 		_spec.SetField(recreation.FieldCreatedAt, field.TypeTime, value)
@@ -336,21 +336,21 @@ func (u *RecreationUpsert) AddTargetNumber(v int) *RecreationUpsert {
 	return u
 }
 
-// SetRequredTime sets the "requred_time" field.
-func (u *RecreationUpsert) SetRequredTime(v int) *RecreationUpsert {
-	u.Set(recreation.FieldRequredTime, v)
+// SetRequiredTime sets the "required_time" field.
+func (u *RecreationUpsert) SetRequiredTime(v int) *RecreationUpsert {
+	u.Set(recreation.FieldRequiredTime, v)
 	return u
 }
 
-// UpdateRequredTime sets the "requred_time" field to the value that was provided on create.
-func (u *RecreationUpsert) UpdateRequredTime() *RecreationUpsert {
-	u.SetExcluded(recreation.FieldRequredTime)
+// UpdateRequiredTime sets the "required_time" field to the value that was provided on create.
+func (u *RecreationUpsert) UpdateRequiredTime() *RecreationUpsert {
+	u.SetExcluded(recreation.FieldRequiredTime)
 	return u
 }
 
-// AddRequredTime adds v to the "requred_time" field.
-func (u *RecreationUpsert) AddRequredTime(v int) *RecreationUpsert {
-	u.Add(recreation.FieldRequredTime, v)
+// AddRequiredTime adds v to the "required_time" field.
+func (u *RecreationUpsert) AddRequiredTime(v int) *RecreationUpsert {
+	u.Add(recreation.FieldRequiredTime, v)
 	return u
 }
 
@@ -480,24 +480,24 @@ func (u *RecreationUpsertOne) UpdateTargetNumber() *RecreationUpsertOne {
 	})
 }
 
-// SetRequredTime sets the "requred_time" field.
-func (u *RecreationUpsertOne) SetRequredTime(v int) *RecreationUpsertOne {
+// SetRequiredTime sets the "required_time" field.
+func (u *RecreationUpsertOne) SetRequiredTime(v int) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
-		s.SetRequredTime(v)
+		s.SetRequiredTime(v)
 	})
 }
 
-// AddRequredTime adds v to the "requred_time" field.
-func (u *RecreationUpsertOne) AddRequredTime(v int) *RecreationUpsertOne {
+// AddRequiredTime adds v to the "required_time" field.
+func (u *RecreationUpsertOne) AddRequiredTime(v int) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
-		s.AddRequredTime(v)
+		s.AddRequiredTime(v)
 	})
 }
 
-// UpdateRequredTime sets the "requred_time" field to the value that was provided on create.
-func (u *RecreationUpsertOne) UpdateRequredTime() *RecreationUpsertOne {
+// UpdateRequiredTime sets the "required_time" field to the value that was provided on create.
+func (u *RecreationUpsertOne) UpdateRequiredTime() *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
-		s.UpdateRequredTime()
+		s.UpdateRequiredTime()
 	})
 }
 
@@ -791,24 +791,24 @@ func (u *RecreationUpsertBulk) UpdateTargetNumber() *RecreationUpsertBulk {
 	})
 }
 
-// SetRequredTime sets the "requred_time" field.
-func (u *RecreationUpsertBulk) SetRequredTime(v int) *RecreationUpsertBulk {
+// SetRequiredTime sets the "required_time" field.
+func (u *RecreationUpsertBulk) SetRequiredTime(v int) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
-		s.SetRequredTime(v)
+		s.SetRequiredTime(v)
 	})
 }
 
-// AddRequredTime adds v to the "requred_time" field.
-func (u *RecreationUpsertBulk) AddRequredTime(v int) *RecreationUpsertBulk {
+// AddRequiredTime adds v to the "required_time" field.
+func (u *RecreationUpsertBulk) AddRequiredTime(v int) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
-		s.AddRequredTime(v)
+		s.AddRequiredTime(v)
 	})
 }
 
-// UpdateRequredTime sets the "requred_time" field to the value that was provided on create.
-func (u *RecreationUpsertBulk) UpdateRequredTime() *RecreationUpsertBulk {
+// UpdateRequiredTime sets the "required_time" field to the value that was provided on create.
+func (u *RecreationUpsertBulk) UpdateRequiredTime() *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
-		s.UpdateRequredTime()
+		s.UpdateRequiredTime()
 	})
 }
 

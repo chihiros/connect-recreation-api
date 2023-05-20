@@ -31,8 +31,8 @@ type Recreation struct {
 	Content string `json:"content,omitempty"`
 	// TargetNumber holds the value of the "target_number" field.
 	TargetNumber int `json:"target_number,omitempty"`
-	// RequredTime holds the value of the "requred_time" field.
-	RequredTime int `json:"requred_time,omitempty"`
+	// RequiredTime holds the value of the "required_time" field.
+	RequiredTime int `json:"required_time,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -47,7 +47,7 @@ func (*Recreation) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case recreation.FieldGenre:
 			values[i] = new([]byte)
-		case recreation.FieldID, recreation.FieldTargetNumber, recreation.FieldRequredTime:
+		case recreation.FieldID, recreation.FieldTargetNumber, recreation.FieldRequiredTime:
 			values[i] = new(sql.NullInt64)
 		case recreation.FieldTitle, recreation.FieldContent:
 			values[i] = new(sql.NullString)
@@ -114,11 +114,11 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				r.TargetNumber = int(value.Int64)
 			}
-		case recreation.FieldRequredTime:
+		case recreation.FieldRequiredTime:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field requred_time", values[i])
+				return fmt.Errorf("unexpected type %T for field required_time", values[i])
 			} else if value.Valid {
-				r.RequredTime = int(value.Int64)
+				r.RequiredTime = int(value.Int64)
 			}
 		case recreation.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -186,8 +186,8 @@ func (r *Recreation) String() string {
 	builder.WriteString("target_number=")
 	builder.WriteString(fmt.Sprintf("%v", r.TargetNumber))
 	builder.WriteString(", ")
-	builder.WriteString("requred_time=")
-	builder.WriteString(fmt.Sprintf("%v", r.RequredTime))
+	builder.WriteString("required_time=")
+	builder.WriteString(fmt.Sprintf("%v", r.RequiredTime))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(r.CreatedAt.Format(time.ANSIC))

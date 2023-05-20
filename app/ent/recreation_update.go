@@ -66,16 +66,16 @@ func (ru *RecreationUpdate) AddTargetNumber(i int) *RecreationUpdate {
 	return ru
 }
 
-// SetRequredTime sets the "requred_time" field.
-func (ru *RecreationUpdate) SetRequredTime(i int) *RecreationUpdate {
-	ru.mutation.ResetRequredTime()
-	ru.mutation.SetRequredTime(i)
+// SetRequiredTime sets the "required_time" field.
+func (ru *RecreationUpdate) SetRequiredTime(i int) *RecreationUpdate {
+	ru.mutation.ResetRequiredTime()
+	ru.mutation.SetRequiredTime(i)
 	return ru
 }
 
-// AddRequredTime adds i to the "requred_time" field.
-func (ru *RecreationUpdate) AddRequredTime(i int) *RecreationUpdate {
-	ru.mutation.AddRequredTime(i)
+// AddRequiredTime adds i to the "required_time" field.
+func (ru *RecreationUpdate) AddRequiredTime(i int) *RecreationUpdate {
+	ru.mutation.AddRequiredTime(i)
 	return ru
 }
 
@@ -155,11 +155,11 @@ func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ru.mutation.AddedTargetNumber(); ok {
 		_spec.AddField(recreation.FieldTargetNumber, field.TypeInt, value)
 	}
-	if value, ok := ru.mutation.RequredTime(); ok {
-		_spec.SetField(recreation.FieldRequredTime, field.TypeInt, value)
+	if value, ok := ru.mutation.RequiredTime(); ok {
+		_spec.SetField(recreation.FieldRequiredTime, field.TypeInt, value)
 	}
-	if value, ok := ru.mutation.AddedRequredTime(); ok {
-		_spec.AddField(recreation.FieldRequredTime, field.TypeInt, value)
+	if value, ok := ru.mutation.AddedRequiredTime(); ok {
+		_spec.AddField(recreation.FieldRequiredTime, field.TypeInt, value)
 	}
 	if value, ok := ru.mutation.UpdatedAt(); ok {
 		_spec.SetField(recreation.FieldUpdatedAt, field.TypeTime, value)
@@ -221,16 +221,16 @@ func (ruo *RecreationUpdateOne) AddTargetNumber(i int) *RecreationUpdateOne {
 	return ruo
 }
 
-// SetRequredTime sets the "requred_time" field.
-func (ruo *RecreationUpdateOne) SetRequredTime(i int) *RecreationUpdateOne {
-	ruo.mutation.ResetRequredTime()
-	ruo.mutation.SetRequredTime(i)
+// SetRequiredTime sets the "required_time" field.
+func (ruo *RecreationUpdateOne) SetRequiredTime(i int) *RecreationUpdateOne {
+	ruo.mutation.ResetRequiredTime()
+	ruo.mutation.SetRequiredTime(i)
 	return ruo
 }
 
-// AddRequredTime adds i to the "requred_time" field.
-func (ruo *RecreationUpdateOne) AddRequredTime(i int) *RecreationUpdateOne {
-	ruo.mutation.AddRequredTime(i)
+// AddRequiredTime adds i to the "required_time" field.
+func (ruo *RecreationUpdateOne) AddRequiredTime(i int) *RecreationUpdateOne {
+	ruo.mutation.AddRequiredTime(i)
 	return ruo
 }
 
@@ -340,11 +340,11 @@ func (ruo *RecreationUpdateOne) sqlSave(ctx context.Context) (_node *Recreation,
 	if value, ok := ruo.mutation.AddedTargetNumber(); ok {
 		_spec.AddField(recreation.FieldTargetNumber, field.TypeInt, value)
 	}
-	if value, ok := ruo.mutation.RequredTime(); ok {
-		_spec.SetField(recreation.FieldRequredTime, field.TypeInt, value)
+	if value, ok := ruo.mutation.RequiredTime(); ok {
+		_spec.SetField(recreation.FieldRequiredTime, field.TypeInt, value)
 	}
-	if value, ok := ruo.mutation.AddedRequredTime(); ok {
-		_spec.AddField(recreation.FieldRequredTime, field.TypeInt, value)
+	if value, ok := ruo.mutation.AddedRequiredTime(); ok {
+		_spec.AddField(recreation.FieldRequiredTime, field.TypeInt, value)
 	}
 	if value, ok := ruo.mutation.UpdatedAt(); ok {
 		_spec.SetField(recreation.FieldUpdatedAt, field.TypeTime, value)

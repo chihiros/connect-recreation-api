@@ -80,9 +80,9 @@ func TargetNumber(v int) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldTargetNumber, v))
 }
 
-// RequredTime applies equality check predicate on the "requred_time" field. It's identical to RequredTimeEQ.
-func RequredTime(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldRequredTime, v))
+// RequiredTime applies equality check predicate on the "required_time" field. It's identical to RequiredTimeEQ.
+func RequiredTime(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldRequiredTime, v))
 }
 
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
@@ -345,44 +345,44 @@ func TargetNumberLTE(v int) predicate.Recreation {
 	return predicate.Recreation(sql.FieldLTE(FieldTargetNumber, v))
 }
 
-// RequredTimeEQ applies the EQ predicate on the "requred_time" field.
-func RequredTimeEQ(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldRequredTime, v))
+// RequiredTimeEQ applies the EQ predicate on the "required_time" field.
+func RequiredTimeEQ(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldRequiredTime, v))
 }
 
-// RequredTimeNEQ applies the NEQ predicate on the "requred_time" field.
-func RequredTimeNEQ(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNEQ(FieldRequredTime, v))
+// RequiredTimeNEQ applies the NEQ predicate on the "required_time" field.
+func RequiredTimeNEQ(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldRequiredTime, v))
 }
 
-// RequredTimeIn applies the In predicate on the "requred_time" field.
-func RequredTimeIn(vs ...int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldIn(FieldRequredTime, vs...))
+// RequiredTimeIn applies the In predicate on the "required_time" field.
+func RequiredTimeIn(vs ...int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldIn(FieldRequiredTime, vs...))
 }
 
-// RequredTimeNotIn applies the NotIn predicate on the "requred_time" field.
-func RequredTimeNotIn(vs ...int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNotIn(FieldRequredTime, vs...))
+// RequiredTimeNotIn applies the NotIn predicate on the "required_time" field.
+func RequiredTimeNotIn(vs ...int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotIn(FieldRequiredTime, vs...))
 }
 
-// RequredTimeGT applies the GT predicate on the "requred_time" field.
-func RequredTimeGT(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGT(FieldRequredTime, v))
+// RequiredTimeGT applies the GT predicate on the "required_time" field.
+func RequiredTimeGT(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGT(FieldRequiredTime, v))
 }
 
-// RequredTimeGTE applies the GTE predicate on the "requred_time" field.
-func RequredTimeGTE(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGTE(FieldRequredTime, v))
+// RequiredTimeGTE applies the GTE predicate on the "required_time" field.
+func RequiredTimeGTE(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGTE(FieldRequiredTime, v))
 }
 
-// RequredTimeLT applies the LT predicate on the "requred_time" field.
-func RequredTimeLT(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLT(FieldRequredTime, v))
+// RequiredTimeLT applies the LT predicate on the "required_time" field.
+func RequiredTimeLT(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLT(FieldRequiredTime, v))
 }
 
-// RequredTimeLTE applies the LTE predicate on the "requred_time" field.
-func RequredTimeLTE(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLTE(FieldRequredTime, v))
+// RequiredTimeLTE applies the LTE predicate on the "required_time" field.
+func RequiredTimeLTE(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLTE(FieldRequiredTime, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

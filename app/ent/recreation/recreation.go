@@ -25,8 +25,8 @@ const (
 	FieldContent = "content"
 	// FieldTargetNumber holds the string denoting the target_number field in the database.
 	FieldTargetNumber = "target_number"
-	// FieldRequredTime holds the string denoting the requred_time field in the database.
-	FieldRequredTime = "requred_time"
+	// FieldRequiredTime holds the string denoting the required_time field in the database.
+	FieldRequiredTime = "required_time"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -44,7 +44,7 @@ var Columns = []string{
 	FieldTitle,
 	FieldContent,
 	FieldTargetNumber,
-	FieldRequredTime,
+	FieldRequiredTime,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -101,9 +101,9 @@ func ByTargetNumber(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTargetNumber, opts...).ToFunc()
 }
 
-// ByRequredTime orders the results by the requred_time field.
-func ByRequredTime(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRequredTime, opts...).ToFunc()
+// ByRequiredTime orders the results by the required_time field.
+func ByRequiredTime(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRequiredTime, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

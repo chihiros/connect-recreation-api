@@ -1024,8 +1024,8 @@ type RecreationMutation struct {
 	content          *string
 	target_number    *int
 	addtarget_number *int
-	requred_time     *int
-	addrequred_time  *int
+	required_time    *int
+	addrequired_time *int
 	created_at       *time.Time
 	updated_at       *time.Time
 	clearedFields    map[string]struct{}
@@ -1383,60 +1383,60 @@ func (m *RecreationMutation) ResetTargetNumber() {
 	m.addtarget_number = nil
 }
 
-// SetRequredTime sets the "requred_time" field.
-func (m *RecreationMutation) SetRequredTime(i int) {
-	m.requred_time = &i
-	m.addrequred_time = nil
+// SetRequiredTime sets the "required_time" field.
+func (m *RecreationMutation) SetRequiredTime(i int) {
+	m.required_time = &i
+	m.addrequired_time = nil
 }
 
-// RequredTime returns the value of the "requred_time" field in the mutation.
-func (m *RecreationMutation) RequredTime() (r int, exists bool) {
-	v := m.requred_time
+// RequiredTime returns the value of the "required_time" field in the mutation.
+func (m *RecreationMutation) RequiredTime() (r int, exists bool) {
+	v := m.required_time
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRequredTime returns the old "requred_time" field's value of the Recreation entity.
+// OldRequiredTime returns the old "required_time" field's value of the Recreation entity.
 // If the Recreation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RecreationMutation) OldRequredTime(ctx context.Context) (v int, err error) {
+func (m *RecreationMutation) OldRequiredTime(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRequredTime is only allowed on UpdateOne operations")
+		return v, errors.New("OldRequiredTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRequredTime requires an ID field in the mutation")
+		return v, errors.New("OldRequiredTime requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRequredTime: %w", err)
+		return v, fmt.Errorf("querying old value for OldRequiredTime: %w", err)
 	}
-	return oldValue.RequredTime, nil
+	return oldValue.RequiredTime, nil
 }
 
-// AddRequredTime adds i to the "requred_time" field.
-func (m *RecreationMutation) AddRequredTime(i int) {
-	if m.addrequred_time != nil {
-		*m.addrequred_time += i
+// AddRequiredTime adds i to the "required_time" field.
+func (m *RecreationMutation) AddRequiredTime(i int) {
+	if m.addrequired_time != nil {
+		*m.addrequired_time += i
 	} else {
-		m.addrequred_time = &i
+		m.addrequired_time = &i
 	}
 }
 
-// AddedRequredTime returns the value that was added to the "requred_time" field in this mutation.
-func (m *RecreationMutation) AddedRequredTime() (r int, exists bool) {
-	v := m.addrequred_time
+// AddedRequiredTime returns the value that was added to the "required_time" field in this mutation.
+func (m *RecreationMutation) AddedRequiredTime() (r int, exists bool) {
+	v := m.addrequired_time
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetRequredTime resets all changes to the "requred_time" field.
-func (m *RecreationMutation) ResetRequredTime() {
-	m.requred_time = nil
-	m.addrequred_time = nil
+// ResetRequiredTime resets all changes to the "required_time" field.
+func (m *RecreationMutation) ResetRequiredTime() {
+	m.required_time = nil
+	m.addrequired_time = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -1564,8 +1564,8 @@ func (m *RecreationMutation) Fields() []string {
 	if m.target_number != nil {
 		fields = append(fields, recreation.FieldTargetNumber)
 	}
-	if m.requred_time != nil {
-		fields = append(fields, recreation.FieldRequredTime)
+	if m.required_time != nil {
+		fields = append(fields, recreation.FieldRequiredTime)
 	}
 	if m.created_at != nil {
 		fields = append(fields, recreation.FieldCreatedAt)
@@ -1593,8 +1593,8 @@ func (m *RecreationMutation) Field(name string) (ent.Value, bool) {
 		return m.Content()
 	case recreation.FieldTargetNumber:
 		return m.TargetNumber()
-	case recreation.FieldRequredTime:
-		return m.RequredTime()
+	case recreation.FieldRequiredTime:
+		return m.RequiredTime()
 	case recreation.FieldCreatedAt:
 		return m.CreatedAt()
 	case recreation.FieldUpdatedAt:
@@ -1620,8 +1620,8 @@ func (m *RecreationMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldContent(ctx)
 	case recreation.FieldTargetNumber:
 		return m.OldTargetNumber(ctx)
-	case recreation.FieldRequredTime:
-		return m.OldRequredTime(ctx)
+	case recreation.FieldRequiredTime:
+		return m.OldRequiredTime(ctx)
 	case recreation.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case recreation.FieldUpdatedAt:
@@ -1677,12 +1677,12 @@ func (m *RecreationMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetTargetNumber(v)
 		return nil
-	case recreation.FieldRequredTime:
+	case recreation.FieldRequiredTime:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRequredTime(v)
+		m.SetRequiredTime(v)
 		return nil
 	case recreation.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -1709,8 +1709,8 @@ func (m *RecreationMutation) AddedFields() []string {
 	if m.addtarget_number != nil {
 		fields = append(fields, recreation.FieldTargetNumber)
 	}
-	if m.addrequred_time != nil {
-		fields = append(fields, recreation.FieldRequredTime)
+	if m.addrequired_time != nil {
+		fields = append(fields, recreation.FieldRequiredTime)
 	}
 	return fields
 }
@@ -1722,8 +1722,8 @@ func (m *RecreationMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case recreation.FieldTargetNumber:
 		return m.AddedTargetNumber()
-	case recreation.FieldRequredTime:
-		return m.AddedRequredTime()
+	case recreation.FieldRequiredTime:
+		return m.AddedRequiredTime()
 	}
 	return nil, false
 }
@@ -1740,12 +1740,12 @@ func (m *RecreationMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddTargetNumber(v)
 		return nil
-	case recreation.FieldRequredTime:
+	case recreation.FieldRequiredTime:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddRequredTime(v)
+		m.AddRequiredTime(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Recreation numeric field %s", name)
@@ -1792,8 +1792,8 @@ func (m *RecreationMutation) ResetField(name string) error {
 	case recreation.FieldTargetNumber:
 		m.ResetTargetNumber()
 		return nil
-	case recreation.FieldRequredTime:
-		m.ResetRequredTime()
+	case recreation.FieldRequiredTime:
+		m.ResetRequiredTime()
 		return nil
 	case recreation.FieldCreatedAt:
 		m.ResetCreatedAt()

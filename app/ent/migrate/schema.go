@@ -45,7 +45,7 @@ var (
 		{Name: "title", Type: field.TypeString},
 		{Name: "content", Type: field.TypeString},
 		{Name: "target_number", Type: field.TypeInt},
-		{Name: "requred_time", Type: field.TypeInt},
+		{Name: "required_time", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 	}
