@@ -5,6 +5,7 @@ package ent
 import (
 	"app/ent/predicate"
 	"app/ent/recreation"
+	"app/ent/schema"
 	"context"
 	"errors"
 	"fmt"
@@ -12,7 +13,6 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 )
 
@@ -30,14 +30,8 @@ func (ru *RecreationUpdate) Where(ps ...predicate.Recreation) *RecreationUpdate 
 }
 
 // SetGenre sets the "genre" field.
-func (ru *RecreationUpdate) SetGenre(i []int) *RecreationUpdate {
-	ru.mutation.SetGenre(i)
-	return ru
-}
-
-// AppendGenre appends i to the "genre" field.
-func (ru *RecreationUpdate) AppendGenre(i []int) *RecreationUpdate {
-	ru.mutation.AppendGenre(i)
+func (ru *RecreationUpdate) SetGenre(ss *schema.IntSlice) *RecreationUpdate {
+	ru.mutation.SetGenre(ss)
 	return ru
 }
 
@@ -138,11 +132,6 @@ func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ru.mutation.Genre(); ok {
 		_spec.SetField(recreation.FieldGenre, field.TypeJSON, value)
 	}
-	if value, ok := ru.mutation.AppendedGenre(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, recreation.FieldGenre, value)
-		})
-	}
 	if value, ok := ru.mutation.Title(); ok {
 		_spec.SetField(recreation.FieldTitle, field.TypeString, value)
 	}
@@ -185,14 +174,8 @@ type RecreationUpdateOne struct {
 }
 
 // SetGenre sets the "genre" field.
-func (ruo *RecreationUpdateOne) SetGenre(i []int) *RecreationUpdateOne {
-	ruo.mutation.SetGenre(i)
-	return ruo
-}
-
-// AppendGenre appends i to the "genre" field.
-func (ruo *RecreationUpdateOne) AppendGenre(i []int) *RecreationUpdateOne {
-	ruo.mutation.AppendGenre(i)
+func (ruo *RecreationUpdateOne) SetGenre(ss *schema.IntSlice) *RecreationUpdateOne {
+	ruo.mutation.SetGenre(ss)
 	return ruo
 }
 
@@ -322,11 +305,6 @@ func (ruo *RecreationUpdateOne) sqlSave(ctx context.Context) (_node *Recreation,
 	}
 	if value, ok := ruo.mutation.Genre(); ok {
 		_spec.SetField(recreation.FieldGenre, field.TypeJSON, value)
-	}
-	if value, ok := ruo.mutation.AppendedGenre(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, recreation.FieldGenre, value)
-		})
 	}
 	if value, ok := ruo.mutation.Title(); ok {
 		_spec.SetField(recreation.FieldTitle, field.TypeString, value)

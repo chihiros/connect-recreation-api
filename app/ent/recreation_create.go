@@ -4,6 +4,7 @@ package ent
 
 import (
 	"app/ent/recreation"
+	"app/ent/schema"
 	"context"
 	"errors"
 	"fmt"
@@ -36,8 +37,8 @@ func (rc *RecreationCreate) SetUUID(u uuid.UUID) *RecreationCreate {
 }
 
 // SetGenre sets the "genre" field.
-func (rc *RecreationCreate) SetGenre(i []int) *RecreationCreate {
-	rc.mutation.SetGenre(i)
+func (rc *RecreationCreate) SetGenre(ss *schema.IntSlice) *RecreationCreate {
+	rc.mutation.SetGenre(ss)
 	return rc
 }
 
@@ -283,7 +284,7 @@ type (
 )
 
 // SetGenre sets the "genre" field.
-func (u *RecreationUpsert) SetGenre(v []int) *RecreationUpsert {
+func (u *RecreationUpsert) SetGenre(v *schema.IntSlice) *RecreationUpsert {
 	u.Set(recreation.FieldGenre, v)
 	return u
 }
@@ -418,7 +419,7 @@ func (u *RecreationUpsertOne) Update(set func(*RecreationUpsert)) *RecreationUps
 }
 
 // SetGenre sets the "genre" field.
-func (u *RecreationUpsertOne) SetGenre(v []int) *RecreationUpsertOne {
+func (u *RecreationUpsertOne) SetGenre(v *schema.IntSlice) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
 		s.SetGenre(v)
 	})
@@ -729,7 +730,7 @@ func (u *RecreationUpsertBulk) Update(set func(*RecreationUpsert)) *RecreationUp
 }
 
 // SetGenre sets the "genre" field.
-func (u *RecreationUpsertBulk) SetGenre(v []int) *RecreationUpsertBulk {
+func (u *RecreationUpsertBulk) SetGenre(v *schema.IntSlice) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
 		s.SetGenre(v)
 	})
