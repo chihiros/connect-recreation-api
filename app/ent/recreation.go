@@ -4,7 +4,6 @@ package ent
 
 import (
 	"app/ent/recreation"
-	"app/ent/schema"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -25,7 +24,7 @@ type Recreation struct {
 	// UUID holds the value of the "uuid" field.
 	UUID uuid.UUID `json:"uuid,omitempty"`
 	// Genre holds the value of the "genre" field.
-	Genre *schema.IntSlice `json:"genre,omitempty"`
+	Genre []int `json:"genre,omitempty"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// Content holds the value of the "content" field.
@@ -47,7 +46,7 @@ func (*Recreation) scanValues(columns []string) ([]any, error) {
 	for i := range columns {
 		switch columns[i] {
 		case recreation.FieldGenre:
-			values[i] = new(schema.IntSlice)
+			values[i] = new([]byte)
 		case recreation.FieldID, recreation.FieldTargetNumber, recreation.FieldRequiredTime:
 			values[i] = new(sql.NullInt64)
 		case recreation.FieldTitle, recreation.FieldContent:
@@ -90,7 +89,7 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 				r.UUID = *value
 			}
 		case recreation.FieldGenre:
-			if value, ok := values[i].(*schema.IntSlice); !ok {
+			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field genre", values[i])
 			} else if value != nil && len(*value) > 0 {
 				if err := json.Unmarshal(*value, &r.Genre); err != nil {

@@ -7,7 +7,6 @@ import (
 	"app/ent/prefecture"
 	"app/ent/profile"
 	"app/ent/recreation"
-	"app/ent/schema"
 	"app/ent/user"
 	"context"
 	"errors"
@@ -1019,7 +1018,8 @@ type RecreationMutation struct {
 	id               *int
 	user_id          *uuid.UUID
 	uuid             *uuid.UUID
-	genre            **schema.IntSlice
+	genre            *[]int
+	appendgenre      []int
 	title            *string
 	content          *string
 	target_number    *int
@@ -1205,12 +1205,13 @@ func (m *RecreationMutation) ResetUUID() {
 }
 
 // SetGenre sets the "genre" field.
-func (m *RecreationMutation) SetGenre(ss *schema.IntSlice) {
-	m.genre = &ss
+func (m *RecreationMutation) SetGenre(i []int) {
+	m.genre = &i
+	m.appendgenre = nil
 }
 
 // Genre returns the value of the "genre" field in the mutation.
-func (m *RecreationMutation) Genre() (r *schema.IntSlice, exists bool) {
+func (m *RecreationMutation) Genre() (r []int, exists bool) {
 	v := m.genre
 	if v == nil {
 		return
@@ -1221,7 +1222,7 @@ func (m *RecreationMutation) Genre() (r *schema.IntSlice, exists bool) {
 // OldGenre returns the old "genre" field's value of the Recreation entity.
 // If the Recreation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RecreationMutation) OldGenre(ctx context.Context) (v *schema.IntSlice, err error) {
+func (m *RecreationMutation) OldGenre(ctx context.Context) (v []int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldGenre is only allowed on UpdateOne operations")
 	}
@@ -1235,9 +1236,23 @@ func (m *RecreationMutation) OldGenre(ctx context.Context) (v *schema.IntSlice, 
 	return oldValue.Genre, nil
 }
 
+// AppendGenre adds i to the "genre" field.
+func (m *RecreationMutation) AppendGenre(i []int) {
+	m.appendgenre = append(m.appendgenre, i...)
+}
+
+// AppendedGenre returns the list of values that were appended to the "genre" field in this mutation.
+func (m *RecreationMutation) AppendedGenre() ([]int, bool) {
+	if len(m.appendgenre) == 0 {
+		return nil, false
+	}
+	return m.appendgenre, true
+}
+
 // ResetGenre resets all changes to the "genre" field.
 func (m *RecreationMutation) ResetGenre() {
 	m.genre = nil
+	m.appendgenre = nil
 }
 
 // SetTitle sets the "title" field.
@@ -1635,7 +1650,7 @@ func (m *RecreationMutation) SetField(name string, value ent.Value) error {
 		m.SetUUID(v)
 		return nil
 	case recreation.FieldGenre:
-		v, ok := value.(*schema.IntSlice)
+		v, ok := value.([]int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
