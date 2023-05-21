@@ -40,7 +40,7 @@ func (r *RecreationRepository) GetRecreationsByID(ctx context.Context, id uuid.U
 		panic(err)
 	}
 
-	res := usecase.Response{Data: user}
+	res := usecase.Response{Data: user[0]}
 	return res, err
 }
 
