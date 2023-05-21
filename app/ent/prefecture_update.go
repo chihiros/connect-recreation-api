@@ -63,7 +63,7 @@ func (pu *PrefectureUpdate) Mutation() *PrefectureMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (pu *PrefectureUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, PrefectureMutation](ctx, pu.sqlSave, pu.mutation, pu.hooks)
+	return withHooks(ctx, pu.sqlSave, pu.mutation, pu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -171,7 +171,7 @@ func (puo *PrefectureUpdateOne) Select(field string, fields ...string) *Prefectu
 
 // Save executes the query and returns the updated Prefecture entity.
 func (puo *PrefectureUpdateOne) Save(ctx context.Context) (*Prefecture, error) {
-	return withHooks[*Prefecture, PrefectureMutation](ctx, puo.sqlSave, puo.mutation, puo.hooks)
+	return withHooks(ctx, puo.sqlSave, puo.mutation, puo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

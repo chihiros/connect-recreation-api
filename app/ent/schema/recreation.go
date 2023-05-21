@@ -5,27 +5,32 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 type Recreation struct {
 	ent.Schema
 }
 
-// Fields of the User.
+// Fields of the Recreation.
 func (Recreation) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("uid").
+		field.UUID("user_id", uuid.UUID{}).
 			Immutable().
 			Unique(),
-		field.String("username").
+		field.UUID("recreation_id", uuid.UUID{}).
+			Immutable().
 			Unique(),
-		field.String("mail").
-			Unique(),
-		field.Int("prefecture_id").
-			Nillable(),
+		field.JSON("genre", []int{}),
+		field.String("title"),
+		field.String("content"),
+		field.Int("target_number"),
+		field.Int("required_time"),
 		field.Time("created_at").
+			Immutable().
 			Default(time.Now),
 		field.Time("updated_at").
-			Default(time.Now),
+			Default(time.Now).
+			UpdateDefault(time.Now),
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 // ID filters vertices based on their ID field.
@@ -54,24 +55,34 @@ func IDLTE(id int) predicate.Recreation {
 	return predicate.Recreation(sql.FieldLTE(FieldID, id))
 }
 
-// UID applies equality check predicate on the "uid" field. It's identical to UIDEQ.
-func UID(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldUID, v))
+// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
+func UserID(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldUserID, v))
 }
 
-// Username applies equality check predicate on the "username" field. It's identical to UsernameEQ.
-func Username(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldUsername, v))
+// RecreationID applies equality check predicate on the "recreation_id" field. It's identical to RecreationIDEQ.
+func RecreationID(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldRecreationID, v))
 }
 
-// Mail applies equality check predicate on the "mail" field. It's identical to MailEQ.
-func Mail(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldMail, v))
+// Title applies equality check predicate on the "title" field. It's identical to TitleEQ.
+func Title(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldTitle, v))
 }
 
-// PrefectureID applies equality check predicate on the "prefecture_id" field. It's identical to PrefectureIDEQ.
-func PrefectureID(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldPrefectureID, v))
+// Content applies equality check predicate on the "content" field. It's identical to ContentEQ.
+func Content(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldContent, v))
+}
+
+// TargetNumber applies equality check predicate on the "target_number" field. It's identical to TargetNumberEQ.
+func TargetNumber(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldTargetNumber, v))
+}
+
+// RequiredTime applies equality check predicate on the "required_time" field. It's identical to RequiredTimeEQ.
+func RequiredTime(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldRequiredTime, v))
 }
 
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
@@ -84,239 +95,294 @@ func UpdatedAt(v time.Time) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// UIDEQ applies the EQ predicate on the "uid" field.
-func UIDEQ(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldUID, v))
+// UserIDEQ applies the EQ predicate on the "user_id" field.
+func UserIDEQ(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldUserID, v))
 }
 
-// UIDNEQ applies the NEQ predicate on the "uid" field.
-func UIDNEQ(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNEQ(FieldUID, v))
+// UserIDNEQ applies the NEQ predicate on the "user_id" field.
+func UserIDNEQ(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldUserID, v))
 }
 
-// UIDIn applies the In predicate on the "uid" field.
-func UIDIn(vs ...string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldIn(FieldUID, vs...))
+// UserIDIn applies the In predicate on the "user_id" field.
+func UserIDIn(vs ...uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldIn(FieldUserID, vs...))
 }
 
-// UIDNotIn applies the NotIn predicate on the "uid" field.
-func UIDNotIn(vs ...string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNotIn(FieldUID, vs...))
+// UserIDNotIn applies the NotIn predicate on the "user_id" field.
+func UserIDNotIn(vs ...uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotIn(FieldUserID, vs...))
 }
 
-// UIDGT applies the GT predicate on the "uid" field.
-func UIDGT(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGT(FieldUID, v))
+// UserIDGT applies the GT predicate on the "user_id" field.
+func UserIDGT(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGT(FieldUserID, v))
 }
 
-// UIDGTE applies the GTE predicate on the "uid" field.
-func UIDGTE(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGTE(FieldUID, v))
+// UserIDGTE applies the GTE predicate on the "user_id" field.
+func UserIDGTE(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGTE(FieldUserID, v))
 }
 
-// UIDLT applies the LT predicate on the "uid" field.
-func UIDLT(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLT(FieldUID, v))
+// UserIDLT applies the LT predicate on the "user_id" field.
+func UserIDLT(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLT(FieldUserID, v))
 }
 
-// UIDLTE applies the LTE predicate on the "uid" field.
-func UIDLTE(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLTE(FieldUID, v))
+// UserIDLTE applies the LTE predicate on the "user_id" field.
+func UserIDLTE(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLTE(FieldUserID, v))
 }
 
-// UIDContains applies the Contains predicate on the "uid" field.
-func UIDContains(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldContains(FieldUID, v))
+// RecreationIDEQ applies the EQ predicate on the "recreation_id" field.
+func RecreationIDEQ(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldRecreationID, v))
 }
 
-// UIDHasPrefix applies the HasPrefix predicate on the "uid" field.
-func UIDHasPrefix(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldHasPrefix(FieldUID, v))
+// RecreationIDNEQ applies the NEQ predicate on the "recreation_id" field.
+func RecreationIDNEQ(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldRecreationID, v))
 }
 
-// UIDHasSuffix applies the HasSuffix predicate on the "uid" field.
-func UIDHasSuffix(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldHasSuffix(FieldUID, v))
+// RecreationIDIn applies the In predicate on the "recreation_id" field.
+func RecreationIDIn(vs ...uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldIn(FieldRecreationID, vs...))
 }
 
-// UIDEqualFold applies the EqualFold predicate on the "uid" field.
-func UIDEqualFold(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEqualFold(FieldUID, v))
+// RecreationIDNotIn applies the NotIn predicate on the "recreation_id" field.
+func RecreationIDNotIn(vs ...uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotIn(FieldRecreationID, vs...))
 }
 
-// UIDContainsFold applies the ContainsFold predicate on the "uid" field.
-func UIDContainsFold(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldContainsFold(FieldUID, v))
+// RecreationIDGT applies the GT predicate on the "recreation_id" field.
+func RecreationIDGT(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGT(FieldRecreationID, v))
 }
 
-// UsernameEQ applies the EQ predicate on the "username" field.
-func UsernameEQ(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldUsername, v))
+// RecreationIDGTE applies the GTE predicate on the "recreation_id" field.
+func RecreationIDGTE(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGTE(FieldRecreationID, v))
 }
 
-// UsernameNEQ applies the NEQ predicate on the "username" field.
-func UsernameNEQ(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNEQ(FieldUsername, v))
+// RecreationIDLT applies the LT predicate on the "recreation_id" field.
+func RecreationIDLT(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLT(FieldRecreationID, v))
 }
 
-// UsernameIn applies the In predicate on the "username" field.
-func UsernameIn(vs ...string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldIn(FieldUsername, vs...))
+// RecreationIDLTE applies the LTE predicate on the "recreation_id" field.
+func RecreationIDLTE(v uuid.UUID) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLTE(FieldRecreationID, v))
 }
 
-// UsernameNotIn applies the NotIn predicate on the "username" field.
-func UsernameNotIn(vs ...string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNotIn(FieldUsername, vs...))
+// TitleEQ applies the EQ predicate on the "title" field.
+func TitleEQ(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldTitle, v))
 }
 
-// UsernameGT applies the GT predicate on the "username" field.
-func UsernameGT(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGT(FieldUsername, v))
+// TitleNEQ applies the NEQ predicate on the "title" field.
+func TitleNEQ(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldTitle, v))
 }
 
-// UsernameGTE applies the GTE predicate on the "username" field.
-func UsernameGTE(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGTE(FieldUsername, v))
+// TitleIn applies the In predicate on the "title" field.
+func TitleIn(vs ...string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldIn(FieldTitle, vs...))
 }
 
-// UsernameLT applies the LT predicate on the "username" field.
-func UsernameLT(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLT(FieldUsername, v))
+// TitleNotIn applies the NotIn predicate on the "title" field.
+func TitleNotIn(vs ...string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotIn(FieldTitle, vs...))
 }
 
-// UsernameLTE applies the LTE predicate on the "username" field.
-func UsernameLTE(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLTE(FieldUsername, v))
+// TitleGT applies the GT predicate on the "title" field.
+func TitleGT(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGT(FieldTitle, v))
 }
 
-// UsernameContains applies the Contains predicate on the "username" field.
-func UsernameContains(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldContains(FieldUsername, v))
+// TitleGTE applies the GTE predicate on the "title" field.
+func TitleGTE(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGTE(FieldTitle, v))
 }
 
-// UsernameHasPrefix applies the HasPrefix predicate on the "username" field.
-func UsernameHasPrefix(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldHasPrefix(FieldUsername, v))
+// TitleLT applies the LT predicate on the "title" field.
+func TitleLT(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLT(FieldTitle, v))
 }
 
-// UsernameHasSuffix applies the HasSuffix predicate on the "username" field.
-func UsernameHasSuffix(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldHasSuffix(FieldUsername, v))
+// TitleLTE applies the LTE predicate on the "title" field.
+func TitleLTE(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLTE(FieldTitle, v))
 }
 
-// UsernameEqualFold applies the EqualFold predicate on the "username" field.
-func UsernameEqualFold(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEqualFold(FieldUsername, v))
+// TitleContains applies the Contains predicate on the "title" field.
+func TitleContains(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldContains(FieldTitle, v))
 }
 
-// UsernameContainsFold applies the ContainsFold predicate on the "username" field.
-func UsernameContainsFold(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldContainsFold(FieldUsername, v))
+// TitleHasPrefix applies the HasPrefix predicate on the "title" field.
+func TitleHasPrefix(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldHasPrefix(FieldTitle, v))
 }
 
-// MailEQ applies the EQ predicate on the "mail" field.
-func MailEQ(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldMail, v))
+// TitleHasSuffix applies the HasSuffix predicate on the "title" field.
+func TitleHasSuffix(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldHasSuffix(FieldTitle, v))
 }
 
-// MailNEQ applies the NEQ predicate on the "mail" field.
-func MailNEQ(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNEQ(FieldMail, v))
+// TitleEqualFold applies the EqualFold predicate on the "title" field.
+func TitleEqualFold(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEqualFold(FieldTitle, v))
 }
 
-// MailIn applies the In predicate on the "mail" field.
-func MailIn(vs ...string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldIn(FieldMail, vs...))
+// TitleContainsFold applies the ContainsFold predicate on the "title" field.
+func TitleContainsFold(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldContainsFold(FieldTitle, v))
 }
 
-// MailNotIn applies the NotIn predicate on the "mail" field.
-func MailNotIn(vs ...string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNotIn(FieldMail, vs...))
+// ContentEQ applies the EQ predicate on the "content" field.
+func ContentEQ(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldContent, v))
 }
 
-// MailGT applies the GT predicate on the "mail" field.
-func MailGT(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGT(FieldMail, v))
+// ContentNEQ applies the NEQ predicate on the "content" field.
+func ContentNEQ(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldContent, v))
 }
 
-// MailGTE applies the GTE predicate on the "mail" field.
-func MailGTE(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGTE(FieldMail, v))
+// ContentIn applies the In predicate on the "content" field.
+func ContentIn(vs ...string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldIn(FieldContent, vs...))
 }
 
-// MailLT applies the LT predicate on the "mail" field.
-func MailLT(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLT(FieldMail, v))
+// ContentNotIn applies the NotIn predicate on the "content" field.
+func ContentNotIn(vs ...string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotIn(FieldContent, vs...))
 }
 
-// MailLTE applies the LTE predicate on the "mail" field.
-func MailLTE(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLTE(FieldMail, v))
+// ContentGT applies the GT predicate on the "content" field.
+func ContentGT(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGT(FieldContent, v))
 }
 
-// MailContains applies the Contains predicate on the "mail" field.
-func MailContains(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldContains(FieldMail, v))
+// ContentGTE applies the GTE predicate on the "content" field.
+func ContentGTE(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGTE(FieldContent, v))
 }
 
-// MailHasPrefix applies the HasPrefix predicate on the "mail" field.
-func MailHasPrefix(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldHasPrefix(FieldMail, v))
+// ContentLT applies the LT predicate on the "content" field.
+func ContentLT(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLT(FieldContent, v))
 }
 
-// MailHasSuffix applies the HasSuffix predicate on the "mail" field.
-func MailHasSuffix(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldHasSuffix(FieldMail, v))
+// ContentLTE applies the LTE predicate on the "content" field.
+func ContentLTE(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLTE(FieldContent, v))
 }
 
-// MailEqualFold applies the EqualFold predicate on the "mail" field.
-func MailEqualFold(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEqualFold(FieldMail, v))
+// ContentContains applies the Contains predicate on the "content" field.
+func ContentContains(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldContains(FieldContent, v))
 }
 
-// MailContainsFold applies the ContainsFold predicate on the "mail" field.
-func MailContainsFold(v string) predicate.Recreation {
-	return predicate.Recreation(sql.FieldContainsFold(FieldMail, v))
+// ContentHasPrefix applies the HasPrefix predicate on the "content" field.
+func ContentHasPrefix(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldHasPrefix(FieldContent, v))
 }
 
-// PrefectureIDEQ applies the EQ predicate on the "prefecture_id" field.
-func PrefectureIDEQ(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldEQ(FieldPrefectureID, v))
+// ContentHasSuffix applies the HasSuffix predicate on the "content" field.
+func ContentHasSuffix(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldHasSuffix(FieldContent, v))
 }
 
-// PrefectureIDNEQ applies the NEQ predicate on the "prefecture_id" field.
-func PrefectureIDNEQ(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNEQ(FieldPrefectureID, v))
+// ContentEqualFold applies the EqualFold predicate on the "content" field.
+func ContentEqualFold(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEqualFold(FieldContent, v))
 }
 
-// PrefectureIDIn applies the In predicate on the "prefecture_id" field.
-func PrefectureIDIn(vs ...int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldIn(FieldPrefectureID, vs...))
+// ContentContainsFold applies the ContainsFold predicate on the "content" field.
+func ContentContainsFold(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldContainsFold(FieldContent, v))
 }
 
-// PrefectureIDNotIn applies the NotIn predicate on the "prefecture_id" field.
-func PrefectureIDNotIn(vs ...int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldNotIn(FieldPrefectureID, vs...))
+// TargetNumberEQ applies the EQ predicate on the "target_number" field.
+func TargetNumberEQ(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldTargetNumber, v))
 }
 
-// PrefectureIDGT applies the GT predicate on the "prefecture_id" field.
-func PrefectureIDGT(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGT(FieldPrefectureID, v))
+// TargetNumberNEQ applies the NEQ predicate on the "target_number" field.
+func TargetNumberNEQ(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldTargetNumber, v))
 }
 
-// PrefectureIDGTE applies the GTE predicate on the "prefecture_id" field.
-func PrefectureIDGTE(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldGTE(FieldPrefectureID, v))
+// TargetNumberIn applies the In predicate on the "target_number" field.
+func TargetNumberIn(vs ...int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldIn(FieldTargetNumber, vs...))
 }
 
-// PrefectureIDLT applies the LT predicate on the "prefecture_id" field.
-func PrefectureIDLT(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLT(FieldPrefectureID, v))
+// TargetNumberNotIn applies the NotIn predicate on the "target_number" field.
+func TargetNumberNotIn(vs ...int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotIn(FieldTargetNumber, vs...))
 }
 
-// PrefectureIDLTE applies the LTE predicate on the "prefecture_id" field.
-func PrefectureIDLTE(v int) predicate.Recreation {
-	return predicate.Recreation(sql.FieldLTE(FieldPrefectureID, v))
+// TargetNumberGT applies the GT predicate on the "target_number" field.
+func TargetNumberGT(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGT(FieldTargetNumber, v))
+}
+
+// TargetNumberGTE applies the GTE predicate on the "target_number" field.
+func TargetNumberGTE(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGTE(FieldTargetNumber, v))
+}
+
+// TargetNumberLT applies the LT predicate on the "target_number" field.
+func TargetNumberLT(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLT(FieldTargetNumber, v))
+}
+
+// TargetNumberLTE applies the LTE predicate on the "target_number" field.
+func TargetNumberLTE(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLTE(FieldTargetNumber, v))
+}
+
+// RequiredTimeEQ applies the EQ predicate on the "required_time" field.
+func RequiredTimeEQ(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldRequiredTime, v))
+}
+
+// RequiredTimeNEQ applies the NEQ predicate on the "required_time" field.
+func RequiredTimeNEQ(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldRequiredTime, v))
+}
+
+// RequiredTimeIn applies the In predicate on the "required_time" field.
+func RequiredTimeIn(vs ...int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldIn(FieldRequiredTime, vs...))
+}
+
+// RequiredTimeNotIn applies the NotIn predicate on the "required_time" field.
+func RequiredTimeNotIn(vs ...int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotIn(FieldRequiredTime, vs...))
+}
+
+// RequiredTimeGT applies the GT predicate on the "required_time" field.
+func RequiredTimeGT(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGT(FieldRequiredTime, v))
+}
+
+// RequiredTimeGTE applies the GTE predicate on the "required_time" field.
+func RequiredTimeGTE(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGTE(FieldRequiredTime, v))
+}
+
+// RequiredTimeLT applies the LT predicate on the "required_time" field.
+func RequiredTimeLT(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLT(FieldRequiredTime, v))
+}
+
+// RequiredTimeLTE applies the LTE predicate on the "required_time" field.
+func RequiredTimeLTE(v int) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLTE(FieldRequiredTime, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

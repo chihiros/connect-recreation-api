@@ -1,0 +1,24 @@
+# @HOST=https://api.topicpost.net
+@HOST=http://localhost:8686
+@TOKEN=
+
+#### レクリエーションの取得
+GET {{HOST}}/v1/recreation
+
+#### レクリエーションの取得
+GET {{HOST}}/v1/recreation?id=21efc871-386a-45ea-9f18-c3fbe07748f4
+
+#### レクリエーションの追加
+POST {{HOST}}/v1/recreation
+Context-Type: application/json
+# Authorization: Bearer {{TOKEN}}
+
+{
+    "user_id":"ccab5b0d-b5fb-4d7f-8c0a-6f340dcbade7",
+    "recreation_id":"21efc871-386a-45ea-9f18-c3fbe07748f4",
+    "genre": [1, 2, 4],
+    "title":"ジョン・ブラウンのおじさん",
+    "content":"ジョン・ブラウンのおじさんは〜〜",
+    "target_number":1,
+    "required_time":2
+}
