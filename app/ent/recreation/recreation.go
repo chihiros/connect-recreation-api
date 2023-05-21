@@ -13,14 +13,20 @@ const (
 	Label = "recreation"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldUID holds the string denoting the uid field in the database.
-	FieldUID = "uid"
-	// FieldUsername holds the string denoting the username field in the database.
-	FieldUsername = "username"
-	// FieldMail holds the string denoting the mail field in the database.
-	FieldMail = "mail"
-	// FieldPrefectureID holds the string denoting the prefecture_id field in the database.
-	FieldPrefectureID = "prefecture_id"
+	// FieldUserID holds the string denoting the user_id field in the database.
+	FieldUserID = "user_id"
+	// FieldRecreationID holds the string denoting the recreation_id field in the database.
+	FieldRecreationID = "recreation_id"
+	// FieldGenre holds the string denoting the genre field in the database.
+	FieldGenre = "genre"
+	// FieldTitle holds the string denoting the title field in the database.
+	FieldTitle = "title"
+	// FieldContent holds the string denoting the content field in the database.
+	FieldContent = "content"
+	// FieldTargetNumber holds the string denoting the target_number field in the database.
+	FieldTargetNumber = "target_number"
+	// FieldRequiredTime holds the string denoting the required_time field in the database.
+	FieldRequiredTime = "required_time"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -32,10 +38,13 @@ const (
 // Columns holds all SQL columns for recreation fields.
 var Columns = []string{
 	FieldID,
-	FieldUID,
-	FieldUsername,
-	FieldMail,
-	FieldPrefectureID,
+	FieldUserID,
+	FieldRecreationID,
+	FieldGenre,
+	FieldTitle,
+	FieldContent,
+	FieldTargetNumber,
+	FieldRequiredTime,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -55,42 +64,54 @@ var (
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
 )
 
-// Order defines the ordering method for the Recreation queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the Recreation queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByUID orders the results by the uid field.
-func ByUID(opts ...sql.OrderTermOption) Order {
-	return sql.OrderByField(FieldUID, opts...).ToFunc()
+// ByUserID orders the results by the user_id field.
+func ByUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
-// ByUsername orders the results by the username field.
-func ByUsername(opts ...sql.OrderTermOption) Order {
-	return sql.OrderByField(FieldUsername, opts...).ToFunc()
+// ByRecreationID orders the results by the recreation_id field.
+func ByRecreationID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRecreationID, opts...).ToFunc()
 }
 
-// ByMail orders the results by the mail field.
-func ByMail(opts ...sql.OrderTermOption) Order {
-	return sql.OrderByField(FieldMail, opts...).ToFunc()
+// ByTitle orders the results by the title field.
+func ByTitle(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTitle, opts...).ToFunc()
 }
 
-// ByPrefectureID orders the results by the prefecture_id field.
-func ByPrefectureID(opts ...sql.OrderTermOption) Order {
-	return sql.OrderByField(FieldPrefectureID, opts...).ToFunc()
+// ByContent orders the results by the content field.
+func ByContent(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldContent, opts...).ToFunc()
+}
+
+// ByTargetNumber orders the results by the target_number field.
+func ByTargetNumber(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTargetNumber, opts...).ToFunc()
+}
+
+// ByRequiredTime orders the results by the required_time field.
+func ByRequiredTime(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRequiredTime, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }

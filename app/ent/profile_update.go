@@ -75,7 +75,7 @@ func (pu *ProfileUpdate) Mutation() *ProfileMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (pu *ProfileUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, ProfileMutation](ctx, pu.sqlSave, pu.mutation, pu.hooks)
+	return withHooks(ctx, pu.sqlSave, pu.mutation, pu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -201,7 +201,7 @@ func (puo *ProfileUpdateOne) Select(field string, fields ...string) *ProfileUpda
 
 // Save executes the query and returns the updated Profile entity.
 func (puo *ProfileUpdateOne) Save(ctx context.Context) (*Profile, error) {
-	return withHooks[*Profile, ProfileMutation](ctx, puo.sqlSave, puo.mutation, puo.hooks)
+	return withHooks(ctx, puo.sqlSave, puo.mutation, puo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

@@ -3,9 +3,12 @@ package repository
 import (
 	"app/elements/recreations/usecase"
 	"app/ent"
+	"app/ent/recreation"
 	"context"
 	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type RecreationRepository struct {
@@ -18,35 +21,38 @@ func NewRecreationRepository(conn *ent.Client) *RecreationRepository {
 	}
 }
 
-// func (r *RecreationRepository) GetRecreations(ctx context.Context) (usecase.Response, error) {
-// 	users, err := r.DBConn.Recreation.Query().All(ctx)
-// 	if err != nil {
-// 		panic(err)
-// 	}
+func (r *RecreationRepository) GetRecreations(ctx context.Context) (usecase.Response, error) {
+	users, err := r.DBConn.Recreation.Query().All(ctx)
+	if err != nil {
+		panic(err)
+	}
 
-// 	res := usecase.Response{Data: users}
-// 	return res, err
-// }
+	res := usecase.Response{Data: users}
+	return res, err
+}
 
-// func (r *RecreationRepository) GetRecreationsByID(ctx context.Context, id int) (usecase.Response, error) {
-// 	user, err := r.DBConn.Recreation.Query().
-// 		Where(user.IDEQ(id)).
-// 		All(ctx)
+func (r *RecreationRepository) GetRecreationsByID(ctx context.Context, id uuid.UUID) (usecase.Response, error) {
+	user, err := r.DBConn.Recreation.Query().
+		Where(recreation.RecreationIDEQ(id)).
+		All(ctx)
 
-// 	if err != nil {
-// 		panic(err)
-// 	}
+	if err != nil {
+		panic(err)
+	}
 
-// 	res := usecase.Response{Data: user}
-// 	return res, err
-// }
+	res := usecase.Response{Data: user[0]}
+	return res, err
+}
 
 func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	user, err := r.DBConn.Recreation.Create().
-		SetUID(req.UID).
-		SetUsername(req.Username).
-		SetMail(req.Mail).
-		SetPrefectureID(req.PrefectureID).
+		SetUserID(req.UserID).
+		SetRecreationID(req.RecreationID).
+		SetGenre(req.Genre).
+		SetTitle(req.Title).
+		SetContent(req.Content).
+		SetTargetNumber(req.TargetNumber).
+		SetRequiredTime(req.RequiredTime).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
 		Save(ctx)
