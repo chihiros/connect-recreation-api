@@ -59,3 +59,6 @@ unsetFlyEnvPrd:
 	$(error key is not set)
 	endif
 	flyctl -c $(prd-config) secrets unset $(key)
+
+# memo
+# cat .env.prd | flyctl secrets import -c ./.github/workflows/fly.production.toml
