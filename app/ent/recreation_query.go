@@ -18,7 +18,7 @@ import (
 type RecreationQuery struct {
 	config
 	ctx        *QueryContext
-	order      []recreation.Order
+	order      []recreation.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Recreation
 	// intermediate query (i.e. traversal path).
@@ -52,7 +52,7 @@ func (rq *RecreationQuery) Unique(unique bool) *RecreationQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (rq *RecreationQuery) Order(o ...recreation.Order) *RecreationQuery {
+func (rq *RecreationQuery) Order(o ...recreation.OrderOption) *RecreationQuery {
 	rq.order = append(rq.order, o...)
 	return rq
 }
@@ -246,7 +246,7 @@ func (rq *RecreationQuery) Clone() *RecreationQuery {
 	return &RecreationQuery{
 		config:     rq.config,
 		ctx:        rq.ctx.Clone(),
-		order:      append([]recreation.Order{}, rq.order...),
+		order:      append([]recreation.OrderOption{}, rq.order...),
 		inters:     append([]Interceptor{}, rq.inters...),
 		predicates: append([]predicate.Recreation{}, rq.predicates...),
 		// clone intermediate query.
@@ -261,12 +261,12 @@ func (rq *RecreationQuery) Clone() *RecreationQuery {
 // Example:
 //
 //	var v []struct {
-//		UID string `json:"uid,omitempty"`
+//		UserID uuid.UUID `json:"user_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Recreation.Query().
-//		GroupBy(recreation.FieldUID).
+//		GroupBy(recreation.FieldUserID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (rq *RecreationQuery) GroupBy(field string, fields ...string) *RecreationGroupBy {
@@ -284,11 +284,11 @@ func (rq *RecreationQuery) GroupBy(field string, fields ...string) *RecreationGr
 // Example:
 //
 //	var v []struct {
-//		UID string `json:"uid,omitempty"`
+//		UserID uuid.UUID `json:"user_id,omitempty"`
 //	}
 //
 //	client.Recreation.Query().
-//		Select(recreation.FieldUID).
+//		Select(recreation.FieldUserID).
 //		Scan(ctx, &v)
 func (rq *RecreationQuery) Select(fields ...string) *RecreationSelect {
 	rq.ctx.Fields = append(rq.ctx.Fields, fields...)

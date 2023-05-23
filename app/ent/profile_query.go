@@ -18,7 +18,7 @@ import (
 type ProfileQuery struct {
 	config
 	ctx        *QueryContext
-	order      []profile.Order
+	order      []profile.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Profile
 	// intermediate query (i.e. traversal path).
@@ -52,7 +52,7 @@ func (pq *ProfileQuery) Unique(unique bool) *ProfileQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (pq *ProfileQuery) Order(o ...profile.Order) *ProfileQuery {
+func (pq *ProfileQuery) Order(o ...profile.OrderOption) *ProfileQuery {
 	pq.order = append(pq.order, o...)
 	return pq
 }
@@ -246,7 +246,7 @@ func (pq *ProfileQuery) Clone() *ProfileQuery {
 	return &ProfileQuery{
 		config:     pq.config,
 		ctx:        pq.ctx.Clone(),
-		order:      append([]profile.Order{}, pq.order...),
+		order:      append([]profile.OrderOption{}, pq.order...),
 		inters:     append([]Interceptor{}, pq.inters...),
 		predicates: append([]predicate.Profile{}, pq.predicates...),
 		// clone intermediate query.

@@ -1016,11 +1016,16 @@ type RecreationMutation struct {
 	op               Op
 	typ              string
 	id               *int
-	uid              *string
-	username         *string
-	mail             *string
-	prefecture_id    *int
-	addprefecture_id *int
+	user_id          *uuid.UUID
+	recreation_id    *uuid.UUID
+	genre            *[]int
+	appendgenre      []int
+	title            *string
+	content          *string
+	target_number    *int
+	addtarget_number *int
+	required_time    *int
+	addrequired_time *int
 	created_at       *time.Time
 	updated_at       *time.Time
 	clearedFields    map[string]struct{}
@@ -1127,168 +1132,311 @@ func (m *RecreationMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetUID sets the "uid" field.
-func (m *RecreationMutation) SetUID(s string) {
-	m.uid = &s
+// SetUserID sets the "user_id" field.
+func (m *RecreationMutation) SetUserID(u uuid.UUID) {
+	m.user_id = &u
 }
 
-// UID returns the value of the "uid" field in the mutation.
-func (m *RecreationMutation) UID() (r string, exists bool) {
-	v := m.uid
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *RecreationMutation) UserID() (r uuid.UUID, exists bool) {
+	v := m.user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUID returns the old "uid" field's value of the Recreation entity.
+// OldUserID returns the old "user_id" field's value of the Recreation entity.
 // If the Recreation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RecreationMutation) OldUID(ctx context.Context) (v string, err error) {
+func (m *RecreationMutation) OldUserID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUID is only allowed on UpdateOne operations")
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUID requires an ID field in the mutation")
+		return v, errors.New("OldUserID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUID: %w", err)
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
 	}
-	return oldValue.UID, nil
+	return oldValue.UserID, nil
 }
 
-// ResetUID resets all changes to the "uid" field.
-func (m *RecreationMutation) ResetUID() {
-	m.uid = nil
+// ResetUserID resets all changes to the "user_id" field.
+func (m *RecreationMutation) ResetUserID() {
+	m.user_id = nil
 }
 
-// SetUsername sets the "username" field.
-func (m *RecreationMutation) SetUsername(s string) {
-	m.username = &s
+// SetRecreationID sets the "recreation_id" field.
+func (m *RecreationMutation) SetRecreationID(u uuid.UUID) {
+	m.recreation_id = &u
 }
 
-// Username returns the value of the "username" field in the mutation.
-func (m *RecreationMutation) Username() (r string, exists bool) {
-	v := m.username
+// RecreationID returns the value of the "recreation_id" field in the mutation.
+func (m *RecreationMutation) RecreationID() (r uuid.UUID, exists bool) {
+	v := m.recreation_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUsername returns the old "username" field's value of the Recreation entity.
+// OldRecreationID returns the old "recreation_id" field's value of the Recreation entity.
 // If the Recreation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RecreationMutation) OldUsername(ctx context.Context) (v string, err error) {
+func (m *RecreationMutation) OldRecreationID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUsername is only allowed on UpdateOne operations")
+		return v, errors.New("OldRecreationID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUsername requires an ID field in the mutation")
+		return v, errors.New("OldRecreationID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUsername: %w", err)
+		return v, fmt.Errorf("querying old value for OldRecreationID: %w", err)
 	}
-	return oldValue.Username, nil
+	return oldValue.RecreationID, nil
 }
 
-// ResetUsername resets all changes to the "username" field.
-func (m *RecreationMutation) ResetUsername() {
-	m.username = nil
+// ResetRecreationID resets all changes to the "recreation_id" field.
+func (m *RecreationMutation) ResetRecreationID() {
+	m.recreation_id = nil
 }
 
-// SetMail sets the "mail" field.
-func (m *RecreationMutation) SetMail(s string) {
-	m.mail = &s
+// SetGenre sets the "genre" field.
+func (m *RecreationMutation) SetGenre(i []int) {
+	m.genre = &i
+	m.appendgenre = nil
 }
 
-// Mail returns the value of the "mail" field in the mutation.
-func (m *RecreationMutation) Mail() (r string, exists bool) {
-	v := m.mail
+// Genre returns the value of the "genre" field in the mutation.
+func (m *RecreationMutation) Genre() (r []int, exists bool) {
+	v := m.genre
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMail returns the old "mail" field's value of the Recreation entity.
+// OldGenre returns the old "genre" field's value of the Recreation entity.
 // If the Recreation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RecreationMutation) OldMail(ctx context.Context) (v string, err error) {
+func (m *RecreationMutation) OldGenre(ctx context.Context) (v []int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMail is only allowed on UpdateOne operations")
+		return v, errors.New("OldGenre is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMail requires an ID field in the mutation")
+		return v, errors.New("OldGenre requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMail: %w", err)
+		return v, fmt.Errorf("querying old value for OldGenre: %w", err)
 	}
-	return oldValue.Mail, nil
+	return oldValue.Genre, nil
 }
 
-// ResetMail resets all changes to the "mail" field.
-func (m *RecreationMutation) ResetMail() {
-	m.mail = nil
+// AppendGenre adds i to the "genre" field.
+func (m *RecreationMutation) AppendGenre(i []int) {
+	m.appendgenre = append(m.appendgenre, i...)
 }
 
-// SetPrefectureID sets the "prefecture_id" field.
-func (m *RecreationMutation) SetPrefectureID(i int) {
-	m.prefecture_id = &i
-	m.addprefecture_id = nil
+// AppendedGenre returns the list of values that were appended to the "genre" field in this mutation.
+func (m *RecreationMutation) AppendedGenre() ([]int, bool) {
+	if len(m.appendgenre) == 0 {
+		return nil, false
+	}
+	return m.appendgenre, true
 }
 
-// PrefectureID returns the value of the "prefecture_id" field in the mutation.
-func (m *RecreationMutation) PrefectureID() (r int, exists bool) {
-	v := m.prefecture_id
+// ResetGenre resets all changes to the "genre" field.
+func (m *RecreationMutation) ResetGenre() {
+	m.genre = nil
+	m.appendgenre = nil
+}
+
+// SetTitle sets the "title" field.
+func (m *RecreationMutation) SetTitle(s string) {
+	m.title = &s
+}
+
+// Title returns the value of the "title" field in the mutation.
+func (m *RecreationMutation) Title() (r string, exists bool) {
+	v := m.title
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPrefectureID returns the old "prefecture_id" field's value of the Recreation entity.
+// OldTitle returns the old "title" field's value of the Recreation entity.
 // If the Recreation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RecreationMutation) OldPrefectureID(ctx context.Context) (v *int, err error) {
+func (m *RecreationMutation) OldTitle(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPrefectureID is only allowed on UpdateOne operations")
+		return v, errors.New("OldTitle is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPrefectureID requires an ID field in the mutation")
+		return v, errors.New("OldTitle requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPrefectureID: %w", err)
+		return v, fmt.Errorf("querying old value for OldTitle: %w", err)
 	}
-	return oldValue.PrefectureID, nil
+	return oldValue.Title, nil
 }
 
-// AddPrefectureID adds i to the "prefecture_id" field.
-func (m *RecreationMutation) AddPrefectureID(i int) {
-	if m.addprefecture_id != nil {
-		*m.addprefecture_id += i
+// ResetTitle resets all changes to the "title" field.
+func (m *RecreationMutation) ResetTitle() {
+	m.title = nil
+}
+
+// SetContent sets the "content" field.
+func (m *RecreationMutation) SetContent(s string) {
+	m.content = &s
+}
+
+// Content returns the value of the "content" field in the mutation.
+func (m *RecreationMutation) Content() (r string, exists bool) {
+	v := m.content
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldContent returns the old "content" field's value of the Recreation entity.
+// If the Recreation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecreationMutation) OldContent(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldContent is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldContent requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldContent: %w", err)
+	}
+	return oldValue.Content, nil
+}
+
+// ResetContent resets all changes to the "content" field.
+func (m *RecreationMutation) ResetContent() {
+	m.content = nil
+}
+
+// SetTargetNumber sets the "target_number" field.
+func (m *RecreationMutation) SetTargetNumber(i int) {
+	m.target_number = &i
+	m.addtarget_number = nil
+}
+
+// TargetNumber returns the value of the "target_number" field in the mutation.
+func (m *RecreationMutation) TargetNumber() (r int, exists bool) {
+	v := m.target_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTargetNumber returns the old "target_number" field's value of the Recreation entity.
+// If the Recreation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecreationMutation) OldTargetNumber(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTargetNumber is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTargetNumber requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTargetNumber: %w", err)
+	}
+	return oldValue.TargetNumber, nil
+}
+
+// AddTargetNumber adds i to the "target_number" field.
+func (m *RecreationMutation) AddTargetNumber(i int) {
+	if m.addtarget_number != nil {
+		*m.addtarget_number += i
 	} else {
-		m.addprefecture_id = &i
+		m.addtarget_number = &i
 	}
 }
 
-// AddedPrefectureID returns the value that was added to the "prefecture_id" field in this mutation.
-func (m *RecreationMutation) AddedPrefectureID() (r int, exists bool) {
-	v := m.addprefecture_id
+// AddedTargetNumber returns the value that was added to the "target_number" field in this mutation.
+func (m *RecreationMutation) AddedTargetNumber() (r int, exists bool) {
+	v := m.addtarget_number
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetPrefectureID resets all changes to the "prefecture_id" field.
-func (m *RecreationMutation) ResetPrefectureID() {
-	m.prefecture_id = nil
-	m.addprefecture_id = nil
+// ResetTargetNumber resets all changes to the "target_number" field.
+func (m *RecreationMutation) ResetTargetNumber() {
+	m.target_number = nil
+	m.addtarget_number = nil
+}
+
+// SetRequiredTime sets the "required_time" field.
+func (m *RecreationMutation) SetRequiredTime(i int) {
+	m.required_time = &i
+	m.addrequired_time = nil
+}
+
+// RequiredTime returns the value of the "required_time" field in the mutation.
+func (m *RecreationMutation) RequiredTime() (r int, exists bool) {
+	v := m.required_time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRequiredTime returns the old "required_time" field's value of the Recreation entity.
+// If the Recreation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecreationMutation) OldRequiredTime(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRequiredTime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRequiredTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRequiredTime: %w", err)
+	}
+	return oldValue.RequiredTime, nil
+}
+
+// AddRequiredTime adds i to the "required_time" field.
+func (m *RecreationMutation) AddRequiredTime(i int) {
+	if m.addrequired_time != nil {
+		*m.addrequired_time += i
+	} else {
+		m.addrequired_time = &i
+	}
+}
+
+// AddedRequiredTime returns the value that was added to the "required_time" field in this mutation.
+func (m *RecreationMutation) AddedRequiredTime() (r int, exists bool) {
+	v := m.addrequired_time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRequiredTime resets all changes to the "required_time" field.
+func (m *RecreationMutation) ResetRequiredTime() {
+	m.required_time = nil
+	m.addrequired_time = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -1397,18 +1545,27 @@ func (m *RecreationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RecreationMutation) Fields() []string {
-	fields := make([]string, 0, 6)
-	if m.uid != nil {
-		fields = append(fields, recreation.FieldUID)
+	fields := make([]string, 0, 9)
+	if m.user_id != nil {
+		fields = append(fields, recreation.FieldUserID)
 	}
-	if m.username != nil {
-		fields = append(fields, recreation.FieldUsername)
+	if m.recreation_id != nil {
+		fields = append(fields, recreation.FieldRecreationID)
 	}
-	if m.mail != nil {
-		fields = append(fields, recreation.FieldMail)
+	if m.genre != nil {
+		fields = append(fields, recreation.FieldGenre)
 	}
-	if m.prefecture_id != nil {
-		fields = append(fields, recreation.FieldPrefectureID)
+	if m.title != nil {
+		fields = append(fields, recreation.FieldTitle)
+	}
+	if m.content != nil {
+		fields = append(fields, recreation.FieldContent)
+	}
+	if m.target_number != nil {
+		fields = append(fields, recreation.FieldTargetNumber)
+	}
+	if m.required_time != nil {
+		fields = append(fields, recreation.FieldRequiredTime)
 	}
 	if m.created_at != nil {
 		fields = append(fields, recreation.FieldCreatedAt)
@@ -1424,14 +1581,20 @@ func (m *RecreationMutation) Fields() []string {
 // schema.
 func (m *RecreationMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case recreation.FieldUID:
-		return m.UID()
-	case recreation.FieldUsername:
-		return m.Username()
-	case recreation.FieldMail:
-		return m.Mail()
-	case recreation.FieldPrefectureID:
-		return m.PrefectureID()
+	case recreation.FieldUserID:
+		return m.UserID()
+	case recreation.FieldRecreationID:
+		return m.RecreationID()
+	case recreation.FieldGenre:
+		return m.Genre()
+	case recreation.FieldTitle:
+		return m.Title()
+	case recreation.FieldContent:
+		return m.Content()
+	case recreation.FieldTargetNumber:
+		return m.TargetNumber()
+	case recreation.FieldRequiredTime:
+		return m.RequiredTime()
 	case recreation.FieldCreatedAt:
 		return m.CreatedAt()
 	case recreation.FieldUpdatedAt:
@@ -1445,14 +1608,20 @@ func (m *RecreationMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *RecreationMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case recreation.FieldUID:
-		return m.OldUID(ctx)
-	case recreation.FieldUsername:
-		return m.OldUsername(ctx)
-	case recreation.FieldMail:
-		return m.OldMail(ctx)
-	case recreation.FieldPrefectureID:
-		return m.OldPrefectureID(ctx)
+	case recreation.FieldUserID:
+		return m.OldUserID(ctx)
+	case recreation.FieldRecreationID:
+		return m.OldRecreationID(ctx)
+	case recreation.FieldGenre:
+		return m.OldGenre(ctx)
+	case recreation.FieldTitle:
+		return m.OldTitle(ctx)
+	case recreation.FieldContent:
+		return m.OldContent(ctx)
+	case recreation.FieldTargetNumber:
+		return m.OldTargetNumber(ctx)
+	case recreation.FieldRequiredTime:
+		return m.OldRequiredTime(ctx)
 	case recreation.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case recreation.FieldUpdatedAt:
@@ -1466,33 +1635,54 @@ func (m *RecreationMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *RecreationMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case recreation.FieldUID:
+	case recreation.FieldUserID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	case recreation.FieldRecreationID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRecreationID(v)
+		return nil
+	case recreation.FieldGenre:
+		v, ok := value.([]int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGenre(v)
+		return nil
+	case recreation.FieldTitle:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUID(v)
+		m.SetTitle(v)
 		return nil
-	case recreation.FieldUsername:
+	case recreation.FieldContent:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUsername(v)
+		m.SetContent(v)
 		return nil
-	case recreation.FieldMail:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetMail(v)
-		return nil
-	case recreation.FieldPrefectureID:
+	case recreation.FieldTargetNumber:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetPrefectureID(v)
+		m.SetTargetNumber(v)
+		return nil
+	case recreation.FieldRequiredTime:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRequiredTime(v)
 		return nil
 	case recreation.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -1516,8 +1706,11 @@ func (m *RecreationMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *RecreationMutation) AddedFields() []string {
 	var fields []string
-	if m.addprefecture_id != nil {
-		fields = append(fields, recreation.FieldPrefectureID)
+	if m.addtarget_number != nil {
+		fields = append(fields, recreation.FieldTargetNumber)
+	}
+	if m.addrequired_time != nil {
+		fields = append(fields, recreation.FieldRequiredTime)
 	}
 	return fields
 }
@@ -1527,8 +1720,10 @@ func (m *RecreationMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *RecreationMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case recreation.FieldPrefectureID:
-		return m.AddedPrefectureID()
+	case recreation.FieldTargetNumber:
+		return m.AddedTargetNumber()
+	case recreation.FieldRequiredTime:
+		return m.AddedRequiredTime()
 	}
 	return nil, false
 }
@@ -1538,12 +1733,19 @@ func (m *RecreationMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *RecreationMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case recreation.FieldPrefectureID:
+	case recreation.FieldTargetNumber:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddPrefectureID(v)
+		m.AddTargetNumber(v)
+		return nil
+	case recreation.FieldRequiredTime:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRequiredTime(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Recreation numeric field %s", name)
@@ -1572,17 +1774,26 @@ func (m *RecreationMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *RecreationMutation) ResetField(name string) error {
 	switch name {
-	case recreation.FieldUID:
-		m.ResetUID()
+	case recreation.FieldUserID:
+		m.ResetUserID()
 		return nil
-	case recreation.FieldUsername:
-		m.ResetUsername()
+	case recreation.FieldRecreationID:
+		m.ResetRecreationID()
 		return nil
-	case recreation.FieldMail:
-		m.ResetMail()
+	case recreation.FieldGenre:
+		m.ResetGenre()
 		return nil
-	case recreation.FieldPrefectureID:
-		m.ResetPrefectureID()
+	case recreation.FieldTitle:
+		m.ResetTitle()
+		return nil
+	case recreation.FieldContent:
+		m.ResetContent()
+		return nil
+	case recreation.FieldTargetNumber:
+		m.ResetTargetNumber()
+		return nil
+	case recreation.FieldRequiredTime:
+		m.ResetRequiredTime()
 		return nil
 	case recreation.FieldCreatedAt:
 		m.ResetCreatedAt()

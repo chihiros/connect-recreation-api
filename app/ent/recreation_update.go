@@ -12,6 +12,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 )
 
@@ -28,56 +29,59 @@ func (ru *RecreationUpdate) Where(ps ...predicate.Recreation) *RecreationUpdate 
 	return ru
 }
 
-// SetUsername sets the "username" field.
-func (ru *RecreationUpdate) SetUsername(s string) *RecreationUpdate {
-	ru.mutation.SetUsername(s)
+// SetGenre sets the "genre" field.
+func (ru *RecreationUpdate) SetGenre(i []int) *RecreationUpdate {
+	ru.mutation.SetGenre(i)
 	return ru
 }
 
-// SetMail sets the "mail" field.
-func (ru *RecreationUpdate) SetMail(s string) *RecreationUpdate {
-	ru.mutation.SetMail(s)
+// AppendGenre appends i to the "genre" field.
+func (ru *RecreationUpdate) AppendGenre(i []int) *RecreationUpdate {
+	ru.mutation.AppendGenre(i)
 	return ru
 }
 
-// SetPrefectureID sets the "prefecture_id" field.
-func (ru *RecreationUpdate) SetPrefectureID(i int) *RecreationUpdate {
-	ru.mutation.ResetPrefectureID()
-	ru.mutation.SetPrefectureID(i)
+// SetTitle sets the "title" field.
+func (ru *RecreationUpdate) SetTitle(s string) *RecreationUpdate {
+	ru.mutation.SetTitle(s)
 	return ru
 }
 
-// AddPrefectureID adds i to the "prefecture_id" field.
-func (ru *RecreationUpdate) AddPrefectureID(i int) *RecreationUpdate {
-	ru.mutation.AddPrefectureID(i)
+// SetContent sets the "content" field.
+func (ru *RecreationUpdate) SetContent(s string) *RecreationUpdate {
+	ru.mutation.SetContent(s)
 	return ru
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (ru *RecreationUpdate) SetCreatedAt(t time.Time) *RecreationUpdate {
-	ru.mutation.SetCreatedAt(t)
+// SetTargetNumber sets the "target_number" field.
+func (ru *RecreationUpdate) SetTargetNumber(i int) *RecreationUpdate {
+	ru.mutation.ResetTargetNumber()
+	ru.mutation.SetTargetNumber(i)
 	return ru
 }
 
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ru *RecreationUpdate) SetNillableCreatedAt(t *time.Time) *RecreationUpdate {
-	if t != nil {
-		ru.SetCreatedAt(*t)
-	}
+// AddTargetNumber adds i to the "target_number" field.
+func (ru *RecreationUpdate) AddTargetNumber(i int) *RecreationUpdate {
+	ru.mutation.AddTargetNumber(i)
+	return ru
+}
+
+// SetRequiredTime sets the "required_time" field.
+func (ru *RecreationUpdate) SetRequiredTime(i int) *RecreationUpdate {
+	ru.mutation.ResetRequiredTime()
+	ru.mutation.SetRequiredTime(i)
+	return ru
+}
+
+// AddRequiredTime adds i to the "required_time" field.
+func (ru *RecreationUpdate) AddRequiredTime(i int) *RecreationUpdate {
+	ru.mutation.AddRequiredTime(i)
 	return ru
 }
 
 // SetUpdatedAt sets the "updated_at" field.
 func (ru *RecreationUpdate) SetUpdatedAt(t time.Time) *RecreationUpdate {
 	ru.mutation.SetUpdatedAt(t)
-	return ru
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ru *RecreationUpdate) SetNillableUpdatedAt(t *time.Time) *RecreationUpdate {
-	if t != nil {
-		ru.SetUpdatedAt(*t)
-	}
 	return ru
 }
 
@@ -88,7 +92,8 @@ func (ru *RecreationUpdate) Mutation() *RecreationMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (ru *RecreationUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, RecreationMutation](ctx, ru.sqlSave, ru.mutation, ru.hooks)
+	ru.defaults()
+	return withHooks(ctx, ru.sqlSave, ru.mutation, ru.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -113,6 +118,14 @@ func (ru *RecreationUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ru *RecreationUpdate) defaults() {
+	if _, ok := ru.mutation.UpdatedAt(); !ok {
+		v := recreation.UpdateDefaultUpdatedAt()
+		ru.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(recreation.Table, recreation.Columns, sqlgraph.NewFieldSpec(recreation.FieldID, field.TypeInt))
 	if ps := ru.mutation.predicates; len(ps) > 0 {
@@ -122,20 +135,31 @@ func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := ru.mutation.Username(); ok {
-		_spec.SetField(recreation.FieldUsername, field.TypeString, value)
+	if value, ok := ru.mutation.Genre(); ok {
+		_spec.SetField(recreation.FieldGenre, field.TypeJSON, value)
 	}
-	if value, ok := ru.mutation.Mail(); ok {
-		_spec.SetField(recreation.FieldMail, field.TypeString, value)
+	if value, ok := ru.mutation.AppendedGenre(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, recreation.FieldGenre, value)
+		})
 	}
-	if value, ok := ru.mutation.PrefectureID(); ok {
-		_spec.SetField(recreation.FieldPrefectureID, field.TypeInt, value)
+	if value, ok := ru.mutation.Title(); ok {
+		_spec.SetField(recreation.FieldTitle, field.TypeString, value)
 	}
-	if value, ok := ru.mutation.AddedPrefectureID(); ok {
-		_spec.AddField(recreation.FieldPrefectureID, field.TypeInt, value)
+	if value, ok := ru.mutation.Content(); ok {
+		_spec.SetField(recreation.FieldContent, field.TypeString, value)
 	}
-	if value, ok := ru.mutation.CreatedAt(); ok {
-		_spec.SetField(recreation.FieldCreatedAt, field.TypeTime, value)
+	if value, ok := ru.mutation.TargetNumber(); ok {
+		_spec.SetField(recreation.FieldTargetNumber, field.TypeInt, value)
+	}
+	if value, ok := ru.mutation.AddedTargetNumber(); ok {
+		_spec.AddField(recreation.FieldTargetNumber, field.TypeInt, value)
+	}
+	if value, ok := ru.mutation.RequiredTime(); ok {
+		_spec.SetField(recreation.FieldRequiredTime, field.TypeInt, value)
+	}
+	if value, ok := ru.mutation.AddedRequiredTime(); ok {
+		_spec.AddField(recreation.FieldRequiredTime, field.TypeInt, value)
 	}
 	if value, ok := ru.mutation.UpdatedAt(); ok {
 		_spec.SetField(recreation.FieldUpdatedAt, field.TypeTime, value)
@@ -160,56 +184,59 @@ type RecreationUpdateOne struct {
 	mutation *RecreationMutation
 }
 
-// SetUsername sets the "username" field.
-func (ruo *RecreationUpdateOne) SetUsername(s string) *RecreationUpdateOne {
-	ruo.mutation.SetUsername(s)
+// SetGenre sets the "genre" field.
+func (ruo *RecreationUpdateOne) SetGenre(i []int) *RecreationUpdateOne {
+	ruo.mutation.SetGenre(i)
 	return ruo
 }
 
-// SetMail sets the "mail" field.
-func (ruo *RecreationUpdateOne) SetMail(s string) *RecreationUpdateOne {
-	ruo.mutation.SetMail(s)
+// AppendGenre appends i to the "genre" field.
+func (ruo *RecreationUpdateOne) AppendGenre(i []int) *RecreationUpdateOne {
+	ruo.mutation.AppendGenre(i)
 	return ruo
 }
 
-// SetPrefectureID sets the "prefecture_id" field.
-func (ruo *RecreationUpdateOne) SetPrefectureID(i int) *RecreationUpdateOne {
-	ruo.mutation.ResetPrefectureID()
-	ruo.mutation.SetPrefectureID(i)
+// SetTitle sets the "title" field.
+func (ruo *RecreationUpdateOne) SetTitle(s string) *RecreationUpdateOne {
+	ruo.mutation.SetTitle(s)
 	return ruo
 }
 
-// AddPrefectureID adds i to the "prefecture_id" field.
-func (ruo *RecreationUpdateOne) AddPrefectureID(i int) *RecreationUpdateOne {
-	ruo.mutation.AddPrefectureID(i)
+// SetContent sets the "content" field.
+func (ruo *RecreationUpdateOne) SetContent(s string) *RecreationUpdateOne {
+	ruo.mutation.SetContent(s)
 	return ruo
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (ruo *RecreationUpdateOne) SetCreatedAt(t time.Time) *RecreationUpdateOne {
-	ruo.mutation.SetCreatedAt(t)
+// SetTargetNumber sets the "target_number" field.
+func (ruo *RecreationUpdateOne) SetTargetNumber(i int) *RecreationUpdateOne {
+	ruo.mutation.ResetTargetNumber()
+	ruo.mutation.SetTargetNumber(i)
 	return ruo
 }
 
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ruo *RecreationUpdateOne) SetNillableCreatedAt(t *time.Time) *RecreationUpdateOne {
-	if t != nil {
-		ruo.SetCreatedAt(*t)
-	}
+// AddTargetNumber adds i to the "target_number" field.
+func (ruo *RecreationUpdateOne) AddTargetNumber(i int) *RecreationUpdateOne {
+	ruo.mutation.AddTargetNumber(i)
+	return ruo
+}
+
+// SetRequiredTime sets the "required_time" field.
+func (ruo *RecreationUpdateOne) SetRequiredTime(i int) *RecreationUpdateOne {
+	ruo.mutation.ResetRequiredTime()
+	ruo.mutation.SetRequiredTime(i)
+	return ruo
+}
+
+// AddRequiredTime adds i to the "required_time" field.
+func (ruo *RecreationUpdateOne) AddRequiredTime(i int) *RecreationUpdateOne {
+	ruo.mutation.AddRequiredTime(i)
 	return ruo
 }
 
 // SetUpdatedAt sets the "updated_at" field.
 func (ruo *RecreationUpdateOne) SetUpdatedAt(t time.Time) *RecreationUpdateOne {
 	ruo.mutation.SetUpdatedAt(t)
-	return ruo
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ruo *RecreationUpdateOne) SetNillableUpdatedAt(t *time.Time) *RecreationUpdateOne {
-	if t != nil {
-		ruo.SetUpdatedAt(*t)
-	}
 	return ruo
 }
 
@@ -233,7 +260,8 @@ func (ruo *RecreationUpdateOne) Select(field string, fields ...string) *Recreati
 
 // Save executes the query and returns the updated Recreation entity.
 func (ruo *RecreationUpdateOne) Save(ctx context.Context) (*Recreation, error) {
-	return withHooks[*Recreation, RecreationMutation](ctx, ruo.sqlSave, ruo.mutation, ruo.hooks)
+	ruo.defaults()
+	return withHooks(ctx, ruo.sqlSave, ruo.mutation, ruo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -255,6 +283,14 @@ func (ruo *RecreationUpdateOne) Exec(ctx context.Context) error {
 func (ruo *RecreationUpdateOne) ExecX(ctx context.Context) {
 	if err := ruo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (ruo *RecreationUpdateOne) defaults() {
+	if _, ok := ruo.mutation.UpdatedAt(); !ok {
+		v := recreation.UpdateDefaultUpdatedAt()
+		ruo.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -284,20 +320,31 @@ func (ruo *RecreationUpdateOne) sqlSave(ctx context.Context) (_node *Recreation,
 			}
 		}
 	}
-	if value, ok := ruo.mutation.Username(); ok {
-		_spec.SetField(recreation.FieldUsername, field.TypeString, value)
+	if value, ok := ruo.mutation.Genre(); ok {
+		_spec.SetField(recreation.FieldGenre, field.TypeJSON, value)
 	}
-	if value, ok := ruo.mutation.Mail(); ok {
-		_spec.SetField(recreation.FieldMail, field.TypeString, value)
+	if value, ok := ruo.mutation.AppendedGenre(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, recreation.FieldGenre, value)
+		})
 	}
-	if value, ok := ruo.mutation.PrefectureID(); ok {
-		_spec.SetField(recreation.FieldPrefectureID, field.TypeInt, value)
+	if value, ok := ruo.mutation.Title(); ok {
+		_spec.SetField(recreation.FieldTitle, field.TypeString, value)
 	}
-	if value, ok := ruo.mutation.AddedPrefectureID(); ok {
-		_spec.AddField(recreation.FieldPrefectureID, field.TypeInt, value)
+	if value, ok := ruo.mutation.Content(); ok {
+		_spec.SetField(recreation.FieldContent, field.TypeString, value)
 	}
-	if value, ok := ruo.mutation.CreatedAt(); ok {
-		_spec.SetField(recreation.FieldCreatedAt, field.TypeTime, value)
+	if value, ok := ruo.mutation.TargetNumber(); ok {
+		_spec.SetField(recreation.FieldTargetNumber, field.TypeInt, value)
+	}
+	if value, ok := ruo.mutation.AddedTargetNumber(); ok {
+		_spec.AddField(recreation.FieldTargetNumber, field.TypeInt, value)
+	}
+	if value, ok := ruo.mutation.RequiredTime(); ok {
+		_spec.SetField(recreation.FieldRequiredTime, field.TypeInt, value)
+	}
+	if value, ok := ruo.mutation.AddedRequiredTime(); ok {
+		_spec.AddField(recreation.FieldRequiredTime, field.TypeInt, value)
 	}
 	if value, ok := ruo.mutation.UpdatedAt(); ok {
 		_spec.SetField(recreation.FieldUpdatedAt, field.TypeTime, value)

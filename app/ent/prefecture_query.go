@@ -18,7 +18,7 @@ import (
 type PrefectureQuery struct {
 	config
 	ctx        *QueryContext
-	order      []prefecture.Order
+	order      []prefecture.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Prefecture
 	// intermediate query (i.e. traversal path).
@@ -52,7 +52,7 @@ func (pq *PrefectureQuery) Unique(unique bool) *PrefectureQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (pq *PrefectureQuery) Order(o ...prefecture.Order) *PrefectureQuery {
+func (pq *PrefectureQuery) Order(o ...prefecture.OrderOption) *PrefectureQuery {
 	pq.order = append(pq.order, o...)
 	return pq
 }
@@ -246,7 +246,7 @@ func (pq *PrefectureQuery) Clone() *PrefectureQuery {
 	return &PrefectureQuery{
 		config:     pq.config,
 		ctx:        pq.ctx.Clone(),
-		order:      append([]prefecture.Order{}, pq.order...),
+		order:      append([]prefecture.OrderOption{}, pq.order...),
 		inters:     append([]Interceptor{}, pq.inters...),
 		predicates: append([]predicate.Prefecture{}, pq.predicates...),
 		// clone intermediate query.

@@ -4,12 +4,14 @@ package ent
 
 import (
 	"app/ent/recreation"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 // Recreation is the model entity for the Recreation schema.
@@ -17,14 +19,20 @@ type Recreation struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// UID holds the value of the "uid" field.
-	UID string `json:"uid,omitempty"`
-	// Username holds the value of the "username" field.
-	Username string `json:"username,omitempty"`
-	// Mail holds the value of the "mail" field.
-	Mail string `json:"mail,omitempty"`
-	// PrefectureID holds the value of the "prefecture_id" field.
-	PrefectureID *int `json:"prefecture_id,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID uuid.UUID `json:"user_id,omitempty"`
+	// RecreationID holds the value of the "recreation_id" field.
+	RecreationID uuid.UUID `json:"recreation_id,omitempty"`
+	// Genre holds the value of the "genre" field.
+	Genre []int `json:"genre,omitempty"`
+	// Title holds the value of the "title" field.
+	Title string `json:"title,omitempty"`
+	// Content holds the value of the "content" field.
+	Content string `json:"content,omitempty"`
+	// TargetNumber holds the value of the "target_number" field.
+	TargetNumber int `json:"target_number,omitempty"`
+	// RequiredTime holds the value of the "required_time" field.
+	RequiredTime int `json:"required_time,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -37,12 +45,16 @@ func (*Recreation) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case recreation.FieldID, recreation.FieldPrefectureID:
+		case recreation.FieldGenre:
+			values[i] = new([]byte)
+		case recreation.FieldID, recreation.FieldTargetNumber, recreation.FieldRequiredTime:
 			values[i] = new(sql.NullInt64)
-		case recreation.FieldUID, recreation.FieldUsername, recreation.FieldMail:
+		case recreation.FieldTitle, recreation.FieldContent:
 			values[i] = new(sql.NullString)
 		case recreation.FieldCreatedAt, recreation.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
+		case recreation.FieldUserID, recreation.FieldRecreationID:
+			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -64,30 +76,49 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			r.ID = int(value.Int64)
-		case recreation.FieldUID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field uid", values[i])
-			} else if value.Valid {
-				r.UID = value.String
+		case recreation.FieldUserID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+			} else if value != nil {
+				r.UserID = *value
 			}
-		case recreation.FieldUsername:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field username", values[i])
-			} else if value.Valid {
-				r.Username = value.String
+		case recreation.FieldRecreationID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field recreation_id", values[i])
+			} else if value != nil {
+				r.RecreationID = *value
 			}
-		case recreation.FieldMail:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field mail", values[i])
-			} else if value.Valid {
-				r.Mail = value.String
+		case recreation.FieldGenre:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field genre", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &r.Genre); err != nil {
+					return fmt.Errorf("unmarshal field genre: %w", err)
+				}
 			}
-		case recreation.FieldPrefectureID:
+		case recreation.FieldTitle:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field title", values[i])
+			} else if value.Valid {
+				r.Title = value.String
+			}
+		case recreation.FieldContent:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field content", values[i])
+			} else if value.Valid {
+				r.Content = value.String
+			}
+		case recreation.FieldTargetNumber:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field prefecture_id", values[i])
+				return fmt.Errorf("unexpected type %T for field target_number", values[i])
 			} else if value.Valid {
-				r.PrefectureID = new(int)
-				*r.PrefectureID = int(value.Int64)
+				r.TargetNumber = int(value.Int64)
+			}
+		case recreation.FieldRequiredTime:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field required_time", values[i])
+			} else if value.Valid {
+				r.RequiredTime = int(value.Int64)
 			}
 		case recreation.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -137,19 +168,26 @@ func (r *Recreation) String() string {
 	var builder strings.Builder
 	builder.WriteString("Recreation(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", r.ID))
-	builder.WriteString("uid=")
-	builder.WriteString(r.UID)
+	builder.WriteString("user_id=")
+	builder.WriteString(fmt.Sprintf("%v", r.UserID))
 	builder.WriteString(", ")
-	builder.WriteString("username=")
-	builder.WriteString(r.Username)
+	builder.WriteString("recreation_id=")
+	builder.WriteString(fmt.Sprintf("%v", r.RecreationID))
 	builder.WriteString(", ")
-	builder.WriteString("mail=")
-	builder.WriteString(r.Mail)
+	builder.WriteString("genre=")
+	builder.WriteString(fmt.Sprintf("%v", r.Genre))
 	builder.WriteString(", ")
-	if v := r.PrefectureID; v != nil {
-		builder.WriteString("prefecture_id=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
-	}
+	builder.WriteString("title=")
+	builder.WriteString(r.Title)
+	builder.WriteString(", ")
+	builder.WriteString("content=")
+	builder.WriteString(r.Content)
+	builder.WriteString(", ")
+	builder.WriteString("target_number=")
+	builder.WriteString(fmt.Sprintf("%v", r.TargetNumber))
+	builder.WriteString(", ")
+	builder.WriteString("required_time=")
+	builder.WriteString(fmt.Sprintf("%v", r.RequiredTime))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(r.CreatedAt.Format(time.ANSIC))
