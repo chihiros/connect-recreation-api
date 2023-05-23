@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 )
 
@@ -59,12 +60,21 @@ func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Reques
 }
 
 func (r *ProfileRepository) PutProfiles(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	_, err := r.DBConn.Profile.Update().
-		Where(profile.UUIDEQ(req.UUID)).
+	_, err := r.DBConn.Profile.Create().
+		SetUUID(req.UUID).
 		SetNickname(req.Nickname).
 		SetIconURL(req.IconURL).
+		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
-		Save(ctx)
+		OnConflict(
+			sql.ConflictColumns(profile.FieldUUID),
+		).
+		Update(func(p *ent.ProfileUpsert) {
+			p.SetNickname(req.Nickname)
+			p.SetIconURL(req.IconURL)
+			p.SetUpdatedAt(time.Now())
+		}).
+		ID(ctx)
 
 	if err != nil {
 		panic(err)
