@@ -21,12 +21,14 @@ gomod-update:
 	cd app; \
 	go get -u && go mod tidy
 
-deploy:
-	flyctl deploy --config ./.github/workflows/fly.staging.toml --build-target deploy --remote-only
+stg-config := ./.github/workflows/fly.staging.toml
+prd-config := ./.github/workflows/fly.production.toml
 
-kushi:
-	flyctl proxy 5432:5433 -a topicpost-api-db
+deploy-stg:
+	flyctl deploy --config $(stg-config) --build-target deploy --remote-only
 
+deploy-prod:
+	flyctl deploy --config $(prd-config) --build-target deploy --remote-only
 
 setFlyEnv:
 	ifeq ($(key),)
