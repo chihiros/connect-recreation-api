@@ -30,17 +30,32 @@ deploy-stg:
 deploy-prod:
 	flyctl deploy --config $(prd-config) --build-target deploy --remote-only
 
-setFlyEnv:
+setFlyEnvStg:
 	ifeq ($(key),)
 	$(error key is not set)
 	endif
 	ifeq ($(value),)
 	$(error value is not set)
 	endif
-	flyctl -c ./.github/workflows/fly.staging.toml secrets set $(key)=$(value)
+	flyctl -c $(stg-config) secrets set $(key)=$(value)
 
-unsetFlyEnv:
+unsetFlyEnvStg:
 	ifeq ($(key),)
 	$(error key is not set)
 	endif
-	flyctl -c ./.github/workflows/fly.staging.toml secrets unset $(key)
+	flyctl -c $(stg-config) secrets unset $(key)
+
+setFlyEnvPrd:
+	ifeq ($(key),)
+	$(error key is not set)
+	endif
+	ifeq ($(value),)
+	$(error value is not set)
+	endif
+	flyctl -c $(prd-config) secrets set $(key)=$(value)
+
+unsetFlyEnvPrd:
+	ifeq ($(key),)
+	$(error key is not set)
+	endif
+	flyctl -c $(prd-config) secrets unset $(key)
