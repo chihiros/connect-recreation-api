@@ -1,0 +1,10 @@
+# @HOST=https://api-stg.topicpost.net
+@HOST=http://localhost:8686
+@TOKEN=
+
+### JWTの認証なし
+GET {{HOST}}/v1/example/nojwt
+
+### JWTの認証あり
+GET {{HOST}}/v1/example/jwt
+Authorization: Bearer {{TOKEN}}
