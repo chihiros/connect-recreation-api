@@ -4,7 +4,6 @@ import (
 	contact_controller "app/elements/contact/interfaces/controller"
 	profile_controller "app/elements/profiles/interfaces/controller"
 	rec_controller "app/elements/recreations/interfaces/controller"
-	user_controller "app/elements/users/interfaces/controller"
 	"app/ent"
 	"app/middle/authrization"
 	"encoding/json"
@@ -34,7 +33,6 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	ucon := user_controller.NewUserController(conn)
 	ccon := contact_controller.NewContactController()
 	rcon := rec_controller.NewRecreationController(conn)
 	pcon := profile_controller.NewProfileController(conn)
@@ -52,14 +50,6 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 			r.Post("/", pcon.PostProfiles)
 			r.Put("/", pcon.PutProfiles)
 			r.Delete("/", pcon.DeleteProfiles)
-		})
-
-		// ダミーで使っていたAPI（いずれ削除されると思う）
-		r.Route("/users", func(r chi.Router) {
-			r.Get("/", ucon.GetUsers)
-			r.Get("/query", ucon.GetUsersByID)
-			r.Post("/", ucon.PostUsers)
-			r.Delete("/", ucon.DeleteUsersByID)
 		})
 
 		// 疎通確認用のAPI
@@ -83,7 +73,6 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 			r.Post("/", rcon.PostRecreations)
 			// JWTが必要なやつ
 			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
-				r.Delete("/", ucon.DeleteUsersByID)
 			})
 		})
 

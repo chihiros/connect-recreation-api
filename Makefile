@@ -62,3 +62,4 @@ unsetFlyEnvPrd:
 
 # memo
 # cat .env.prd | flyctl secrets import -c ./.github/workflows/fly.production.toml
+# cat .env.stg | flyctl secrets import -c ./.github/workflows/fly.staging.toml
