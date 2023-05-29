@@ -1,0 +1,10 @@
+# @HOST=https://api.topicpost.net
+@HOST=http://localhost:8686
+@TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhd…lNyJ9.4zARKZkaUEyyHcikEvW4v2S2_90y3n0m780iBNkCwRk
+
+### JWTの認証なし
+GET {{HOST}}/v1/example/nojwt
+
+### JWTの認証あり
+GET {{HOST}}/v1/example/jwt
+Authorization: Bearer {{TOKEN}}
