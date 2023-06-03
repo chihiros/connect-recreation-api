@@ -7,6 +7,7 @@ import (
 	"app/middle/authrization"
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -42,7 +43,11 @@ func (c *ProfileController) GetProfiles(w http.ResponseWriter, r *http.Request) 
 	uuid := getUUIDWithClaims(r)
 	profiles, err := c.Usecase.GetProfiles(context.Background(), uuid)
 	if err != nil {
-		panic(err)
+		if err.Error() == "not found" {
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(profiles)
+			return
+		}
 	}
 
 	w.WriteHeader(http.StatusOK)
