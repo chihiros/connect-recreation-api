@@ -4,10 +4,12 @@ import (
 	"app/elements/recreations/interfaces/repository"
 	"app/elements/recreations/usecase"
 	"app/ent"
+	"app/middle/applog"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/google/uuid"
 )
@@ -31,7 +33,27 @@ func NewRecreationUsecase(conn *ent.Client) *usecase.RecreationUsecase {
 }
 
 func (c *RecreationController) GetRecreations(w http.ResponseWriter, r *http.Request) {
-	users, err := c.Usecase.GetRecreations(context.Background())
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil {
+		applog.Error(err.Error())
+		limit = 10
+	}
+
+	if limit <= 0 {
+		limit = 10
+	}
+
+	offset, err := strconv.Atoi(r.URL.Query().Get("offset"))
+	if err != nil {
+		applog.Error(err.Error())
+		offset = 0
+	}
+
+	if offset < 0 {
+		offset = 0
+	}
+
+	users, err := c.Usecase.GetRecreations(context.Background(), limit, offset)
 	if err != nil {
 		panic(err)
 	}
