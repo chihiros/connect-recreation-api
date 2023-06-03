@@ -3,7 +3,7 @@
 @TOKEN=
 
 #### レクリエーションの取得
-GET {{HOST}}/v1/recreation
+GET {{HOST}}/v1/recreation?limit=10&offset=0
 
 #### レクリエーションの取得
 GET {{HOST}}/v1/recreation?id=21efc871-386a-45ea-9f18-c3fbe07748f4

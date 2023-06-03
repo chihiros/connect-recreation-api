@@ -21,8 +21,12 @@ func NewRecreationRepository(conn *ent.Client) *RecreationRepository {
 	}
 }
 
-func (r *RecreationRepository) GetRecreations(ctx context.Context) (usecase.Response, error) {
-	users, err := r.DBConn.Recreation.Query().All(ctx)
+func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset int) (usecase.Response, error) {
+	users, err := r.DBConn.Recreation.
+		Query().
+		Limit(limit).
+		Offset(offset).
+		All(ctx)
 	if err != nil {
 		panic(err)
 	}
