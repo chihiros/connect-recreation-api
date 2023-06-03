@@ -4,6 +4,7 @@ import (
 	"app/elements/recreations/usecase"
 	"app/ent"
 	"app/ent/recreation"
+	"app/middle/applog"
 	"context"
 	"fmt"
 	"time"
@@ -21,6 +22,11 @@ func NewRecreationRepository(conn *ent.Client) *RecreationRepository {
 	}
 }
 
+type RecreationResponse struct {
+	Recreations  []*ent.Recreation `json:"recreations"`
+	TotalRecords int               `json:"total_records"`
+}
+
 func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset int) (usecase.Response, error) {
 	users, err := r.DBConn.Recreation.
 		Query().
@@ -28,10 +34,22 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset
 		Offset(offset).
 		All(ctx)
 	if err != nil {
-		panic(err)
+		applog.Panic(err)
 	}
 
-	res := usecase.Response{Data: users}
+	recodes, err := r.DBConn.Recreation.Query().All(ctx)
+	if err != nil {
+		applog.Panic(err)
+	}
+
+	recRes := RecreationResponse{
+		Recreations:  users,
+		TotalRecords: len(recodes),
+	}
+
+	res := usecase.Response{
+		Data: recRes,
+	}
 	return res, err
 }
 
