@@ -4,6 +4,7 @@ import (
 	"app/elements/profiles/usecase"
 	"app/ent"
 	"app/ent/profile"
+	"app/middle/applog"
 	"context"
 	"fmt"
 	"time"
@@ -28,7 +29,21 @@ func (r *ProfileRepository) GetProfiles(ctx context.Context, uuid uuid.UUID) (us
 		Only(ctx)
 
 	if err != nil {
-		panic(err)
+		// NotFoundだったら
+		if ent.IsNotFound(err) {
+			return usecase.Response{
+					Data: nil,
+					ErrorResponse: usecase.ErrorResponse{
+						ErrorCode:    "404",
+						ErrorMessage: "not found",
+					},
+				},
+				fmt.Errorf("not found")
+		}
+	}
+
+	if err != nil {
+		applog.Panic(err)
 	}
 
 	res := usecase.Response{Data: profile}
