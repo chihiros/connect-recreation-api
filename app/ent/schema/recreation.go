@@ -24,6 +24,7 @@ func (Recreation) Fields() []ent.Field {
 		field.JSON("genre", []int{}),
 		field.String("title"),
 		field.String("content"),
+		field.String("youtube_id"),
 		field.Int("target_number"),
 		field.Int("required_time"),
 		field.Time("created_at").
