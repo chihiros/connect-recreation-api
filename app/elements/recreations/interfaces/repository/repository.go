@@ -30,6 +30,7 @@ type RecreationResponse struct {
 func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset int) (usecase.Response, error) {
 	users, err := r.DBConn.Recreation.
 		Query().
+		Order(ent.Desc(recreation.FieldCreatedAt)).
 		Limit(limit).
 		Offset(offset).
 		All(ctx)
