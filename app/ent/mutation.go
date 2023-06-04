@@ -1022,6 +1022,7 @@ type RecreationMutation struct {
 	appendgenre      []int
 	title            *string
 	content          *string
+	youtube_id       *string
 	target_number    *int
 	addtarget_number *int
 	required_time    *int
@@ -1327,6 +1328,42 @@ func (m *RecreationMutation) ResetContent() {
 	m.content = nil
 }
 
+// SetYoutubeID sets the "youtube_id" field.
+func (m *RecreationMutation) SetYoutubeID(s string) {
+	m.youtube_id = &s
+}
+
+// YoutubeID returns the value of the "youtube_id" field in the mutation.
+func (m *RecreationMutation) YoutubeID() (r string, exists bool) {
+	v := m.youtube_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldYoutubeID returns the old "youtube_id" field's value of the Recreation entity.
+// If the Recreation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecreationMutation) OldYoutubeID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldYoutubeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldYoutubeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldYoutubeID: %w", err)
+	}
+	return oldValue.YoutubeID, nil
+}
+
+// ResetYoutubeID resets all changes to the "youtube_id" field.
+func (m *RecreationMutation) ResetYoutubeID() {
+	m.youtube_id = nil
+}
+
 // SetTargetNumber sets the "target_number" field.
 func (m *RecreationMutation) SetTargetNumber(i int) {
 	m.target_number = &i
@@ -1545,7 +1582,7 @@ func (m *RecreationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RecreationMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.user_id != nil {
 		fields = append(fields, recreation.FieldUserID)
 	}
@@ -1560,6 +1597,9 @@ func (m *RecreationMutation) Fields() []string {
 	}
 	if m.content != nil {
 		fields = append(fields, recreation.FieldContent)
+	}
+	if m.youtube_id != nil {
+		fields = append(fields, recreation.FieldYoutubeID)
 	}
 	if m.target_number != nil {
 		fields = append(fields, recreation.FieldTargetNumber)
@@ -1591,6 +1631,8 @@ func (m *RecreationMutation) Field(name string) (ent.Value, bool) {
 		return m.Title()
 	case recreation.FieldContent:
 		return m.Content()
+	case recreation.FieldYoutubeID:
+		return m.YoutubeID()
 	case recreation.FieldTargetNumber:
 		return m.TargetNumber()
 	case recreation.FieldRequiredTime:
@@ -1618,6 +1660,8 @@ func (m *RecreationMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldTitle(ctx)
 	case recreation.FieldContent:
 		return m.OldContent(ctx)
+	case recreation.FieldYoutubeID:
+		return m.OldYoutubeID(ctx)
 	case recreation.FieldTargetNumber:
 		return m.OldTargetNumber(ctx)
 	case recreation.FieldRequiredTime:
@@ -1669,6 +1713,13 @@ func (m *RecreationMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetContent(v)
+		return nil
+	case recreation.FieldYoutubeID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetYoutubeID(v)
 		return nil
 	case recreation.FieldTargetNumber:
 		v, ok := value.(int)
@@ -1788,6 +1839,9 @@ func (m *RecreationMutation) ResetField(name string) error {
 		return nil
 	case recreation.FieldContent:
 		m.ResetContent()
+		return nil
+	case recreation.FieldYoutubeID:
+		m.ResetYoutubeID()
 		return nil
 	case recreation.FieldTargetNumber:
 		m.ResetTargetNumber()

@@ -75,6 +75,11 @@ func Content(v string) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldContent, v))
 }
 
+// YoutubeID applies equality check predicate on the "youtube_id" field. It's identical to YoutubeIDEQ.
+func YoutubeID(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldYoutubeID, v))
+}
+
 // TargetNumber applies equality check predicate on the "target_number" field. It's identical to TargetNumberEQ.
 func TargetNumber(v int) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldTargetNumber, v))
@@ -303,6 +308,71 @@ func ContentEqualFold(v string) predicate.Recreation {
 // ContentContainsFold applies the ContainsFold predicate on the "content" field.
 func ContentContainsFold(v string) predicate.Recreation {
 	return predicate.Recreation(sql.FieldContainsFold(FieldContent, v))
+}
+
+// YoutubeIDEQ applies the EQ predicate on the "youtube_id" field.
+func YoutubeIDEQ(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldYoutubeID, v))
+}
+
+// YoutubeIDNEQ applies the NEQ predicate on the "youtube_id" field.
+func YoutubeIDNEQ(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldYoutubeID, v))
+}
+
+// YoutubeIDIn applies the In predicate on the "youtube_id" field.
+func YoutubeIDIn(vs ...string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldIn(FieldYoutubeID, vs...))
+}
+
+// YoutubeIDNotIn applies the NotIn predicate on the "youtube_id" field.
+func YoutubeIDNotIn(vs ...string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotIn(FieldYoutubeID, vs...))
+}
+
+// YoutubeIDGT applies the GT predicate on the "youtube_id" field.
+func YoutubeIDGT(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGT(FieldYoutubeID, v))
+}
+
+// YoutubeIDGTE applies the GTE predicate on the "youtube_id" field.
+func YoutubeIDGTE(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGTE(FieldYoutubeID, v))
+}
+
+// YoutubeIDLT applies the LT predicate on the "youtube_id" field.
+func YoutubeIDLT(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLT(FieldYoutubeID, v))
+}
+
+// YoutubeIDLTE applies the LTE predicate on the "youtube_id" field.
+func YoutubeIDLTE(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLTE(FieldYoutubeID, v))
+}
+
+// YoutubeIDContains applies the Contains predicate on the "youtube_id" field.
+func YoutubeIDContains(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldContains(FieldYoutubeID, v))
+}
+
+// YoutubeIDHasPrefix applies the HasPrefix predicate on the "youtube_id" field.
+func YoutubeIDHasPrefix(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldHasPrefix(FieldYoutubeID, v))
+}
+
+// YoutubeIDHasSuffix applies the HasSuffix predicate on the "youtube_id" field.
+func YoutubeIDHasSuffix(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldHasSuffix(FieldYoutubeID, v))
+}
+
+// YoutubeIDEqualFold applies the EqualFold predicate on the "youtube_id" field.
+func YoutubeIDEqualFold(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEqualFold(FieldYoutubeID, v))
+}
+
+// YoutubeIDContainsFold applies the ContainsFold predicate on the "youtube_id" field.
+func YoutubeIDContainsFold(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldContainsFold(FieldYoutubeID, v))
 }
 
 // TargetNumberEQ applies the EQ predicate on the "target_number" field.

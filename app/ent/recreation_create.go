@@ -53,6 +53,12 @@ func (rc *RecreationCreate) SetContent(s string) *RecreationCreate {
 	return rc
 }
 
+// SetYoutubeID sets the "youtube_id" field.
+func (rc *RecreationCreate) SetYoutubeID(s string) *RecreationCreate {
+	rc.mutation.SetYoutubeID(s)
+	return rc
+}
+
 // SetTargetNumber sets the "target_number" field.
 func (rc *RecreationCreate) SetTargetNumber(i int) *RecreationCreate {
 	rc.mutation.SetTargetNumber(i)
@@ -155,6 +161,9 @@ func (rc *RecreationCreate) check() error {
 	if _, ok := rc.mutation.Content(); !ok {
 		return &ValidationError{Name: "content", err: errors.New(`ent: missing required field "Recreation.content"`)}
 	}
+	if _, ok := rc.mutation.YoutubeID(); !ok {
+		return &ValidationError{Name: "youtube_id", err: errors.New(`ent: missing required field "Recreation.youtube_id"`)}
+	}
 	if _, ok := rc.mutation.TargetNumber(); !ok {
 		return &ValidationError{Name: "target_number", err: errors.New(`ent: missing required field "Recreation.target_number"`)}
 	}
@@ -213,6 +222,10 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 	if value, ok := rc.mutation.Content(); ok {
 		_spec.SetField(recreation.FieldContent, field.TypeString, value)
 		_node.Content = value
+	}
+	if value, ok := rc.mutation.YoutubeID(); ok {
+		_spec.SetField(recreation.FieldYoutubeID, field.TypeString, value)
+		_node.YoutubeID = value
 	}
 	if value, ok := rc.mutation.TargetNumber(); ok {
 		_spec.SetField(recreation.FieldTargetNumber, field.TypeInt, value)
@@ -315,6 +328,18 @@ func (u *RecreationUpsert) SetContent(v string) *RecreationUpsert {
 // UpdateContent sets the "content" field to the value that was provided on create.
 func (u *RecreationUpsert) UpdateContent() *RecreationUpsert {
 	u.SetExcluded(recreation.FieldContent)
+	return u
+}
+
+// SetYoutubeID sets the "youtube_id" field.
+func (u *RecreationUpsert) SetYoutubeID(v string) *RecreationUpsert {
+	u.Set(recreation.FieldYoutubeID, v)
+	return u
+}
+
+// UpdateYoutubeID sets the "youtube_id" field to the value that was provided on create.
+func (u *RecreationUpsert) UpdateYoutubeID() *RecreationUpsert {
+	u.SetExcluded(recreation.FieldYoutubeID)
 	return u
 }
 
@@ -456,6 +481,20 @@ func (u *RecreationUpsertOne) SetContent(v string) *RecreationUpsertOne {
 func (u *RecreationUpsertOne) UpdateContent() *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
 		s.UpdateContent()
+	})
+}
+
+// SetYoutubeID sets the "youtube_id" field.
+func (u *RecreationUpsertOne) SetYoutubeID(v string) *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.SetYoutubeID(v)
+	})
+}
+
+// UpdateYoutubeID sets the "youtube_id" field to the value that was provided on create.
+func (u *RecreationUpsertOne) UpdateYoutubeID() *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.UpdateYoutubeID()
 	})
 }
 
@@ -767,6 +806,20 @@ func (u *RecreationUpsertBulk) SetContent(v string) *RecreationUpsertBulk {
 func (u *RecreationUpsertBulk) UpdateContent() *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
 		s.UpdateContent()
+	})
+}
+
+// SetYoutubeID sets the "youtube_id" field.
+func (u *RecreationUpsertBulk) SetYoutubeID(v string) *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.SetYoutubeID(v)
+	})
+}
+
+// UpdateYoutubeID sets the "youtube_id" field to the value that was provided on create.
+func (u *RecreationUpsertBulk) UpdateYoutubeID() *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.UpdateYoutubeID()
 	})
 }
 

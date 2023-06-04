@@ -23,6 +23,8 @@ const (
 	FieldTitle = "title"
 	// FieldContent holds the string denoting the content field in the database.
 	FieldContent = "content"
+	// FieldYoutubeID holds the string denoting the youtube_id field in the database.
+	FieldYoutubeID = "youtube_id"
 	// FieldTargetNumber holds the string denoting the target_number field in the database.
 	FieldTargetNumber = "target_number"
 	// FieldRequiredTime holds the string denoting the required_time field in the database.
@@ -43,6 +45,7 @@ var Columns = []string{
 	FieldGenre,
 	FieldTitle,
 	FieldContent,
+	FieldYoutubeID,
 	FieldTargetNumber,
 	FieldRequiredTime,
 	FieldCreatedAt,
@@ -94,6 +97,11 @@ func ByTitle(opts ...sql.OrderTermOption) OrderOption {
 // ByContent orders the results by the content field.
 func ByContent(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldContent, opts...).ToFunc()
+}
+
+// ByYoutubeID orders the results by the youtube_id field.
+func ByYoutubeID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldYoutubeID, opts...).ToFunc()
 }
 
 // ByTargetNumber orders the results by the target_number field.

@@ -44,6 +44,7 @@ var (
 		{Name: "genre", Type: field.TypeJSON},
 		{Name: "title", Type: field.TypeString},
 		{Name: "content", Type: field.TypeString},
+		{Name: "youtube_id", Type: field.TypeString},
 		{Name: "target_number", Type: field.TypeInt},
 		{Name: "required_time", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
