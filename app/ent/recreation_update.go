@@ -53,6 +53,12 @@ func (ru *RecreationUpdate) SetContent(s string) *RecreationUpdate {
 	return ru
 }
 
+// SetYoutubeID sets the "youtube_id" field.
+func (ru *RecreationUpdate) SetYoutubeID(s string) *RecreationUpdate {
+	ru.mutation.SetYoutubeID(s)
+	return ru
+}
+
 // SetTargetNumber sets the "target_number" field.
 func (ru *RecreationUpdate) SetTargetNumber(i int) *RecreationUpdate {
 	ru.mutation.ResetTargetNumber()
@@ -149,6 +155,9 @@ func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ru.mutation.Content(); ok {
 		_spec.SetField(recreation.FieldContent, field.TypeString, value)
 	}
+	if value, ok := ru.mutation.YoutubeID(); ok {
+		_spec.SetField(recreation.FieldYoutubeID, field.TypeString, value)
+	}
 	if value, ok := ru.mutation.TargetNumber(); ok {
 		_spec.SetField(recreation.FieldTargetNumber, field.TypeInt, value)
 	}
@@ -205,6 +214,12 @@ func (ruo *RecreationUpdateOne) SetTitle(s string) *RecreationUpdateOne {
 // SetContent sets the "content" field.
 func (ruo *RecreationUpdateOne) SetContent(s string) *RecreationUpdateOne {
 	ruo.mutation.SetContent(s)
+	return ruo
+}
+
+// SetYoutubeID sets the "youtube_id" field.
+func (ruo *RecreationUpdateOne) SetYoutubeID(s string) *RecreationUpdateOne {
+	ruo.mutation.SetYoutubeID(s)
 	return ruo
 }
 
@@ -333,6 +348,9 @@ func (ruo *RecreationUpdateOne) sqlSave(ctx context.Context) (_node *Recreation,
 	}
 	if value, ok := ruo.mutation.Content(); ok {
 		_spec.SetField(recreation.FieldContent, field.TypeString, value)
+	}
+	if value, ok := ruo.mutation.YoutubeID(); ok {
+		_spec.SetField(recreation.FieldYoutubeID, field.TypeString, value)
 	}
 	if value, ok := ruo.mutation.TargetNumber(); ok {
 		_spec.SetField(recreation.FieldTargetNumber, field.TypeInt, value)
