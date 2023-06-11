@@ -4,7 +4,7 @@ import (
 	contact_controller "app/elements/contact/interfaces/controller"
 	profile_controller "app/elements/profiles/interfaces/controller"
 	rec_controller "app/elements/recreations/interfaces/controller"
-	"app/ent"
+	"app/middle/applog"
 	"app/middle/authrization"
 	"encoding/json"
 	"net/http"
