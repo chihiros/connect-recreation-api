@@ -28,6 +28,13 @@ type RecreationResponse struct {
 }
 
 func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset int) (usecase.Response, error) {
+	// count all records first
+	count, err := r.DBConn.Recreation.Query().Count(ctx)
+	if err != nil {
+		applog.Panic(err)
+	}
+
+	// then fetch paged records
 	users, err := r.DBConn.Recreation.
 		Query().
 		Order(ent.Desc(recreation.FieldCreatedAt)).
@@ -38,14 +45,9 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset
 		applog.Panic(err)
 	}
 
-	recodes, err := r.DBConn.Recreation.Query().All(ctx)
-	if err != nil {
-		applog.Panic(err)
-	}
-
 	recRes := RecreationResponse{
 		Recreations:  users,
-		TotalRecords: len(recodes),
+		TotalRecords: count,
 	}
 
 	res := usecase.Response{
