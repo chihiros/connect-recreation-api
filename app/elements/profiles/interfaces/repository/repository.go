@@ -24,7 +24,7 @@ func NewProfileRepository(conn *ent.Client) *ProfileRepository {
 }
 
 func (r *ProfileRepository) GetProfiles(ctx context.Context, uuid uuid.UUID) (usecase.Response, error) {
-	profile, err := r.DBConn.Profile.Query().
+	p, err := r.DBConn.Profile.Query().
 		Where(profile.UUIDEQ(uuid)).
 		Only(ctx)
 
@@ -46,7 +46,7 @@ func (r *ProfileRepository) GetProfiles(ctx context.Context, uuid uuid.UUID) (us
 		applog.Panic(err)
 	}
 
-	res := usecase.Response{Data: profile}
+	res := usecase.Response{Data: p}
 	return res, err
 }
 
