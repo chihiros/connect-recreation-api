@@ -81,9 +81,9 @@ func NewRouter() *chi.Mux {
 			// JWTが不要なやつ
 			r.Get("/", rcon.GetRecreationsByID)
 
-			r.Post("/", rcon.PostRecreations)
 			// JWTが必要なやつ
 			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
+				r.Post("/", rcon.PostRecreations)
 			})
 		})
 
