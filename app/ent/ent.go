@@ -3,10 +3,8 @@
 package ent
 
 import (
-	"app/ent/prefecture"
 	"app/ent/profile"
 	"app/ent/recreation"
-	"app/ent/user"
 	"context"
 	"errors"
 	"fmt"
@@ -76,10 +74,8 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			prefecture.Table: prefecture.ValidColumn,
 			profile.Table:    profile.ValidColumn,
 			recreation.Table: recreation.ValidColumn,
-			user.Table:       user.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

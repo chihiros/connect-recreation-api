@@ -8,18 +8,6 @@ import (
 	"fmt"
 )
 
-// The PrefectureFunc type is an adapter to allow the use of ordinary
-// function as Prefecture mutator.
-type PrefectureFunc func(context.Context, *ent.PrefectureMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f PrefectureFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.PrefectureMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PrefectureMutation", m)
-}
-
 // The ProfileFunc type is an adapter to allow the use of ordinary
 // function as Profile mutator.
 type ProfileFunc func(context.Context, *ent.ProfileMutation) (ent.Value, error)
@@ -42,18 +30,6 @@ func (f RecreationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RecreationMutation", m)
-}
-
-// The UserFunc type is an adapter to allow the use of ordinary
-// function as User mutator.
-type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.UserMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
 }
 
 // Condition is a hook condition function.
