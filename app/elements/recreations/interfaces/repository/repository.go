@@ -74,6 +74,7 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 		SetGenre(req.Genre).
 		SetTitle(req.Title).
 		SetContent(req.Content).
+		SetYoutubeID(req.YouTubeID).
 		SetTargetNumber(req.TargetNumber).
 		SetRequiredTime(req.RequiredTime).
 		SetCreatedAt(time.Now()).
