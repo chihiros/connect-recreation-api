@@ -16,7 +16,7 @@ import (
 	"github.com/go-chi/cors"
 )
 
-func NewRouter(conn *ent.Client) *chi.Mux {
+func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(logger.Logger)
 	r.Use(middleware.Recoverer)
@@ -35,8 +35,18 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 	}))
 
 	ccon := contact_controller.NewContactController()
-	rcon := rec_controller.NewRecreationController(conn)
-	pcon := profile_controller.NewProfileController(conn)
+	// Postgresへのコネクションを取得する
+	conn1, err := NewPostgresConnection()
+	if err != nil {
+		applog.Panic(err)
+	}
+	rcon := rec_controller.NewRecreationController(conn1)
+
+	conn2, err := NewPostgresConnection()
+	if err != nil {
+		applog.Panic(err)
+	}
+	pcon := profile_controller.NewProfileController(conn2)
 	r.Route("/v1", func(r chi.Router) {
 		// お問い合わせ用のAPI
 		r.Route("/contact", func(r chi.Router) {
