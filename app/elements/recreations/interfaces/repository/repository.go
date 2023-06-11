@@ -4,6 +4,7 @@ import (
 	"app/elements/recreations/usecase"
 	"app/ent"
 	"app/ent/recreation"
+	"app/middle/applog"
 	"context"
 	"fmt"
 	"time"
@@ -21,17 +22,37 @@ func NewRecreationRepository(conn *ent.Client) *RecreationRepository {
 	}
 }
 
+type RecreationResponse struct {
+	Recreations  []*ent.Recreation `json:"recreations"`
+	TotalRecords int               `json:"total_records"`
+}
+
 func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset int) (usecase.Response, error) {
+	// count all records first
+	count, err := r.DBConn.Recreation.Query().Count(ctx)
+	if err != nil {
+		applog.Panic(err)
+	}
+
+	// then fetch paged records
 	users, err := r.DBConn.Recreation.
 		Query().
+		Order(ent.Desc(recreation.FieldCreatedAt)).
 		Limit(limit).
 		Offset(offset).
 		All(ctx)
 	if err != nil {
-		panic(err)
+		applog.Panic(err)
 	}
 
-	res := usecase.Response{Data: users}
+	recRes := RecreationResponse{
+		Recreations:  users,
+		TotalRecords: count,
+	}
+
+	res := usecase.Response{
+		Data: recRes,
+	}
 	return res, err
 }
 
@@ -55,6 +76,7 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 		SetGenre(req.Genre).
 		SetTitle(req.Title).
 		SetContent(req.Content).
+		SetYoutubeID(req.YouTubeID).
 		SetTargetNumber(req.TargetNumber).
 		SetRequiredTime(req.RequiredTime).
 		SetCreatedAt(time.Now()).

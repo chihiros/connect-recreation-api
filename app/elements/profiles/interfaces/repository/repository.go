@@ -4,6 +4,7 @@ import (
 	"app/elements/profiles/usecase"
 	"app/ent"
 	"app/ent/profile"
+	"app/middle/applog"
 	"context"
 	"fmt"
 	"time"
@@ -25,10 +26,24 @@ func NewProfileRepository(conn *ent.Client) *ProfileRepository {
 func (r *ProfileRepository) GetProfiles(ctx context.Context, uuid uuid.UUID) (usecase.Response, error) {
 	profile, err := r.DBConn.Profile.Query().
 		Where(profile.UUIDEQ(uuid)).
-		All(ctx)
+		Only(ctx)
 
 	if err != nil {
-		panic(err)
+		// NotFoundだったら
+		if ent.IsNotFound(err) {
+			return usecase.Response{
+					Data: nil,
+					ErrorResponse: usecase.ErrorResponse{
+						ErrorCode:    "404",
+						ErrorMessage: "not found",
+					},
+				},
+				fmt.Errorf("not found")
+		}
+	}
+
+	if err != nil {
+		applog.Panic(err)
 	}
 
 	res := usecase.Response{Data: profile}
@@ -83,7 +98,7 @@ func (r *ProfileRepository) PutProfiles(ctx context.Context, req usecase.Request
 	// 更新に成功したら、更新後のデータを返す
 	profile, err := r.DBConn.Profile.Query().
 		Where(profile.UUIDEQ(req.UUID)).
-		All(ctx)
+		Only(ctx)
 
 	res := usecase.Response{Data: profile}
 	return res, err

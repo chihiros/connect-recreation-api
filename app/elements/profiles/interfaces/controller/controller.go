@@ -4,9 +4,11 @@ import (
 	"app/elements/profiles/interfaces/repository"
 	"app/elements/profiles/usecase"
 	"app/ent"
+	"app/middle/applog"
 	"app/middle/authrization"
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -33,7 +35,7 @@ func NewProfileUsecase(conn *ent.Client) *usecase.ProfileUsecase {
 func getUUIDWithClaims(r *http.Request) uuid.UUID {
 	claims, ok := r.Context().Value("claims").(*authrization.CustomClaims)
 	if !ok {
-		panic("Invalid user claims")
+		applog.Panic(errors.New("Invalid user claims"))
 	}
 	return uuid.MustParse(claims.Subject)
 }
@@ -42,7 +44,13 @@ func (c *ProfileController) GetProfiles(w http.ResponseWriter, r *http.Request) 
 	uuid := getUUIDWithClaims(r)
 	profiles, err := c.Usecase.GetProfiles(context.Background(), uuid)
 	if err != nil {
-		panic(err)
+		if err.Error() == "not found" {
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(profiles)
+			return
+		}
+
+		applog.Panic(err)
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -65,7 +73,7 @@ func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request)
 			w.WriteHeader(http.StatusConflict)
 			json.NewEncoder(w).Encode(profile)
 		default:
-			panic(err)
+			applog.Panic(err)
 		}
 	}
 
@@ -89,7 +97,7 @@ func (c *ProfileController) PutProfiles(w http.ResponseWriter, r *http.Request) 
 			w.WriteHeader(http.StatusConflict)
 			json.NewEncoder(w).Encode(profile)
 		default:
-			panic(err)
+			applog.Panic(err)
 		}
 	}
 
