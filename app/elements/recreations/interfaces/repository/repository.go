@@ -46,6 +46,21 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset
 		applog.Panic(err)
 	}
 
+	stack := make(map[uuid.UUID]*ent.Profile)
+	for _, rec := range recreation {
+		if _, ok := stack[rec.UserID]; !ok {
+			profile, err := r.DBConn.Profile.Query().
+				Where(profile.UUIDEQ(rec.UserID)).
+				First(ctx)
+
+			if err != nil {
+				applog.Panic(err)
+			}
+			stack[rec.UserID] = profile
+		}
+		rec.Edges.Profile = stack[rec.UserID]
+	}
+
 	recRes := RecreationResponse{
 		Recreations:  recreation,
 		TotalRecords: count,
