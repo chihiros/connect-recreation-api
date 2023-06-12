@@ -5,6 +5,7 @@ package ent
 import (
 	"app/ent/predicate"
 	"app/ent/profile"
+	"app/ent/recreation"
 	"context"
 	"errors"
 	"fmt"
@@ -18,8 +19,9 @@ import (
 // ProfileUpdate is the builder for updating Profile entities.
 type ProfileUpdate struct {
 	config
-	hooks    []Hook
-	mutation *ProfileMutation
+	hooks     []Hook
+	mutation  *ProfileMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the ProfileUpdate builder.
@@ -37,6 +39,20 @@ func (pu *ProfileUpdate) SetNickname(s string) *ProfileUpdate {
 // SetIconURL sets the "icon_url" field.
 func (pu *ProfileUpdate) SetIconURL(s string) *ProfileUpdate {
 	pu.mutation.SetIconURL(s)
+	return pu
+}
+
+// SetNillableIconURL sets the "icon_url" field if the given value is not nil.
+func (pu *ProfileUpdate) SetNillableIconURL(s *string) *ProfileUpdate {
+	if s != nil {
+		pu.SetIconURL(*s)
+	}
+	return pu
+}
+
+// ClearIconURL clears the value of the "icon_url" field.
+func (pu *ProfileUpdate) ClearIconURL() *ProfileUpdate {
+	pu.mutation.ClearIconURL()
 	return pu
 }
 
@@ -68,9 +84,45 @@ func (pu *ProfileUpdate) SetNillableUpdatedAt(t *time.Time) *ProfileUpdate {
 	return pu
 }
 
+// AddRecreationIDs adds the "recreations" edge to the Recreation entity by IDs.
+func (pu *ProfileUpdate) AddRecreationIDs(ids ...int) *ProfileUpdate {
+	pu.mutation.AddRecreationIDs(ids...)
+	return pu
+}
+
+// AddRecreations adds the "recreations" edges to the Recreation entity.
+func (pu *ProfileUpdate) AddRecreations(r ...*Recreation) *ProfileUpdate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return pu.AddRecreationIDs(ids...)
+}
+
 // Mutation returns the ProfileMutation object of the builder.
 func (pu *ProfileUpdate) Mutation() *ProfileMutation {
 	return pu.mutation
+}
+
+// ClearRecreations clears all "recreations" edges to the Recreation entity.
+func (pu *ProfileUpdate) ClearRecreations() *ProfileUpdate {
+	pu.mutation.ClearRecreations()
+	return pu
+}
+
+// RemoveRecreationIDs removes the "recreations" edge to Recreation entities by IDs.
+func (pu *ProfileUpdate) RemoveRecreationIDs(ids ...int) *ProfileUpdate {
+	pu.mutation.RemoveRecreationIDs(ids...)
+	return pu
+}
+
+// RemoveRecreations removes "recreations" edges to Recreation entities.
+func (pu *ProfileUpdate) RemoveRecreations(r ...*Recreation) *ProfileUpdate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return pu.RemoveRecreationIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -100,6 +152,12 @@ func (pu *ProfileUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (pu *ProfileUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ProfileUpdate {
+	pu.modifiers = append(pu.modifiers, modifiers...)
+	return pu
+}
+
 func (pu *ProfileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(profile.Table, profile.Columns, sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt))
 	if ps := pu.mutation.predicates; len(ps) > 0 {
@@ -115,12 +173,61 @@ func (pu *ProfileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := pu.mutation.IconURL(); ok {
 		_spec.SetField(profile.FieldIconURL, field.TypeString, value)
 	}
+	if pu.mutation.IconURLCleared() {
+		_spec.ClearField(profile.FieldIconURL, field.TypeString)
+	}
 	if value, ok := pu.mutation.CreatedAt(); ok {
 		_spec.SetField(profile.FieldCreatedAt, field.TypeTime, value)
 	}
 	if value, ok := pu.mutation.UpdatedAt(); ok {
 		_spec.SetField(profile.FieldUpdatedAt, field.TypeTime, value)
 	}
+	if pu.mutation.RecreationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   profile.RecreationsTable,
+			Columns: []string{profile.RecreationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(recreation.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.RemovedRecreationsIDs(); len(nodes) > 0 && !pu.mutation.RecreationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   profile.RecreationsTable,
+			Columns: []string{profile.RecreationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(recreation.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.RecreationsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   profile.RecreationsTable,
+			Columns: []string{profile.RecreationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(recreation.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	_spec.AddModifiers(pu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{profile.Label}
@@ -136,9 +243,10 @@ func (pu *ProfileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // ProfileUpdateOne is the builder for updating a single Profile entity.
 type ProfileUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *ProfileMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *ProfileMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetNickname sets the "nickname" field.
@@ -150,6 +258,20 @@ func (puo *ProfileUpdateOne) SetNickname(s string) *ProfileUpdateOne {
 // SetIconURL sets the "icon_url" field.
 func (puo *ProfileUpdateOne) SetIconURL(s string) *ProfileUpdateOne {
 	puo.mutation.SetIconURL(s)
+	return puo
+}
+
+// SetNillableIconURL sets the "icon_url" field if the given value is not nil.
+func (puo *ProfileUpdateOne) SetNillableIconURL(s *string) *ProfileUpdateOne {
+	if s != nil {
+		puo.SetIconURL(*s)
+	}
+	return puo
+}
+
+// ClearIconURL clears the value of the "icon_url" field.
+func (puo *ProfileUpdateOne) ClearIconURL() *ProfileUpdateOne {
+	puo.mutation.ClearIconURL()
 	return puo
 }
 
@@ -181,9 +303,45 @@ func (puo *ProfileUpdateOne) SetNillableUpdatedAt(t *time.Time) *ProfileUpdateOn
 	return puo
 }
 
+// AddRecreationIDs adds the "recreations" edge to the Recreation entity by IDs.
+func (puo *ProfileUpdateOne) AddRecreationIDs(ids ...int) *ProfileUpdateOne {
+	puo.mutation.AddRecreationIDs(ids...)
+	return puo
+}
+
+// AddRecreations adds the "recreations" edges to the Recreation entity.
+func (puo *ProfileUpdateOne) AddRecreations(r ...*Recreation) *ProfileUpdateOne {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return puo.AddRecreationIDs(ids...)
+}
+
 // Mutation returns the ProfileMutation object of the builder.
 func (puo *ProfileUpdateOne) Mutation() *ProfileMutation {
 	return puo.mutation
+}
+
+// ClearRecreations clears all "recreations" edges to the Recreation entity.
+func (puo *ProfileUpdateOne) ClearRecreations() *ProfileUpdateOne {
+	puo.mutation.ClearRecreations()
+	return puo
+}
+
+// RemoveRecreationIDs removes the "recreations" edge to Recreation entities by IDs.
+func (puo *ProfileUpdateOne) RemoveRecreationIDs(ids ...int) *ProfileUpdateOne {
+	puo.mutation.RemoveRecreationIDs(ids...)
+	return puo
+}
+
+// RemoveRecreations removes "recreations" edges to Recreation entities.
+func (puo *ProfileUpdateOne) RemoveRecreations(r ...*Recreation) *ProfileUpdateOne {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return puo.RemoveRecreationIDs(ids...)
 }
 
 // Where appends a list predicates to the ProfileUpdate builder.
@@ -226,6 +384,12 @@ func (puo *ProfileUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (puo *ProfileUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ProfileUpdateOne {
+	puo.modifiers = append(puo.modifiers, modifiers...)
+	return puo
+}
+
 func (puo *ProfileUpdateOne) sqlSave(ctx context.Context) (_node *Profile, err error) {
 	_spec := sqlgraph.NewUpdateSpec(profile.Table, profile.Columns, sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt))
 	id, ok := puo.mutation.ID()
@@ -258,12 +422,61 @@ func (puo *ProfileUpdateOne) sqlSave(ctx context.Context) (_node *Profile, err e
 	if value, ok := puo.mutation.IconURL(); ok {
 		_spec.SetField(profile.FieldIconURL, field.TypeString, value)
 	}
+	if puo.mutation.IconURLCleared() {
+		_spec.ClearField(profile.FieldIconURL, field.TypeString)
+	}
 	if value, ok := puo.mutation.CreatedAt(); ok {
 		_spec.SetField(profile.FieldCreatedAt, field.TypeTime, value)
 	}
 	if value, ok := puo.mutation.UpdatedAt(); ok {
 		_spec.SetField(profile.FieldUpdatedAt, field.TypeTime, value)
 	}
+	if puo.mutation.RecreationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   profile.RecreationsTable,
+			Columns: []string{profile.RecreationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(recreation.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.RemovedRecreationsIDs(); len(nodes) > 0 && !puo.mutation.RecreationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   profile.RecreationsTable,
+			Columns: []string{profile.RecreationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(recreation.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.RecreationsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   profile.RecreationsTable,
+			Columns: []string{profile.RecreationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(recreation.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	_spec.AddModifiers(puo.modifiers...)
 	_node = &Profile{config: puo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

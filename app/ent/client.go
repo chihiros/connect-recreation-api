@@ -16,6 +16,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // Client is the client that holds all ent builders.
@@ -291,6 +292,22 @@ func (c *ProfileClient) GetX(ctx context.Context, id int) *Profile {
 	return obj
 }
 
+// QueryRecreations queries the recreations edge of a Profile.
+func (c *ProfileClient) QueryRecreations(pr *Profile) *RecreationQuery {
+	query := (&RecreationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(profile.Table, profile.FieldID, id),
+			sqlgraph.To(recreation.Table, recreation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, profile.RecreationsTable, profile.RecreationsColumn),
+		)
+		fromV = sqlgraph.Neighbors(pr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ProfileClient) Hooks() []Hook {
 	return c.hooks.Profile
@@ -407,6 +424,22 @@ func (c *RecreationClient) GetX(ctx context.Context, id int) *Recreation {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryProfile queries the profile edge of a Recreation.
+func (c *RecreationClient) QueryProfile(r *Recreation) *ProfileQuery {
+	query := (&ProfileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(recreation.Table, recreation.FieldID, id),
+			sqlgraph.To(profile.Table, profile.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, recreation.ProfileTable, recreation.ProfileColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.

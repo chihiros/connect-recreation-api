@@ -33,18 +33,21 @@ const (
 // ProfileMutation represents an operation that mutates the Profile nodes in the graph.
 type ProfileMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	uuid          *uuid.UUID
-	nickname      *string
-	icon_url      *string
-	created_at    *time.Time
-	updated_at    *time.Time
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Profile, error)
-	predicates    []predicate.Profile
+	op                 Op
+	typ                string
+	id                 *int
+	uuid               *uuid.UUID
+	nickname           *string
+	icon_url           *string
+	created_at         *time.Time
+	updated_at         *time.Time
+	clearedFields      map[string]struct{}
+	recreations        map[int]struct{}
+	removedrecreations map[int]struct{}
+	clearedrecreations bool
+	done               bool
+	oldValue           func(context.Context) (*Profile, error)
+	predicates         []predicate.Profile
 }
 
 var _ ent.Mutation = (*ProfileMutation)(nil)
@@ -248,9 +251,22 @@ func (m *ProfileMutation) OldIconURL(ctx context.Context) (v string, err error) 
 	return oldValue.IconURL, nil
 }
 
+// ClearIconURL clears the value of the "icon_url" field.
+func (m *ProfileMutation) ClearIconURL() {
+	m.icon_url = nil
+	m.clearedFields[profile.FieldIconURL] = struct{}{}
+}
+
+// IconURLCleared returns if the "icon_url" field was cleared in this mutation.
+func (m *ProfileMutation) IconURLCleared() bool {
+	_, ok := m.clearedFields[profile.FieldIconURL]
+	return ok
+}
+
 // ResetIconURL resets all changes to the "icon_url" field.
 func (m *ProfileMutation) ResetIconURL() {
 	m.icon_url = nil
+	delete(m.clearedFields, profile.FieldIconURL)
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -323,6 +339,60 @@ func (m *ProfileMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err er
 // ResetUpdatedAt resets all changes to the "updated_at" field.
 func (m *ProfileMutation) ResetUpdatedAt() {
 	m.updated_at = nil
+}
+
+// AddRecreationIDs adds the "recreations" edge to the Recreation entity by ids.
+func (m *ProfileMutation) AddRecreationIDs(ids ...int) {
+	if m.recreations == nil {
+		m.recreations = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.recreations[ids[i]] = struct{}{}
+	}
+}
+
+// ClearRecreations clears the "recreations" edge to the Recreation entity.
+func (m *ProfileMutation) ClearRecreations() {
+	m.clearedrecreations = true
+}
+
+// RecreationsCleared reports if the "recreations" edge to the Recreation entity was cleared.
+func (m *ProfileMutation) RecreationsCleared() bool {
+	return m.clearedrecreations
+}
+
+// RemoveRecreationIDs removes the "recreations" edge to the Recreation entity by IDs.
+func (m *ProfileMutation) RemoveRecreationIDs(ids ...int) {
+	if m.removedrecreations == nil {
+		m.removedrecreations = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.recreations, ids[i])
+		m.removedrecreations[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedRecreations returns the removed IDs of the "recreations" edge to the Recreation entity.
+func (m *ProfileMutation) RemovedRecreationsIDs() (ids []int) {
+	for id := range m.removedrecreations {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// RecreationsIDs returns the "recreations" edge IDs in the mutation.
+func (m *ProfileMutation) RecreationsIDs() (ids []int) {
+	for id := range m.recreations {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetRecreations resets all changes to the "recreations" edge.
+func (m *ProfileMutation) ResetRecreations() {
+	m.recreations = nil
+	m.clearedrecreations = false
+	m.removedrecreations = nil
 }
 
 // Where appends a list predicates to the ProfileMutation builder.
@@ -485,7 +555,11 @@ func (m *ProfileMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *ProfileMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(profile.FieldIconURL) {
+		fields = append(fields, profile.FieldIconURL)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -498,6 +572,11 @@ func (m *ProfileMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *ProfileMutation) ClearField(name string) error {
+	switch name {
+	case profile.FieldIconURL:
+		m.ClearIconURL()
+		return nil
+	}
 	return fmt.Errorf("unknown Profile nullable field %s", name)
 }
 
@@ -526,49 +605,85 @@ func (m *ProfileMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ProfileMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.recreations != nil {
+		edges = append(edges, profile.EdgeRecreations)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *ProfileMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case profile.EdgeRecreations:
+		ids := make([]ent.Value, 0, len(m.recreations))
+		for id := range m.recreations {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ProfileMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.removedrecreations != nil {
+		edges = append(edges, profile.EdgeRecreations)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *ProfileMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case profile.EdgeRecreations:
+		ids := make([]ent.Value, 0, len(m.removedrecreations))
+		for id := range m.removedrecreations {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ProfileMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedrecreations {
+		edges = append(edges, profile.EdgeRecreations)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *ProfileMutation) EdgeCleared(name string) bool {
+	switch name {
+	case profile.EdgeRecreations:
+		return m.clearedrecreations
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *ProfileMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown Profile unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *ProfileMutation) ResetEdge(name string) error {
+	switch name {
+	case profile.EdgeRecreations:
+		m.ResetRecreations()
+		return nil
+	}
 	return fmt.Errorf("unknown Profile edge %s", name)
 }
 
@@ -592,6 +707,8 @@ type RecreationMutation struct {
 	created_at       *time.Time
 	updated_at       *time.Time
 	clearedFields    map[string]struct{}
+	profile          *int
+	clearedprofile   bool
 	done             bool
 	oldValue         func(context.Context) (*Recreation, error)
 	predicates       []predicate.Recreation
@@ -921,9 +1038,22 @@ func (m *RecreationMutation) OldYoutubeID(ctx context.Context) (v string, err er
 	return oldValue.YoutubeID, nil
 }
 
+// ClearYoutubeID clears the value of the "youtube_id" field.
+func (m *RecreationMutation) ClearYoutubeID() {
+	m.youtube_id = nil
+	m.clearedFields[recreation.FieldYoutubeID] = struct{}{}
+}
+
+// YoutubeIDCleared returns if the "youtube_id" field was cleared in this mutation.
+func (m *RecreationMutation) YoutubeIDCleared() bool {
+	_, ok := m.clearedFields[recreation.FieldYoutubeID]
+	return ok
+}
+
 // ResetYoutubeID resets all changes to the "youtube_id" field.
 func (m *RecreationMutation) ResetYoutubeID() {
 	m.youtube_id = nil
+	delete(m.clearedFields, recreation.FieldYoutubeID)
 }
 
 // SetTargetNumber sets the "target_number" field.
@@ -1108,6 +1238,45 @@ func (m *RecreationMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err
 // ResetUpdatedAt resets all changes to the "updated_at" field.
 func (m *RecreationMutation) ResetUpdatedAt() {
 	m.updated_at = nil
+}
+
+// SetProfileID sets the "profile" edge to the Profile entity by id.
+func (m *RecreationMutation) SetProfileID(id int) {
+	m.profile = &id
+}
+
+// ClearProfile clears the "profile" edge to the Profile entity.
+func (m *RecreationMutation) ClearProfile() {
+	m.clearedprofile = true
+}
+
+// ProfileCleared reports if the "profile" edge to the Profile entity was cleared.
+func (m *RecreationMutation) ProfileCleared() bool {
+	return m.clearedprofile
+}
+
+// ProfileID returns the "profile" edge ID in the mutation.
+func (m *RecreationMutation) ProfileID() (id int, exists bool) {
+	if m.profile != nil {
+		return *m.profile, true
+	}
+	return
+}
+
+// ProfileIDs returns the "profile" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ProfileID instead. It exists only for internal usage by the builders.
+func (m *RecreationMutation) ProfileIDs() (ids []int) {
+	if id := m.profile; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetProfile resets all changes to the "profile" edge.
+func (m *RecreationMutation) ResetProfile() {
+	m.profile = nil
+	m.clearedprofile = false
 }
 
 // Where appends a list predicates to the RecreationMutation builder.
@@ -1367,7 +1536,11 @@ func (m *RecreationMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *RecreationMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(recreation.FieldYoutubeID) {
+		fields = append(fields, recreation.FieldYoutubeID)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1380,6 +1553,11 @@ func (m *RecreationMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *RecreationMutation) ClearField(name string) error {
+	switch name {
+	case recreation.FieldYoutubeID:
+		m.ClearYoutubeID()
+		return nil
+	}
 	return fmt.Errorf("unknown Recreation nullable field %s", name)
 }
 
@@ -1423,19 +1601,28 @@ func (m *RecreationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *RecreationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.profile != nil {
+		edges = append(edges, recreation.EdgeProfile)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *RecreationMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case recreation.EdgeProfile:
+		if id := m.profile; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *RecreationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -1447,24 +1634,41 @@ func (m *RecreationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *RecreationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedprofile {
+		edges = append(edges, recreation.EdgeProfile)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *RecreationMutation) EdgeCleared(name string) bool {
+	switch name {
+	case recreation.EdgeProfile:
+		return m.clearedprofile
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *RecreationMutation) ClearEdge(name string) error {
+	switch name {
+	case recreation.EdgeProfile:
+		m.ClearProfile()
+		return nil
+	}
 	return fmt.Errorf("unknown Recreation unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *RecreationMutation) ResetEdge(name string) error {
+	switch name {
+	case recreation.EdgeProfile:
+		m.ResetProfile()
+		return nil
+	}
 	return fmt.Errorf("unknown Recreation edge %s", name)
 }

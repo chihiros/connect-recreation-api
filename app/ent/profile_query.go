@@ -5,7 +5,9 @@ package ent
 import (
 	"app/ent/predicate"
 	"app/ent/profile"
+	"app/ent/recreation"
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -17,10 +19,12 @@ import (
 // ProfileQuery is the builder for querying Profile entities.
 type ProfileQuery struct {
 	config
-	ctx        *QueryContext
-	order      []profile.OrderOption
-	inters     []Interceptor
-	predicates []predicate.Profile
+	ctx             *QueryContext
+	order           []profile.OrderOption
+	inters          []Interceptor
+	predicates      []predicate.Profile
+	withRecreations *RecreationQuery
+	modifiers       []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -55,6 +59,28 @@ func (pq *ProfileQuery) Unique(unique bool) *ProfileQuery {
 func (pq *ProfileQuery) Order(o ...profile.OrderOption) *ProfileQuery {
 	pq.order = append(pq.order, o...)
 	return pq
+}
+
+// QueryRecreations chains the current query on the "recreations" edge.
+func (pq *ProfileQuery) QueryRecreations() *RecreationQuery {
+	query := (&RecreationClient{config: pq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := pq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(profile.Table, profile.FieldID, selector),
+			sqlgraph.To(recreation.Table, recreation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, profile.RecreationsTable, profile.RecreationsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Profile entity from the query.
@@ -244,15 +270,27 @@ func (pq *ProfileQuery) Clone() *ProfileQuery {
 		return nil
 	}
 	return &ProfileQuery{
-		config:     pq.config,
-		ctx:        pq.ctx.Clone(),
-		order:      append([]profile.OrderOption{}, pq.order...),
-		inters:     append([]Interceptor{}, pq.inters...),
-		predicates: append([]predicate.Profile{}, pq.predicates...),
+		config:          pq.config,
+		ctx:             pq.ctx.Clone(),
+		order:           append([]profile.OrderOption{}, pq.order...),
+		inters:          append([]Interceptor{}, pq.inters...),
+		predicates:      append([]predicate.Profile{}, pq.predicates...),
+		withRecreations: pq.withRecreations.Clone(),
 		// clone intermediate query.
 		sql:  pq.sql.Clone(),
 		path: pq.path,
 	}
+}
+
+// WithRecreations tells the query-builder to eager-load the nodes that are connected to
+// the "recreations" edge. The optional arguments are used to configure the query builder of the edge.
+func (pq *ProfileQuery) WithRecreations(opts ...func(*RecreationQuery)) *ProfileQuery {
+	query := (&RecreationClient{config: pq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withRecreations = query
+	return pq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -331,8 +369,11 @@ func (pq *ProfileQuery) prepareQuery(ctx context.Context) error {
 
 func (pq *ProfileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Profile, error) {
 	var (
-		nodes = []*Profile{}
-		_spec = pq.querySpec()
+		nodes       = []*Profile{}
+		_spec       = pq.querySpec()
+		loadedTypes = [1]bool{
+			pq.withRecreations != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Profile).scanValues(nil, columns)
@@ -340,7 +381,11 @@ func (pq *ProfileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Prof
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Profile{config: pq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
+	}
+	if len(pq.modifiers) > 0 {
+		_spec.Modifiers = pq.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
@@ -351,11 +396,53 @@ func (pq *ProfileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Prof
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := pq.withRecreations; query != nil {
+		if err := pq.loadRecreations(ctx, query, nodes,
+			func(n *Profile) { n.Edges.Recreations = []*Recreation{} },
+			func(n *Profile, e *Recreation) { n.Edges.Recreations = append(n.Edges.Recreations, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (pq *ProfileQuery) loadRecreations(ctx context.Context, query *RecreationQuery, nodes []*Profile, init func(*Profile), assign func(*Profile, *Recreation)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Profile)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Recreation(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(profile.RecreationsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.profile_recreations
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "profile_recreations" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "profile_recreations" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (pq *ProfileQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := pq.querySpec()
+	if len(pq.modifiers) > 0 {
+		_spec.Modifiers = pq.modifiers
+	}
 	_spec.Node.Columns = pq.ctx.Fields
 	if len(pq.ctx.Fields) > 0 {
 		_spec.Unique = pq.ctx.Unique != nil && *pq.ctx.Unique
@@ -418,6 +505,9 @@ func (pq *ProfileQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if pq.ctx.Unique != nil && *pq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range pq.modifiers {
+		m(selector)
+	}
 	for _, p := range pq.predicates {
 		p(selector)
 	}
@@ -433,6 +523,12 @@ func (pq *ProfileQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (pq *ProfileQuery) Modify(modifiers ...func(s *sql.Selector)) *ProfileSelect {
+	pq.modifiers = append(pq.modifiers, modifiers...)
+	return pq.Select()
 }
 
 // ProfileGroupBy is the group-by builder for Profile entities.
@@ -523,4 +619,10 @@ func (ps *ProfileSelect) sqlScan(ctx context.Context, root *ProfileQuery, v any)
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (ps *ProfileSelect) Modify(modifiers ...func(s *sql.Selector)) *ProfileSelect {
+	ps.modifiers = append(ps.modifiers, modifiers...)
+	return ps
 }
