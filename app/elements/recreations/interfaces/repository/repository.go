@@ -3,6 +3,7 @@ package repository
 import (
 	"app/elements/recreations/usecase"
 	"app/ent"
+	"app/ent/profile"
 	"app/ent/recreation"
 	"app/middle/applog"
 	"context"
@@ -57,15 +58,26 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset
 }
 
 func (r *RecreationRepository) GetRecreationsByID(ctx context.Context, id uuid.UUID) (usecase.Response, error) {
-	user, err := r.DBConn.Recreation.Query().
+	recreation, err := r.DBConn.Recreation.
+		Query().
 		Where(recreation.RecreationIDEQ(id)).
-		All(ctx)
+		Only(ctx)
 
 	if err != nil {
-		panic(err)
+		applog.Panic(err)
 	}
 
-	res := usecase.Response{Data: user[0]}
+	profile, err := r.DBConn.Profile.Query().
+		Where(profile.UUIDEQ(recreation.UserID)).
+		First(ctx)
+
+	if err != nil {
+		applog.Panic(err)
+	}
+
+	recreation.Edges.Profile = profile
+
+	res := usecase.Response{Data: recreation}
 	return res, err
 }
 
