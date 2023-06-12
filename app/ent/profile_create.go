@@ -4,6 +4,7 @@ package ent
 
 import (
 	"app/ent/profile"
+	"app/ent/recreation"
 	"context"
 	"errors"
 	"fmt"
@@ -41,6 +42,14 @@ func (pc *ProfileCreate) SetIconURL(s string) *ProfileCreate {
 	return pc
 }
 
+// SetNillableIconURL sets the "icon_url" field if the given value is not nil.
+func (pc *ProfileCreate) SetNillableIconURL(s *string) *ProfileCreate {
+	if s != nil {
+		pc.SetIconURL(*s)
+	}
+	return pc
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (pc *ProfileCreate) SetCreatedAt(t time.Time) *ProfileCreate {
 	pc.mutation.SetCreatedAt(t)
@@ -67,6 +76,21 @@ func (pc *ProfileCreate) SetNillableUpdatedAt(t *time.Time) *ProfileCreate {
 		pc.SetUpdatedAt(*t)
 	}
 	return pc
+}
+
+// AddRecreationIDs adds the "recreations" edge to the Recreation entity by IDs.
+func (pc *ProfileCreate) AddRecreationIDs(ids ...int) *ProfileCreate {
+	pc.mutation.AddRecreationIDs(ids...)
+	return pc
+}
+
+// AddRecreations adds the "recreations" edges to the Recreation entity.
+func (pc *ProfileCreate) AddRecreations(r ...*Recreation) *ProfileCreate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return pc.AddRecreationIDs(ids...)
 }
 
 // Mutation returns the ProfileMutation object of the builder.
@@ -122,9 +146,6 @@ func (pc *ProfileCreate) check() error {
 	if _, ok := pc.mutation.Nickname(); !ok {
 		return &ValidationError{Name: "nickname", err: errors.New(`ent: missing required field "Profile.nickname"`)}
 	}
-	if _, ok := pc.mutation.IconURL(); !ok {
-		return &ValidationError{Name: "icon_url", err: errors.New(`ent: missing required field "Profile.icon_url"`)}
-	}
 	if _, ok := pc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Profile.created_at"`)}
 	}
@@ -177,6 +198,22 @@ func (pc *ProfileCreate) createSpec() (*Profile, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.UpdatedAt(); ok {
 		_spec.SetField(profile.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if nodes := pc.mutation.RecreationsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   profile.RecreationsTable,
+			Columns: []string{profile.RecreationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(recreation.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -251,6 +288,12 @@ func (u *ProfileUpsert) SetIconURL(v string) *ProfileUpsert {
 // UpdateIconURL sets the "icon_url" field to the value that was provided on create.
 func (u *ProfileUpsert) UpdateIconURL() *ProfileUpsert {
 	u.SetExcluded(profile.FieldIconURL)
+	return u
+}
+
+// ClearIconURL clears the value of the "icon_url" field.
+func (u *ProfileUpsert) ClearIconURL() *ProfileUpsert {
+	u.SetNull(profile.FieldIconURL)
 	return u
 }
 
@@ -348,6 +391,13 @@ func (u *ProfileUpsertOne) SetIconURL(v string) *ProfileUpsertOne {
 func (u *ProfileUpsertOne) UpdateIconURL() *ProfileUpsertOne {
 	return u.Update(func(s *ProfileUpsert) {
 		s.UpdateIconURL()
+	})
+}
+
+// ClearIconURL clears the value of the "icon_url" field.
+func (u *ProfileUpsertOne) ClearIconURL() *ProfileUpsertOne {
+	return u.Update(func(s *ProfileUpsert) {
+		s.ClearIconURL()
 	})
 }
 
@@ -611,6 +661,13 @@ func (u *ProfileUpsertBulk) SetIconURL(v string) *ProfileUpsertBulk {
 func (u *ProfileUpsertBulk) UpdateIconURL() *ProfileUpsertBulk {
 	return u.Update(func(s *ProfileUpsert) {
 		s.UpdateIconURL()
+	})
+}
+
+// ClearIconURL clears the value of the "icon_url" field.
+func (u *ProfileUpsertBulk) ClearIconURL() *ProfileUpsertBulk {
+	return u.Update(func(s *ProfileUpsert) {
+		s.ClearIconURL()
 	})
 }
 

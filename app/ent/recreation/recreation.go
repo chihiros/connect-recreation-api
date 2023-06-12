@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -33,8 +34,17 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// EdgeProfile holds the string denoting the profile edge name in mutations.
+	EdgeProfile = "profile"
 	// Table holds the table name of the recreation in the database.
 	Table = "recreations"
+	// ProfileTable is the table that holds the profile relation/edge.
+	ProfileTable = "recreations"
+	// ProfileInverseTable is the table name for the Profile entity.
+	// It exists in this package in order to avoid circular dependency with the "profile" package.
+	ProfileInverseTable = "profiles"
+	// ProfileColumn is the table column denoting the profile relation/edge.
+	ProfileColumn = "profile_recreations"
 )
 
 // Columns holds all SQL columns for recreation fields.
@@ -52,10 +62,21 @@ var Columns = []string{
 	FieldUpdatedAt,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "recreations"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"profile_recreations",
+}
+
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -122,4 +143,18 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByProfileField orders the results by profile field.
+func ByProfileField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newProfileStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newProfileStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ProfileInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, ProfileTable, ProfileColumn),
+	)
 }

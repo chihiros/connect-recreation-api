@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -23,8 +24,17 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// EdgeRecreations holds the string denoting the recreations edge name in mutations.
+	EdgeRecreations = "recreations"
 	// Table holds the table name of the profile in the database.
 	Table = "profiles"
+	// RecreationsTable is the table that holds the recreations relation/edge.
+	RecreationsTable = "recreations"
+	// RecreationsInverseTable is the table name for the Recreation entity.
+	// It exists in this package in order to avoid circular dependency with the "recreation" package.
+	RecreationsInverseTable = "recreations"
+	// RecreationsColumn is the table column denoting the recreations relation/edge.
+	RecreationsColumn = "profile_recreations"
 )
 
 // Columns holds all SQL columns for profile fields.
@@ -85,4 +95,25 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByRecreationsCount orders the results by recreations count.
+func ByRecreationsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newRecreationsStep(), opts...)
+	}
+}
+
+// ByRecreations orders the results by recreations terms.
+func ByRecreations(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newRecreationsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newRecreationsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(RecreationsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, RecreationsTable, RecreationsColumn),
+	)
 }
