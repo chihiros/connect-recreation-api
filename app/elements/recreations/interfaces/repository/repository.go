@@ -35,7 +35,7 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset
 	}
 
 	// then fetch paged records
-	users, err := r.DBConn.Recreation.
+	recreation, err := r.DBConn.Recreation.
 		Query().
 		Order(ent.Desc(recreation.FieldCreatedAt)).
 		Limit(limit).
