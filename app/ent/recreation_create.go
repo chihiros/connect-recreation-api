@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"app/ent/profile"
 	"app/ent/recreation"
 	"context"
 	"errors"
@@ -59,6 +60,14 @@ func (rc *RecreationCreate) SetYoutubeID(s string) *RecreationCreate {
 	return rc
 }
 
+// SetNillableYoutubeID sets the "youtube_id" field if the given value is not nil.
+func (rc *RecreationCreate) SetNillableYoutubeID(s *string) *RecreationCreate {
+	if s != nil {
+		rc.SetYoutubeID(*s)
+	}
+	return rc
+}
+
 // SetTargetNumber sets the "target_number" field.
 func (rc *RecreationCreate) SetTargetNumber(i int) *RecreationCreate {
 	rc.mutation.SetTargetNumber(i)
@@ -97,6 +106,25 @@ func (rc *RecreationCreate) SetNillableUpdatedAt(t *time.Time) *RecreationCreate
 		rc.SetUpdatedAt(*t)
 	}
 	return rc
+}
+
+// SetProfileID sets the "profile" edge to the Profile entity by ID.
+func (rc *RecreationCreate) SetProfileID(id int) *RecreationCreate {
+	rc.mutation.SetProfileID(id)
+	return rc
+}
+
+// SetNillableProfileID sets the "profile" edge to the Profile entity by ID if the given value is not nil.
+func (rc *RecreationCreate) SetNillableProfileID(id *int) *RecreationCreate {
+	if id != nil {
+		rc = rc.SetProfileID(*id)
+	}
+	return rc
+}
+
+// SetProfile sets the "profile" edge to the Profile entity.
+func (rc *RecreationCreate) SetProfile(p *Profile) *RecreationCreate {
+	return rc.SetProfileID(p.ID)
 }
 
 // Mutation returns the RecreationMutation object of the builder.
@@ -160,9 +188,6 @@ func (rc *RecreationCreate) check() error {
 	}
 	if _, ok := rc.mutation.Content(); !ok {
 		return &ValidationError{Name: "content", err: errors.New(`ent: missing required field "Recreation.content"`)}
-	}
-	if _, ok := rc.mutation.YoutubeID(); !ok {
-		return &ValidationError{Name: "youtube_id", err: errors.New(`ent: missing required field "Recreation.youtube_id"`)}
 	}
 	if _, ok := rc.mutation.TargetNumber(); !ok {
 		return &ValidationError{Name: "target_number", err: errors.New(`ent: missing required field "Recreation.target_number"`)}
@@ -242,6 +267,23 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 	if value, ok := rc.mutation.UpdatedAt(); ok {
 		_spec.SetField(recreation.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if nodes := rc.mutation.ProfileIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   recreation.ProfileTable,
+			Columns: []string{recreation.ProfileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.profile_recreations = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -340,6 +382,12 @@ func (u *RecreationUpsert) SetYoutubeID(v string) *RecreationUpsert {
 // UpdateYoutubeID sets the "youtube_id" field to the value that was provided on create.
 func (u *RecreationUpsert) UpdateYoutubeID() *RecreationUpsert {
 	u.SetExcluded(recreation.FieldYoutubeID)
+	return u
+}
+
+// ClearYoutubeID clears the value of the "youtube_id" field.
+func (u *RecreationUpsert) ClearYoutubeID() *RecreationUpsert {
+	u.SetNull(recreation.FieldYoutubeID)
 	return u
 }
 
@@ -495,6 +543,13 @@ func (u *RecreationUpsertOne) SetYoutubeID(v string) *RecreationUpsertOne {
 func (u *RecreationUpsertOne) UpdateYoutubeID() *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
 		s.UpdateYoutubeID()
+	})
+}
+
+// ClearYoutubeID clears the value of the "youtube_id" field.
+func (u *RecreationUpsertOne) ClearYoutubeID() *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.ClearYoutubeID()
 	})
 }
 
@@ -820,6 +875,13 @@ func (u *RecreationUpsertBulk) SetYoutubeID(v string) *RecreationUpsertBulk {
 func (u *RecreationUpsertBulk) UpdateYoutubeID() *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
 		s.UpdateYoutubeID()
+	})
+}
+
+// ClearYoutubeID clears the value of the "youtube_id" field.
+func (u *RecreationUpsertBulk) ClearYoutubeID() *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.ClearYoutubeID()
 	})
 }
 

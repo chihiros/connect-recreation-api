@@ -6,14 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Prefecture is the predicate function for prefecture builders.
-type Prefecture func(*sql.Selector)
-
 // Profile is the predicate function for profile builders.
 type Profile func(*sql.Selector)
 
 // Recreation is the predicate function for recreation builders.
 type Recreation func(*sql.Selector)
-
-// User is the predicate function for user builders.
-type User func(*sql.Selector)

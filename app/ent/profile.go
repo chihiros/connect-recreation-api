@@ -27,8 +27,29 @@ type Profile struct {
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the ProfileQuery when eager-loading is set.
+	Edges        ProfileEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// ProfileEdges holds the relations/edges for other nodes in the graph.
+type ProfileEdges struct {
+	// Recreations holds the value of the recreations edge.
+	Recreations []*Recreation `json:"recreations,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// RecreationsOrErr returns the Recreations value or an error if the edge
+// was not loaded in eager-loading.
+func (e ProfileEdges) RecreationsOrErr() ([]*Recreation, error) {
+	if e.loadedTypes[0] {
+		return e.Recreations, nil
+	}
+	return nil, &NotLoadedError{edge: "recreations"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -106,6 +127,11 @@ func (pr *Profile) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (pr *Profile) Value(name string) (ent.Value, error) {
 	return pr.selectValues.Get(name)
+}
+
+// QueryRecreations queries the "recreations" edge of the Profile entity.
+func (pr *Profile) QueryRecreations() *RecreationQuery {
+	return NewProfileClient(pr.config).QueryRecreations(pr)
 }
 
 // Update returns a builder for updating this Profile.

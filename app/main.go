@@ -20,19 +20,7 @@ func main() {
 		time.Local = jst
 	}
 
-	// // SQLite3へのコネクションを取得する
-	// conn, err := infra.NewSQLite3Connection()
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// Postgresへのコネクションを取得する
-	conn, err := infra.NewPostgresConnection()
-	if err != nil {
-		applog.Panic(err)
-	}
-
-	r := infra.NewRouter(conn)
+	r := infra.NewRouter()
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		applog.Panic(err)
 	}
