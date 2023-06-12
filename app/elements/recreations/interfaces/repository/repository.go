@@ -46,7 +46,7 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset
 	}
 
 	recRes := RecreationResponse{
-		Recreations:  users,
+		Recreations:  recreation,
 		TotalRecords: count,
 	}
 
