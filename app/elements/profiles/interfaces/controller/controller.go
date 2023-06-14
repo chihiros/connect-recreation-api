@@ -70,9 +70,18 @@ func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request)
 	req := usecase.Request{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 
-	// Request.UUIDを上書きする
-	req.UUID = getUUIDWithPayload(r)
+	// jwtのplayloadからuser_idを取得
+	payload := getPayload(r)
 
+	// Request.UUIDを上書きする
+	uuid, err := uuid.Parse(payload.Subject)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode("Unauthorized")
+		return
+	}
+
+	req.UUID = uuid
 	profile, err := c.Usecase.PostProfiles(context.Background(), req)
 
 	if err != nil {
