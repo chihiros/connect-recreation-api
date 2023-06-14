@@ -27,6 +27,11 @@ type SupabaseJwtPayload struct {
 	SessionID    string               `json:"session_id,omitempty"`
 }
 
+type SupabaseAppMetadata struct {
+	Provider  string   `json:"provider,omitempty"`
+	Providers []string `json:"providers,omitempty"`
+}
+
 func verifyToken(tokenString string) (*CustomClaims, error) {
 	SUPABASE_JWT_SECRET := os.Getenv("SUPABASE_JWT_SECRET")
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
