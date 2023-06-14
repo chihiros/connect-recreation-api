@@ -15,6 +15,18 @@ type CustomClaims struct {
 	Role string `json:"role"`
 }
 
+type SupabaseJwtPayload struct {
+	jwt.StandardClaims
+	Email        string               `json:"email,omitempty"`
+	Phone        string               `json:"phone,omitempty"`
+	AppMetadata  SupabaseAppMetadata  `json:"app_metadata,omitempty"`
+	UserMetadata SupabaseUserMetadata `json:"user_metadata,omitempty"`
+	Role         string               `json:"role,omitempty"`
+	Aal          string               `json:"aal,omitempty"`
+	Amr          []SupabaseAmr        `json:"amr,omitempty"`
+	SessionID    string               `json:"session_id,omitempty"`
+}
+
 func verifyToken(tokenString string) (*CustomClaims, error) {
 	SUPABASE_JWT_SECRET := os.Getenv("SUPABASE_JWT_SECRET")
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
