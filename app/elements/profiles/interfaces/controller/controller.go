@@ -82,6 +82,18 @@ func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request)
 	}
 
 	req.UUID = uuid
+	req.IconURL = payload.UserMetadata.AvatarURL
+	if payload.UserMetadata.UserName != "" {
+		req.Nickname = payload.UserMetadata.UserName
+	} else if payload.UserMetadata.PreferredUsername != "" {
+		req.Nickname = payload.UserMetadata.PreferredUsername
+	} else if payload.UserMetadata.Name != "" {
+		req.Nickname = payload.UserMetadata.Name
+	} else if payload.UserMetadata.FullName != "" {
+		req.Nickname = payload.UserMetadata.FullName
+	} else {
+		req.Nickname = ""
+	}
 	profile, err := c.Usecase.PostProfiles(context.Background(), req)
 
 	if err != nil {
