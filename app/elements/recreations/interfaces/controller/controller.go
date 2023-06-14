@@ -107,7 +107,7 @@ func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Re
 	}
 
 	req.UserID = user_id
-	user, err := c.Usecase.PostRecreations(context.Background(), req)
+	recreation, err := c.Usecase.PostRecreations(context.Background(), req)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
@@ -116,14 +116,14 @@ func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Re
 		switch err.Error() {
 		case "duplicate":
 			w.WriteHeader(http.StatusConflict)
-			json.NewEncoder(w).Encode(user)
+			json.NewEncoder(w).Encode(recreation)
 		default:
 			panic(err)
 		}
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(recreation)
 }
 
 // func (c *RecreationController) DeleteRecreationsByID(w http.ResponseWriter, r *http.Request) {
