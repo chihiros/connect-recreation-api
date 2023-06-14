@@ -46,6 +46,9 @@ type SupabaseAmr struct {
 	Timestamp int64  `json:"timestamp,omitempty"`
 }
 
+type ContextKey string
+
+const PayloadKey ContextKey = "payload"
 
 func verifyToken(tokenString string) (*SupabaseJwtPayload, error) {
 	SUPABASE_JWT_SECRET := os.Getenv("SUPABASE_JWT_SECRET")
@@ -80,9 +83,9 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		// Add the claims to the request context for later use in the handler
+		// Add the payload to the request context for later use in the handler
 		ctx := r.Context()
-		ctx = context.WithValue(ctx, "claims", claims)
+		ctx = context.WithValue(ctx, PayloadKey, payload)
 		r = r.WithContext(ctx)
 
 		// Call the next handler in the chain
