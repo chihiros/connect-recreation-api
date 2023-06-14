@@ -95,7 +95,7 @@ func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Re
 	}
 
 	// jwtのplayloadからuser_idを取得
-	payload, ok := r.Context().Value("claims").(*authrization.SupabaseJwtPayload)
+	payload, ok := r.Context().Value(authrization.PayloadKey).(*authrization.SupabaseJwtPayload)
 	if !ok {
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode("Unauthorized")
