@@ -46,6 +46,11 @@ type SupabaseUserMetadata struct {
 	UserName          string `json:"user_name,omitempty"`
 }
 
+type SupabaseAmr struct {
+	Method    string `json:"method,omitempty"`
+	Timestamp int64  `json:"timestamp,omitempty"`
+}
+
 func verifyToken(tokenString string) (*CustomClaims, error) {
 	SUPABASE_JWT_SECRET := os.Getenv("SUPABASE_JWT_SECRET")
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
