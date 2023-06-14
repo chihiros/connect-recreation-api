@@ -40,6 +40,14 @@ func getUUIDWithPayload(r *http.Request) uuid.UUID {
 	return uuid.MustParse(payload.Subject)
 }
 
+func getPayload(r *http.Request) *authrization.SupabaseJwtPayload {
+	payload, ok := r.Context().Value("payload").(*authrization.SupabaseJwtPayload)
+	if !ok {
+		applog.Panic(errors.New("Invalid user payload"))
+	}
+	return payload
+}
+
 func (c *ProfileController) GetProfiles(w http.ResponseWriter, r *http.Request) {
 	uuid := getUUIDWithPayload(r)
 	profiles, err := c.Usecase.GetProfiles(context.Background(), uuid)
