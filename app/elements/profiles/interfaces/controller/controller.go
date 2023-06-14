@@ -33,9 +33,9 @@ func NewProfileUsecase(conn *ent.Client) *usecase.ProfileUsecase {
 }
 
 func getUUIDWithPayload(r *http.Request) uuid.UUID {
-	payload, ok := r.Context().Value("claims").(*authrization.SupabaseJwtPayload)
+	payload, ok := r.Context().Value("payload").(*authrization.SupabaseJwtPayload)
 	if !ok {
-		applog.Panic(errors.New("Invalid user claims"))
+		applog.Panic(errors.New("Invalid user payload"))
 	}
 	return uuid.MustParse(payload.Subject)
 }
