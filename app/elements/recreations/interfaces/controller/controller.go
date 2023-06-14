@@ -93,6 +93,20 @@ func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Re
 		fmt.Printf("%v\n", err)
 	}
 
+	// jwtのplayloadからuser_idを取得
+	payload, ok := r.Context().Value("claims").(*authrization.SupabaseJwtPayload)
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode("Unauthorized")
+		return
+	}
+
+	user_id, err := uuid.Parse(payload.Subject)
+	if err != nil {
+		applog.Error(err.Error())
+	}
+
+	req.UserID = user_id
 	user, err := c.Usecase.PostRecreations(context.Background(), req)
 	if err != nil {
 		fmt.Printf("%v\n", err)
