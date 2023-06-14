@@ -32,6 +32,20 @@ type SupabaseAppMetadata struct {
 	Providers []string `json:"providers,omitempty"`
 }
 
+type SupabaseUserMetadata struct {
+	AvatarURL         string `json:"avatar_url,omitempty"`
+	Email             string `json:"email,omitempty"`
+	EmailVerified     bool   `json:"email_verified,omitempty"`
+	FullName          string `json:"full_name,omitempty"`
+	Iss               string `json:"iss,omitempty"`
+	Name              string `json:"name,omitempty"`
+	Picture           string `json:"picture,omitempty"`
+	PreferredUsername string `json:"preferred_username,omitempty"`
+	ProviderID        string `json:"provider_id,omitempty"`
+	Sub               string `json:"sub,omitempty"`
+	UserName          string `json:"user_name,omitempty"`
+}
+
 func verifyToken(tokenString string) (*CustomClaims, error) {
 	SUPABASE_JWT_SECRET := os.Getenv("SUPABASE_JWT_SECRET")
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
