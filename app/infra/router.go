@@ -4,8 +4,7 @@ import (
 	contact_controller "app/elements/contact/interfaces/controller"
 	profile_controller "app/elements/profiles/interfaces/controller"
 	rec_controller "app/elements/recreations/interfaces/controller"
-	user_controller "app/elements/users/interfaces/controller"
-	"app/ent"
+	"app/middle/applog"
 	"app/middle/authrization"
 	"encoding/json"
 	"net/http"
@@ -17,15 +16,16 @@ import (
 	"github.com/go-chi/cors"
 )
 
-func NewRouter(conn *ent.Client) *chi.Mux {
+func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(logger.Logger)
 	r.Use(middleware.Recoverer)
 
 	// Access-Control-Allow-Originを許可する
 	r.Use(cors.Handler(cors.Options{
-		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
-		AllowedOrigins: []string{"https://*", "http://*"},
+		// AllowedOrigins: []string{"https://*", "http://*"},
+		// AllowedOrigins: []string{"http://localhost:3000", "https://stg.topicpost.net"}, // 特定のオリジンのみ許可
+		AllowedOrigins: []string{"*"},
 		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "Access-Control-Allow-Origin"},
@@ -34,10 +34,19 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	ucon := user_controller.NewUserController(conn)
 	ccon := contact_controller.NewContactController()
-	rcon := rec_controller.NewRecreationController(conn)
-	pcon := profile_controller.NewProfileController(conn)
+	// Postgresへのコネクションを取得する
+	conn1, err := NewPostgresConnection()
+	if err != nil {
+		applog.Panic(err)
+	}
+	rcon := rec_controller.NewRecreationController(conn1)
+
+	conn2, err := NewPostgresConnection()
+	if err != nil {
+		applog.Panic(err)
+	}
+	pcon := profile_controller.NewProfileController(conn2)
 	r.Route("/v1", func(r chi.Router) {
 		// お問い合わせ用のAPI
 		r.Route("/contact", func(r chi.Router) {
@@ -52,14 +61,6 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 			r.Post("/", pcon.PostProfiles)
 			r.Put("/", pcon.PutProfiles)
 			r.Delete("/", pcon.DeleteProfiles)
-		})
-
-		// ダミーで使っていたAPI（いずれ削除されると思う）
-		r.Route("/users", func(r chi.Router) {
-			r.Get("/", ucon.GetUsers)
-			r.Get("/query", ucon.GetUsersByID)
-			r.Post("/", ucon.PostUsers)
-			r.Delete("/", ucon.DeleteUsersByID)
 		})
 
 		// 疎通確認用のAPI
@@ -80,10 +81,9 @@ func NewRouter(conn *ent.Client) *chi.Mux {
 			// JWTが不要なやつ
 			r.Get("/", rcon.GetRecreationsByID)
 
-			r.Post("/", rcon.PostRecreations)
 			// JWTが必要なやつ
 			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
-				r.Delete("/", ucon.DeleteUsersByID)
+				r.Post("/", rcon.PostRecreations)
 			})
 		})
 

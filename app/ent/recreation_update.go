@@ -4,6 +4,7 @@ package ent
 
 import (
 	"app/ent/predicate"
+	"app/ent/profile"
 	"app/ent/recreation"
 	"context"
 	"errors"
@@ -19,8 +20,9 @@ import (
 // RecreationUpdate is the builder for updating Recreation entities.
 type RecreationUpdate struct {
 	config
-	hooks    []Hook
-	mutation *RecreationMutation
+	hooks     []Hook
+	mutation  *RecreationMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the RecreationUpdate builder.
@@ -50,6 +52,26 @@ func (ru *RecreationUpdate) SetTitle(s string) *RecreationUpdate {
 // SetContent sets the "content" field.
 func (ru *RecreationUpdate) SetContent(s string) *RecreationUpdate {
 	ru.mutation.SetContent(s)
+	return ru
+}
+
+// SetYoutubeID sets the "youtube_id" field.
+func (ru *RecreationUpdate) SetYoutubeID(s string) *RecreationUpdate {
+	ru.mutation.SetYoutubeID(s)
+	return ru
+}
+
+// SetNillableYoutubeID sets the "youtube_id" field if the given value is not nil.
+func (ru *RecreationUpdate) SetNillableYoutubeID(s *string) *RecreationUpdate {
+	if s != nil {
+		ru.SetYoutubeID(*s)
+	}
+	return ru
+}
+
+// ClearYoutubeID clears the value of the "youtube_id" field.
+func (ru *RecreationUpdate) ClearYoutubeID() *RecreationUpdate {
+	ru.mutation.ClearYoutubeID()
 	return ru
 }
 
@@ -85,9 +107,34 @@ func (ru *RecreationUpdate) SetUpdatedAt(t time.Time) *RecreationUpdate {
 	return ru
 }
 
+// SetProfileID sets the "profile" edge to the Profile entity by ID.
+func (ru *RecreationUpdate) SetProfileID(id int) *RecreationUpdate {
+	ru.mutation.SetProfileID(id)
+	return ru
+}
+
+// SetNillableProfileID sets the "profile" edge to the Profile entity by ID if the given value is not nil.
+func (ru *RecreationUpdate) SetNillableProfileID(id *int) *RecreationUpdate {
+	if id != nil {
+		ru = ru.SetProfileID(*id)
+	}
+	return ru
+}
+
+// SetProfile sets the "profile" edge to the Profile entity.
+func (ru *RecreationUpdate) SetProfile(p *Profile) *RecreationUpdate {
+	return ru.SetProfileID(p.ID)
+}
+
 // Mutation returns the RecreationMutation object of the builder.
 func (ru *RecreationUpdate) Mutation() *RecreationMutation {
 	return ru.mutation
+}
+
+// ClearProfile clears the "profile" edge to the Profile entity.
+func (ru *RecreationUpdate) ClearProfile() *RecreationUpdate {
+	ru.mutation.ClearProfile()
+	return ru
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -126,6 +173,12 @@ func (ru *RecreationUpdate) defaults() {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (ru *RecreationUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *RecreationUpdate {
+	ru.modifiers = append(ru.modifiers, modifiers...)
+	return ru
+}
+
 func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(recreation.Table, recreation.Columns, sqlgraph.NewFieldSpec(recreation.FieldID, field.TypeInt))
 	if ps := ru.mutation.predicates; len(ps) > 0 {
@@ -149,6 +202,12 @@ func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ru.mutation.Content(); ok {
 		_spec.SetField(recreation.FieldContent, field.TypeString, value)
 	}
+	if value, ok := ru.mutation.YoutubeID(); ok {
+		_spec.SetField(recreation.FieldYoutubeID, field.TypeString, value)
+	}
+	if ru.mutation.YoutubeIDCleared() {
+		_spec.ClearField(recreation.FieldYoutubeID, field.TypeString)
+	}
 	if value, ok := ru.mutation.TargetNumber(); ok {
 		_spec.SetField(recreation.FieldTargetNumber, field.TypeInt, value)
 	}
@@ -164,6 +223,36 @@ func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ru.mutation.UpdatedAt(); ok {
 		_spec.SetField(recreation.FieldUpdatedAt, field.TypeTime, value)
 	}
+	if ru.mutation.ProfileCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   recreation.ProfileTable,
+			Columns: []string{recreation.ProfileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ru.mutation.ProfileIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   recreation.ProfileTable,
+			Columns: []string{recreation.ProfileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	_spec.AddModifiers(ru.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, ru.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{recreation.Label}
@@ -179,9 +268,10 @@ func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // RecreationUpdateOne is the builder for updating a single Recreation entity.
 type RecreationUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *RecreationMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *RecreationMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetGenre sets the "genre" field.
@@ -205,6 +295,26 @@ func (ruo *RecreationUpdateOne) SetTitle(s string) *RecreationUpdateOne {
 // SetContent sets the "content" field.
 func (ruo *RecreationUpdateOne) SetContent(s string) *RecreationUpdateOne {
 	ruo.mutation.SetContent(s)
+	return ruo
+}
+
+// SetYoutubeID sets the "youtube_id" field.
+func (ruo *RecreationUpdateOne) SetYoutubeID(s string) *RecreationUpdateOne {
+	ruo.mutation.SetYoutubeID(s)
+	return ruo
+}
+
+// SetNillableYoutubeID sets the "youtube_id" field if the given value is not nil.
+func (ruo *RecreationUpdateOne) SetNillableYoutubeID(s *string) *RecreationUpdateOne {
+	if s != nil {
+		ruo.SetYoutubeID(*s)
+	}
+	return ruo
+}
+
+// ClearYoutubeID clears the value of the "youtube_id" field.
+func (ruo *RecreationUpdateOne) ClearYoutubeID() *RecreationUpdateOne {
+	ruo.mutation.ClearYoutubeID()
 	return ruo
 }
 
@@ -240,9 +350,34 @@ func (ruo *RecreationUpdateOne) SetUpdatedAt(t time.Time) *RecreationUpdateOne {
 	return ruo
 }
 
+// SetProfileID sets the "profile" edge to the Profile entity by ID.
+func (ruo *RecreationUpdateOne) SetProfileID(id int) *RecreationUpdateOne {
+	ruo.mutation.SetProfileID(id)
+	return ruo
+}
+
+// SetNillableProfileID sets the "profile" edge to the Profile entity by ID if the given value is not nil.
+func (ruo *RecreationUpdateOne) SetNillableProfileID(id *int) *RecreationUpdateOne {
+	if id != nil {
+		ruo = ruo.SetProfileID(*id)
+	}
+	return ruo
+}
+
+// SetProfile sets the "profile" edge to the Profile entity.
+func (ruo *RecreationUpdateOne) SetProfile(p *Profile) *RecreationUpdateOne {
+	return ruo.SetProfileID(p.ID)
+}
+
 // Mutation returns the RecreationMutation object of the builder.
 func (ruo *RecreationUpdateOne) Mutation() *RecreationMutation {
 	return ruo.mutation
+}
+
+// ClearProfile clears the "profile" edge to the Profile entity.
+func (ruo *RecreationUpdateOne) ClearProfile() *RecreationUpdateOne {
+	ruo.mutation.ClearProfile()
+	return ruo
 }
 
 // Where appends a list predicates to the RecreationUpdate builder.
@@ -294,6 +429,12 @@ func (ruo *RecreationUpdateOne) defaults() {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (ruo *RecreationUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *RecreationUpdateOne {
+	ruo.modifiers = append(ruo.modifiers, modifiers...)
+	return ruo
+}
+
 func (ruo *RecreationUpdateOne) sqlSave(ctx context.Context) (_node *Recreation, err error) {
 	_spec := sqlgraph.NewUpdateSpec(recreation.Table, recreation.Columns, sqlgraph.NewFieldSpec(recreation.FieldID, field.TypeInt))
 	id, ok := ruo.mutation.ID()
@@ -334,6 +475,12 @@ func (ruo *RecreationUpdateOne) sqlSave(ctx context.Context) (_node *Recreation,
 	if value, ok := ruo.mutation.Content(); ok {
 		_spec.SetField(recreation.FieldContent, field.TypeString, value)
 	}
+	if value, ok := ruo.mutation.YoutubeID(); ok {
+		_spec.SetField(recreation.FieldYoutubeID, field.TypeString, value)
+	}
+	if ruo.mutation.YoutubeIDCleared() {
+		_spec.ClearField(recreation.FieldYoutubeID, field.TypeString)
+	}
 	if value, ok := ruo.mutation.TargetNumber(); ok {
 		_spec.SetField(recreation.FieldTargetNumber, field.TypeInt, value)
 	}
@@ -349,6 +496,36 @@ func (ruo *RecreationUpdateOne) sqlSave(ctx context.Context) (_node *Recreation,
 	if value, ok := ruo.mutation.UpdatedAt(); ok {
 		_spec.SetField(recreation.FieldUpdatedAt, field.TypeTime, value)
 	}
+	if ruo.mutation.ProfileCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   recreation.ProfileTable,
+			Columns: []string{recreation.ProfileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ruo.mutation.ProfileIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   recreation.ProfileTable,
+			Columns: []string{recreation.ProfileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	_spec.AddModifiers(ruo.modifiers...)
 	_node = &Recreation{config: ruo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

@@ -3,7 +3,9 @@ package repository
 import (
 	"app/elements/recreations/usecase"
 	"app/ent"
+	"app/ent/profile"
 	"app/ent/recreation"
+	"app/middle/applog"
 	"context"
 	"fmt"
 	"time"
@@ -21,26 +23,76 @@ func NewRecreationRepository(conn *ent.Client) *RecreationRepository {
 	}
 }
 
-func (r *RecreationRepository) GetRecreations(ctx context.Context) (usecase.Response, error) {
-	users, err := r.DBConn.Recreation.Query().All(ctx)
+type RecreationResponse struct {
+	Recreations  []*ent.Recreation `json:"recreations"`
+	TotalRecords int               `json:"total_records"`
+}
+
+func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset int) (usecase.Response, error) {
+	// count all records first
+	count, err := r.DBConn.Recreation.Query().Count(ctx)
 	if err != nil {
-		panic(err)
+		applog.Panic(err)
 	}
 
-	res := usecase.Response{Data: users}
+	// then fetch paged records
+	recreation, err := r.DBConn.Recreation.
+		Query().
+		Order(ent.Desc(recreation.FieldCreatedAt)).
+		Limit(limit).
+		Offset(offset).
+		All(ctx)
+	if err != nil {
+		applog.Panic(err)
+	}
+
+	stack := make(map[uuid.UUID]*ent.Profile)
+	for _, rec := range recreation {
+		if _, ok := stack[rec.UserID]; !ok {
+			profile, err := r.DBConn.Profile.Query().
+				Where(profile.UUIDEQ(rec.UserID)).
+				First(ctx)
+
+			if err != nil {
+				applog.Panic(err)
+			}
+			stack[rec.UserID] = profile
+		}
+		rec.Edges.Profile = stack[rec.UserID]
+	}
+
+	recRes := RecreationResponse{
+		Recreations:  recreation,
+		TotalRecords: count,
+	}
+
+	res := usecase.Response{
+		Data: recRes,
+	}
 	return res, err
 }
 
 func (r *RecreationRepository) GetRecreationsByID(ctx context.Context, id uuid.UUID) (usecase.Response, error) {
-	user, err := r.DBConn.Recreation.Query().
+	recreation, err := r.DBConn.Recreation.
+		Query().
 		Where(recreation.RecreationIDEQ(id)).
-		All(ctx)
+		Only(ctx)
 
 	if err != nil {
-		panic(err)
+		applog.Panic(err)
 	}
 
-	res := usecase.Response{Data: user[0]}
+	profile, err := r.DBConn.Profile.Query().
+		Where(profile.UUIDEQ(recreation.UserID)).
+		First(ctx)
+
+	if err != nil {
+		applog.Panic(err)
+	}
+
+	recreation.Edges.Profile = profile
+
+	res := usecase.Response{Data: recreation}
 	return res, err
 }
 
@@ -51,6 +103,7 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 		SetGenre(req.Genre).
 		SetTitle(req.Title).
 		SetContent(req.Content).
+		SetYoutubeID(req.YouTubeID).
 		SetTargetNumber(req.TargetNumber).
 		SetRequiredTime(req.RequiredTime).
 		SetCreatedAt(time.Now()).

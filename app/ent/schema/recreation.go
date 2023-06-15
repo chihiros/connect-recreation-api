@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 )
@@ -24,6 +25,8 @@ func (Recreation) Fields() []ent.Field {
 		field.JSON("genre", []int{}),
 		field.String("title"),
 		field.String("content"),
+		field.String("youtube_id").
+			Optional(),
 		field.Int("target_number"),
 		field.Int("required_time"),
 		field.Time("created_at").
@@ -32,5 +35,14 @@ func (Recreation) Fields() []ent.Field {
 		field.Time("updated_at").
 			Default(time.Now).
 			UpdateDefault(time.Now),
+	}
+}
+
+// Edges of the Recreation.
+func (Recreation) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.From("profile", Profile.Type).
+			Ref("recreations").
+			Unique(),
 	}
 }

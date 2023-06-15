@@ -3,11 +3,9 @@
 package ent
 
 import (
-	"app/ent/prefecture"
 	"app/ent/profile"
 	"app/ent/recreation"
 	"app/ent/schema"
-	"app/ent/user"
 	"time"
 )
 
@@ -15,16 +13,6 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	prefectureFields := schema.Prefecture{}.Fields()
-	_ = prefectureFields
-	// prefectureDescCreatedAt is the schema descriptor for created_at field.
-	prefectureDescCreatedAt := prefectureFields[1].Descriptor()
-	// prefecture.DefaultCreatedAt holds the default value on creation for the created_at field.
-	prefecture.DefaultCreatedAt = prefectureDescCreatedAt.Default.(func() time.Time)
-	// prefectureDescUpdatedAt is the schema descriptor for updated_at field.
-	prefectureDescUpdatedAt := prefectureFields[2].Descriptor()
-	// prefecture.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	prefecture.DefaultUpdatedAt = prefectureDescUpdatedAt.Default.(func() time.Time)
 	profileFields := schema.Profile{}.Fields()
 	_ = profileFields
 	// profileDescCreatedAt is the schema descriptor for created_at field.
@@ -38,23 +26,13 @@ func init() {
 	recreationFields := schema.Recreation{}.Fields()
 	_ = recreationFields
 	// recreationDescCreatedAt is the schema descriptor for created_at field.
-	recreationDescCreatedAt := recreationFields[7].Descriptor()
+	recreationDescCreatedAt := recreationFields[8].Descriptor()
 	// recreation.DefaultCreatedAt holds the default value on creation for the created_at field.
 	recreation.DefaultCreatedAt = recreationDescCreatedAt.Default.(func() time.Time)
 	// recreationDescUpdatedAt is the schema descriptor for updated_at field.
-	recreationDescUpdatedAt := recreationFields[8].Descriptor()
+	recreationDescUpdatedAt := recreationFields[9].Descriptor()
 	// recreation.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	recreation.DefaultUpdatedAt = recreationDescUpdatedAt.Default.(func() time.Time)
 	// recreation.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	recreation.UpdateDefaultUpdatedAt = recreationDescUpdatedAt.UpdateDefault.(func() time.Time)
-	userFields := schema.User{}.Fields()
-	_ = userFields
-	// userDescCreatedAt is the schema descriptor for created_at field.
-	userDescCreatedAt := userFields[4].Descriptor()
-	// user.DefaultCreatedAt holds the default value on creation for the created_at field.
-	user.DefaultCreatedAt = userDescCreatedAt.Default.(func() time.Time)
-	// userDescUpdatedAt is the schema descriptor for updated_at field.
-	userDescUpdatedAt := userFields[5].Descriptor()
-	// user.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	user.DefaultUpdatedAt = userDescUpdatedAt.Default.(func() time.Time)
 }

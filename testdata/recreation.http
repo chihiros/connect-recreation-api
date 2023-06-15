@@ -3,7 +3,7 @@
 @TOKEN=
 
 #### レクリエーションの取得
-GET {{HOST}}/v1/recreation
+GET {{HOST}}/v1/recreation?limit=10&offset=0
 
 #### レクリエーションの取得
 GET {{HOST}}/v1/recreation?id=21efc871-386a-45ea-9f18-c3fbe07748f4
@@ -15,10 +15,11 @@ Context-Type: application/json
 
 {
     "user_id":"ccab5b0d-b5fb-4d7f-8c0a-6f340dcbade7",
-    "recreation_id":"21efc871-386a-45ea-9f18-c3fbe07748f4",
+    "recreation_id":"21efc871-386a-45ea-9f18-c3fbe0775555",
     "genre": [1, 2, 4],
     "title":"ジョン・ブラウンのおじさん",
     "content":"ジョン・ブラウンのおじさんは〜〜",
+    "youtube_id": "1q8XZC1g6zA",
     "target_number":1,
     "required_time":2
 }

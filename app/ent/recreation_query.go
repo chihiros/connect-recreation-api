@@ -4,6 +4,7 @@ package ent
 
 import (
 	"app/ent/predicate"
+	"app/ent/profile"
 	"app/ent/recreation"
 	"context"
 	"fmt"
@@ -17,10 +18,13 @@ import (
 // RecreationQuery is the builder for querying Recreation entities.
 type RecreationQuery struct {
 	config
-	ctx        *QueryContext
-	order      []recreation.OrderOption
-	inters     []Interceptor
-	predicates []predicate.Recreation
+	ctx         *QueryContext
+	order       []recreation.OrderOption
+	inters      []Interceptor
+	predicates  []predicate.Recreation
+	withProfile *ProfileQuery
+	withFKs     bool
+	modifiers   []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -55,6 +59,28 @@ func (rq *RecreationQuery) Unique(unique bool) *RecreationQuery {
 func (rq *RecreationQuery) Order(o ...recreation.OrderOption) *RecreationQuery {
 	rq.order = append(rq.order, o...)
 	return rq
+}
+
+// QueryProfile chains the current query on the "profile" edge.
+func (rq *RecreationQuery) QueryProfile() *ProfileQuery {
+	query := (&ProfileClient{config: rq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := rq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := rq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(recreation.Table, recreation.FieldID, selector),
+			sqlgraph.To(profile.Table, profile.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, recreation.ProfileTable, recreation.ProfileColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Recreation entity from the query.
@@ -244,15 +270,27 @@ func (rq *RecreationQuery) Clone() *RecreationQuery {
 		return nil
 	}
 	return &RecreationQuery{
-		config:     rq.config,
-		ctx:        rq.ctx.Clone(),
-		order:      append([]recreation.OrderOption{}, rq.order...),
-		inters:     append([]Interceptor{}, rq.inters...),
-		predicates: append([]predicate.Recreation{}, rq.predicates...),
+		config:      rq.config,
+		ctx:         rq.ctx.Clone(),
+		order:       append([]recreation.OrderOption{}, rq.order...),
+		inters:      append([]Interceptor{}, rq.inters...),
+		predicates:  append([]predicate.Recreation{}, rq.predicates...),
+		withProfile: rq.withProfile.Clone(),
 		// clone intermediate query.
 		sql:  rq.sql.Clone(),
 		path: rq.path,
 	}
+}
+
+// WithProfile tells the query-builder to eager-load the nodes that are connected to
+// the "profile" edge. The optional arguments are used to configure the query builder of the edge.
+func (rq *RecreationQuery) WithProfile(opts ...func(*ProfileQuery)) *RecreationQuery {
+	query := (&ProfileClient{config: rq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	rq.withProfile = query
+	return rq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -331,16 +369,30 @@ func (rq *RecreationQuery) prepareQuery(ctx context.Context) error {
 
 func (rq *RecreationQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Recreation, error) {
 	var (
-		nodes = []*Recreation{}
-		_spec = rq.querySpec()
+		nodes       = []*Recreation{}
+		withFKs     = rq.withFKs
+		_spec       = rq.querySpec()
+		loadedTypes = [1]bool{
+			rq.withProfile != nil,
+		}
 	)
+	if rq.withProfile != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, recreation.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Recreation).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Recreation{config: rq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
+	}
+	if len(rq.modifiers) > 0 {
+		_spec.Modifiers = rq.modifiers
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
@@ -351,11 +403,53 @@ func (rq *RecreationQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*R
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := rq.withProfile; query != nil {
+		if err := rq.loadProfile(ctx, query, nodes, nil,
+			func(n *Recreation, e *Profile) { n.Edges.Profile = e }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (rq *RecreationQuery) loadProfile(ctx context.Context, query *ProfileQuery, nodes []*Recreation, init func(*Recreation), assign func(*Recreation, *Profile)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*Recreation)
+	for i := range nodes {
+		if nodes[i].profile_recreations == nil {
+			continue
+		}
+		fk := *nodes[i].profile_recreations
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(profile.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "profile_recreations" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (rq *RecreationQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := rq.querySpec()
+	if len(rq.modifiers) > 0 {
+		_spec.Modifiers = rq.modifiers
+	}
 	_spec.Node.Columns = rq.ctx.Fields
 	if len(rq.ctx.Fields) > 0 {
 		_spec.Unique = rq.ctx.Unique != nil && *rq.ctx.Unique
@@ -418,6 +512,9 @@ func (rq *RecreationQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if rq.ctx.Unique != nil && *rq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range rq.modifiers {
+		m(selector)
+	}
 	for _, p := range rq.predicates {
 		p(selector)
 	}
@@ -433,6 +530,12 @@ func (rq *RecreationQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (rq *RecreationQuery) Modify(modifiers ...func(s *sql.Selector)) *RecreationSelect {
+	rq.modifiers = append(rq.modifiers, modifiers...)
+	return rq.Select()
 }
 
 // RecreationGroupBy is the group-by builder for Recreation entities.
@@ -523,4 +626,10 @@ func (rs *RecreationSelect) sqlScan(ctx context.Context, root *RecreationQuery, 
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (rs *RecreationSelect) Modify(modifiers ...func(s *sql.Selector)) *RecreationSelect {
+	rs.modifiers = append(rs.modifiers, modifiers...)
+	return rs
 }

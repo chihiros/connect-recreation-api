@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
 )
 
@@ -240,6 +241,16 @@ func IconURLHasSuffix(v string) predicate.Profile {
 	return predicate.Profile(sql.FieldHasSuffix(FieldIconURL, v))
 }
 
+// IconURLIsNil applies the IsNil predicate on the "icon_url" field.
+func IconURLIsNil() predicate.Profile {
+	return predicate.Profile(sql.FieldIsNull(FieldIconURL))
+}
+
+// IconURLNotNil applies the NotNil predicate on the "icon_url" field.
+func IconURLNotNil() predicate.Profile {
+	return predicate.Profile(sql.FieldNotNull(FieldIconURL))
+}
+
 // IconURLEqualFold applies the EqualFold predicate on the "icon_url" field.
 func IconURLEqualFold(v string) predicate.Profile {
 	return predicate.Profile(sql.FieldEqualFold(FieldIconURL, v))
@@ -328,6 +339,29 @@ func UpdatedAtLT(v time.Time) predicate.Profile {
 // UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
 func UpdatedAtLTE(v time.Time) predicate.Profile {
 	return predicate.Profile(sql.FieldLTE(FieldUpdatedAt, v))
+}
+
+// HasRecreations applies the HasEdge predicate on the "recreations" edge.
+func HasRecreations() predicate.Profile {
+	return predicate.Profile(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, RecreationsTable, RecreationsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasRecreationsWith applies the HasEdge predicate on the "recreations" edge with a given conditions (other predicates).
+func HasRecreationsWith(preds ...predicate.Recreation) predicate.Profile {
+	return predicate.Profile(func(s *sql.Selector) {
+		step := newRecreationsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

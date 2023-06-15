@@ -8,25 +8,12 @@ import (
 )
 
 var (
-	// PrefecturesColumns holds the columns for the "prefectures" table.
-	PrefecturesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString, Unique: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-	}
-	// PrefecturesTable holds the schema information for the "prefectures" table.
-	PrefecturesTable = &schema.Table{
-		Name:       "prefectures",
-		Columns:    PrefecturesColumns,
-		PrimaryKey: []*schema.Column{PrefecturesColumns[0]},
-	}
 	// ProfilesColumns holds the columns for the "profiles" table.
 	ProfilesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "uuid", Type: field.TypeUUID, Unique: true},
 		{Name: "nickname", Type: field.TypeString, Unique: true},
-		{Name: "icon_url", Type: field.TypeString},
+		{Name: "icon_url", Type: field.TypeString, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 	}
@@ -44,41 +31,34 @@ var (
 		{Name: "genre", Type: field.TypeJSON},
 		{Name: "title", Type: field.TypeString},
 		{Name: "content", Type: field.TypeString},
+		{Name: "youtube_id", Type: field.TypeString, Nullable: true},
 		{Name: "target_number", Type: field.TypeInt},
 		{Name: "required_time", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "profile_recreations", Type: field.TypeInt, Nullable: true},
 	}
 	// RecreationsTable holds the schema information for the "recreations" table.
 	RecreationsTable = &schema.Table{
 		Name:       "recreations",
 		Columns:    RecreationsColumns,
 		PrimaryKey: []*schema.Column{RecreationsColumns[0]},
-	}
-	// UsersColumns holds the columns for the "users" table.
-	UsersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "uid", Type: field.TypeString, Unique: true},
-		{Name: "username", Type: field.TypeString, Unique: true},
-		{Name: "mail", Type: field.TypeString, Unique: true},
-		{Name: "prefecture_id", Type: field.TypeInt},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-	}
-	// UsersTable holds the schema information for the "users" table.
-	UsersTable = &schema.Table{
-		Name:       "users",
-		Columns:    UsersColumns,
-		PrimaryKey: []*schema.Column{UsersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "recreations_profiles_recreations",
+				Columns:    []*schema.Column{RecreationsColumns[11]},
+				RefColumns: []*schema.Column{ProfilesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		PrefecturesTable,
 		ProfilesTable,
 		RecreationsTable,
-		UsersTable,
 	}
 )
 
 func init() {
+	RecreationsTable.ForeignKeys[0].RefTable = ProfilesTable
 }

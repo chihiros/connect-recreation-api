@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
 )
 
@@ -73,6 +74,11 @@ func Title(v string) predicate.Recreation {
 // Content applies equality check predicate on the "content" field. It's identical to ContentEQ.
 func Content(v string) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldContent, v))
+}
+
+// YoutubeID applies equality check predicate on the "youtube_id" field. It's identical to YoutubeIDEQ.
+func YoutubeID(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldYoutubeID, v))
 }
 
 // TargetNumber applies equality check predicate on the "target_number" field. It's identical to TargetNumberEQ.
@@ -305,6 +311,81 @@ func ContentContainsFold(v string) predicate.Recreation {
 	return predicate.Recreation(sql.FieldContainsFold(FieldContent, v))
 }
 
+// YoutubeIDEQ applies the EQ predicate on the "youtube_id" field.
+func YoutubeIDEQ(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldYoutubeID, v))
+}
+
+// YoutubeIDNEQ applies the NEQ predicate on the "youtube_id" field.
+func YoutubeIDNEQ(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldYoutubeID, v))
+}
+
+// YoutubeIDIn applies the In predicate on the "youtube_id" field.
+func YoutubeIDIn(vs ...string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldIn(FieldYoutubeID, vs...))
+}
+
+// YoutubeIDNotIn applies the NotIn predicate on the "youtube_id" field.
+func YoutubeIDNotIn(vs ...string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotIn(FieldYoutubeID, vs...))
+}
+
+// YoutubeIDGT applies the GT predicate on the "youtube_id" field.
+func YoutubeIDGT(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGT(FieldYoutubeID, v))
+}
+
+// YoutubeIDGTE applies the GTE predicate on the "youtube_id" field.
+func YoutubeIDGTE(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGTE(FieldYoutubeID, v))
+}
+
+// YoutubeIDLT applies the LT predicate on the "youtube_id" field.
+func YoutubeIDLT(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLT(FieldYoutubeID, v))
+}
+
+// YoutubeIDLTE applies the LTE predicate on the "youtube_id" field.
+func YoutubeIDLTE(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLTE(FieldYoutubeID, v))
+}
+
+// YoutubeIDContains applies the Contains predicate on the "youtube_id" field.
+func YoutubeIDContains(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldContains(FieldYoutubeID, v))
+}
+
+// YoutubeIDHasPrefix applies the HasPrefix predicate on the "youtube_id" field.
+func YoutubeIDHasPrefix(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldHasPrefix(FieldYoutubeID, v))
+}
+
+// YoutubeIDHasSuffix applies the HasSuffix predicate on the "youtube_id" field.
+func YoutubeIDHasSuffix(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldHasSuffix(FieldYoutubeID, v))
+}
+
+// YoutubeIDIsNil applies the IsNil predicate on the "youtube_id" field.
+func YoutubeIDIsNil() predicate.Recreation {
+	return predicate.Recreation(sql.FieldIsNull(FieldYoutubeID))
+}
+
+// YoutubeIDNotNil applies the NotNil predicate on the "youtube_id" field.
+func YoutubeIDNotNil() predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotNull(FieldYoutubeID))
+}
+
+// YoutubeIDEqualFold applies the EqualFold predicate on the "youtube_id" field.
+func YoutubeIDEqualFold(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEqualFold(FieldYoutubeID, v))
+}
+
+// YoutubeIDContainsFold applies the ContainsFold predicate on the "youtube_id" field.
+func YoutubeIDContainsFold(v string) predicate.Recreation {
+	return predicate.Recreation(sql.FieldContainsFold(FieldYoutubeID, v))
+}
+
 // TargetNumberEQ applies the EQ predicate on the "target_number" field.
 func TargetNumberEQ(v int) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldTargetNumber, v))
@@ -463,6 +544,29 @@ func UpdatedAtLT(v time.Time) predicate.Recreation {
 // UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
 func UpdatedAtLTE(v time.Time) predicate.Recreation {
 	return predicate.Recreation(sql.FieldLTE(FieldUpdatedAt, v))
+}
+
+// HasProfile applies the HasEdge predicate on the "profile" edge.
+func HasProfile() predicate.Recreation {
+	return predicate.Recreation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ProfileTable, ProfileColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasProfileWith applies the HasEdge predicate on the "profile" edge with a given conditions (other predicates).
+func HasProfileWith(preds ...predicate.Profile) predicate.Recreation {
+	return predicate.Recreation(func(s *sql.Selector) {
+		step := newProfileStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.
