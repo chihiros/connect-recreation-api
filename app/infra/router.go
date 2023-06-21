@@ -61,10 +61,12 @@ func NewRouter() *chi.Mux {
 		// レクリエーション用のAPI
 		r.Route("/recreation", func(r chi.Router) {
 			// JWTが不要なやつ
+			// レクリエーションの一覧を取得するためのAPI
 			r.Get("/", rcon.GetRecreationsByID)
 
 			// JWTが必要なやつ
 			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
+				// レクリエーションを投稿するためのAPI
 				r.Post("/", rcon.PostRecreations)
 			})
 		})
