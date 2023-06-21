@@ -43,5 +43,5 @@ func (u *RecreationUsecase) PostRecreations(ctx context.Context, req Request) (R
 // }
 
 func (u *RecreationUsecase) PutRecreationsDraft(ctx context.Context, req Request) (Response, error) {
-	return u.Repository.PostRecreations(ctx, req)
+	return u.Repository.PutRecreationsDraft(ctx, req)
 }

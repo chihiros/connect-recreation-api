@@ -156,7 +156,7 @@ func (c *RecreationController) PutRecreationsDraft(w http.ResponseWriter, r *htt
 	}
 
 	req.UserID = user_id
-	recreation, err := c.Usecase.PostRecreations(context.Background(), req)
+	recreation, err := c.Usecase.PutRecreationsDraft(context.Background(), req)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
