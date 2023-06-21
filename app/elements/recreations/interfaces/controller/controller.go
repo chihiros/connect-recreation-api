@@ -5,6 +5,7 @@ import (
 	"app/elements/recreations/usecase"
 	"app/ent"
 	"app/middle/applog"
+	"app/middle/authrization"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -93,7 +94,21 @@ func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Re
 		fmt.Printf("%v\n", err)
 	}
 
-	user, err := c.Usecase.PostRecreations(context.Background(), req)
+	// jwtのplayloadからuser_idを取得
+	payload, ok := r.Context().Value(authrization.PayloadKey).(*authrization.SupabaseJwtPayload)
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode("Unauthorized")
+		return
+	}
+
+	user_id, err := uuid.Parse(payload.Subject)
+	if err != nil {
+		applog.Error(err.Error())
+	}
+
+	req.UserID = user_id
+	recreation, err := c.Usecase.PostRecreations(context.Background(), req)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
@@ -102,14 +117,14 @@ func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Re
 		switch err.Error() {
 		case "duplicate":
 			w.WriteHeader(http.StatusConflict)
-			json.NewEncoder(w).Encode(user)
+			json.NewEncoder(w).Encode(recreation)
 		default:
 			panic(err)
 		}
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(recreation)
 }
 
 // func (c *RecreationController) DeleteRecreationsByID(w http.ResponseWriter, r *http.Request) {
