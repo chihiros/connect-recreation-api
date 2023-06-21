@@ -34,8 +34,10 @@ var (
 		{Name: "youtube_id", Type: field.TypeString, Nullable: true},
 		{Name: "target_number", Type: field.TypeInt},
 		{Name: "required_time", Type: field.TypeInt},
+		{Name: "publish", Type: field.TypeBool, Default: false},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "published_at", Type: field.TypeTime, Nullable: true},
 		{Name: "profile_recreations", Type: field.TypeInt, Nullable: true},
 	}
 	// RecreationsTable holds the schema information for the "recreations" table.
@@ -46,7 +48,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "recreations_profiles_recreations",
-				Columns:    []*schema.Column{RecreationsColumns[11]},
+				Columns:    []*schema.Column{RecreationsColumns[13]},
 				RefColumns: []*schema.Column{ProfilesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

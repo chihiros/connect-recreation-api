@@ -25,12 +25,16 @@ func init() {
 	profile.DefaultUpdatedAt = profileDescUpdatedAt.Default.(func() time.Time)
 	recreationFields := schema.Recreation{}.Fields()
 	_ = recreationFields
+	// recreationDescPublish is the schema descriptor for publish field.
+	recreationDescPublish := recreationFields[8].Descriptor()
+	// recreation.DefaultPublish holds the default value on creation for the publish field.
+	recreation.DefaultPublish = recreationDescPublish.Default.(bool)
 	// recreationDescCreatedAt is the schema descriptor for created_at field.
-	recreationDescCreatedAt := recreationFields[8].Descriptor()
+	recreationDescCreatedAt := recreationFields[9].Descriptor()
 	// recreation.DefaultCreatedAt holds the default value on creation for the created_at field.
 	recreation.DefaultCreatedAt = recreationDescCreatedAt.Default.(func() time.Time)
 	// recreationDescUpdatedAt is the schema descriptor for updated_at field.
-	recreationDescUpdatedAt := recreationFields[9].Descriptor()
+	recreationDescUpdatedAt := recreationFields[10].Descriptor()
 	// recreation.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	recreation.DefaultUpdatedAt = recreationDescUpdatedAt.Default.(func() time.Time)
 	// recreation.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.

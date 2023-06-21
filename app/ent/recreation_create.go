@@ -80,6 +80,20 @@ func (rc *RecreationCreate) SetRequiredTime(i int) *RecreationCreate {
 	return rc
 }
 
+// SetPublish sets the "publish" field.
+func (rc *RecreationCreate) SetPublish(b bool) *RecreationCreate {
+	rc.mutation.SetPublish(b)
+	return rc
+}
+
+// SetNillablePublish sets the "publish" field if the given value is not nil.
+func (rc *RecreationCreate) SetNillablePublish(b *bool) *RecreationCreate {
+	if b != nil {
+		rc.SetPublish(*b)
+	}
+	return rc
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (rc *RecreationCreate) SetCreatedAt(t time.Time) *RecreationCreate {
 	rc.mutation.SetCreatedAt(t)
@@ -104,6 +118,20 @@ func (rc *RecreationCreate) SetUpdatedAt(t time.Time) *RecreationCreate {
 func (rc *RecreationCreate) SetNillableUpdatedAt(t *time.Time) *RecreationCreate {
 	if t != nil {
 		rc.SetUpdatedAt(*t)
+	}
+	return rc
+}
+
+// SetPublishedAt sets the "published_at" field.
+func (rc *RecreationCreate) SetPublishedAt(t time.Time) *RecreationCreate {
+	rc.mutation.SetPublishedAt(t)
+	return rc
+}
+
+// SetNillablePublishedAt sets the "published_at" field if the given value is not nil.
+func (rc *RecreationCreate) SetNillablePublishedAt(t *time.Time) *RecreationCreate {
+	if t != nil {
+		rc.SetPublishedAt(*t)
 	}
 	return rc
 }
@@ -162,6 +190,10 @@ func (rc *RecreationCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (rc *RecreationCreate) defaults() {
+	if _, ok := rc.mutation.Publish(); !ok {
+		v := recreation.DefaultPublish
+		rc.mutation.SetPublish(v)
+	}
 	if _, ok := rc.mutation.CreatedAt(); !ok {
 		v := recreation.DefaultCreatedAt()
 		rc.mutation.SetCreatedAt(v)
@@ -194,6 +226,9 @@ func (rc *RecreationCreate) check() error {
 	}
 	if _, ok := rc.mutation.RequiredTime(); !ok {
 		return &ValidationError{Name: "required_time", err: errors.New(`ent: missing required field "Recreation.required_time"`)}
+	}
+	if _, ok := rc.mutation.Publish(); !ok {
+		return &ValidationError{Name: "publish", err: errors.New(`ent: missing required field "Recreation.publish"`)}
 	}
 	if _, ok := rc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Recreation.created_at"`)}
@@ -260,6 +295,10 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 		_spec.SetField(recreation.FieldRequiredTime, field.TypeInt, value)
 		_node.RequiredTime = value
 	}
+	if value, ok := rc.mutation.Publish(); ok {
+		_spec.SetField(recreation.FieldPublish, field.TypeBool, value)
+		_node.Publish = value
+	}
 	if value, ok := rc.mutation.CreatedAt(); ok {
 		_spec.SetField(recreation.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
@@ -267,6 +306,10 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 	if value, ok := rc.mutation.UpdatedAt(); ok {
 		_spec.SetField(recreation.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if value, ok := rc.mutation.PublishedAt(); ok {
+		_spec.SetField(recreation.FieldPublishedAt, field.TypeTime, value)
+		_node.PublishedAt = value
 	}
 	if nodes := rc.mutation.ProfileIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -427,6 +470,18 @@ func (u *RecreationUpsert) AddRequiredTime(v int) *RecreationUpsert {
 	return u
 }
 
+// SetPublish sets the "publish" field.
+func (u *RecreationUpsert) SetPublish(v bool) *RecreationUpsert {
+	u.Set(recreation.FieldPublish, v)
+	return u
+}
+
+// UpdatePublish sets the "publish" field to the value that was provided on create.
+func (u *RecreationUpsert) UpdatePublish() *RecreationUpsert {
+	u.SetExcluded(recreation.FieldPublish)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *RecreationUpsert) SetUpdatedAt(v time.Time) *RecreationUpsert {
 	u.Set(recreation.FieldUpdatedAt, v)
@@ -436,6 +491,24 @@ func (u *RecreationUpsert) SetUpdatedAt(v time.Time) *RecreationUpsert {
 // UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
 func (u *RecreationUpsert) UpdateUpdatedAt() *RecreationUpsert {
 	u.SetExcluded(recreation.FieldUpdatedAt)
+	return u
+}
+
+// SetPublishedAt sets the "published_at" field.
+func (u *RecreationUpsert) SetPublishedAt(v time.Time) *RecreationUpsert {
+	u.Set(recreation.FieldPublishedAt, v)
+	return u
+}
+
+// UpdatePublishedAt sets the "published_at" field to the value that was provided on create.
+func (u *RecreationUpsert) UpdatePublishedAt() *RecreationUpsert {
+	u.SetExcluded(recreation.FieldPublishedAt)
+	return u
+}
+
+// ClearPublishedAt clears the value of the "published_at" field.
+func (u *RecreationUpsert) ClearPublishedAt() *RecreationUpsert {
+	u.SetNull(recreation.FieldPublishedAt)
 	return u
 }
 
@@ -595,6 +668,20 @@ func (u *RecreationUpsertOne) UpdateRequiredTime() *RecreationUpsertOne {
 	})
 }
 
+// SetPublish sets the "publish" field.
+func (u *RecreationUpsertOne) SetPublish(v bool) *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.SetPublish(v)
+	})
+}
+
+// UpdatePublish sets the "publish" field to the value that was provided on create.
+func (u *RecreationUpsertOne) UpdatePublish() *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.UpdatePublish()
+	})
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *RecreationUpsertOne) SetUpdatedAt(v time.Time) *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
@@ -606,6 +693,27 @@ func (u *RecreationUpsertOne) SetUpdatedAt(v time.Time) *RecreationUpsertOne {
 func (u *RecreationUpsertOne) UpdateUpdatedAt() *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
 		s.UpdateUpdatedAt()
+	})
+}
+
+// SetPublishedAt sets the "published_at" field.
+func (u *RecreationUpsertOne) SetPublishedAt(v time.Time) *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.SetPublishedAt(v)
+	})
+}
+
+// UpdatePublishedAt sets the "published_at" field to the value that was provided on create.
+func (u *RecreationUpsertOne) UpdatePublishedAt() *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.UpdatePublishedAt()
+	})
+}
+
+// ClearPublishedAt clears the value of the "published_at" field.
+func (u *RecreationUpsertOne) ClearPublishedAt() *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.ClearPublishedAt()
 	})
 }
 
@@ -927,6 +1035,20 @@ func (u *RecreationUpsertBulk) UpdateRequiredTime() *RecreationUpsertBulk {
 	})
 }
 
+// SetPublish sets the "publish" field.
+func (u *RecreationUpsertBulk) SetPublish(v bool) *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.SetPublish(v)
+	})
+}
+
+// UpdatePublish sets the "publish" field to the value that was provided on create.
+func (u *RecreationUpsertBulk) UpdatePublish() *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.UpdatePublish()
+	})
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *RecreationUpsertBulk) SetUpdatedAt(v time.Time) *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
@@ -938,6 +1060,27 @@ func (u *RecreationUpsertBulk) SetUpdatedAt(v time.Time) *RecreationUpsertBulk {
 func (u *RecreationUpsertBulk) UpdateUpdatedAt() *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
 		s.UpdateUpdatedAt()
+	})
+}
+
+// SetPublishedAt sets the "published_at" field.
+func (u *RecreationUpsertBulk) SetPublishedAt(v time.Time) *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.SetPublishedAt(v)
+	})
+}
+
+// UpdatePublishedAt sets the "published_at" field to the value that was provided on create.
+func (u *RecreationUpsertBulk) UpdatePublishedAt() *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.UpdatePublishedAt()
+	})
+}
+
+// ClearPublishedAt clears the value of the "published_at" field.
+func (u *RecreationUpsertBulk) ClearPublishedAt() *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.ClearPublishedAt()
 	})
 }
 
