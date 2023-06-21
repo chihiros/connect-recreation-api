@@ -7,10 +7,8 @@ import (
 	"app/ent/recreation"
 	"app/middle/applog"
 	"context"
-	"fmt"
 	"time"
 
-	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 )
 
@@ -204,28 +202,51 @@ func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usec
 		SetPublish(false).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
-		OnConflict(
-			sql.ConflictColumns(
-				recreation.FieldUserID,
-				recreation.FieldRecreationID,
-			),
-		).
-		Update(func(r *ent.RecreationUpsert) {
-			r.SetGenre(req.Genre)
-			r.SetTitle(req.Title)
-			r.SetContent(req.Content)
-			r.SetYoutubeID(req.YouTubeID)
-			r.SetTargetNumber(req.TargetNumber)
-			r.SetRequiredTime(req.RequiredTime)
-			r.SetPublish(false)
-			r.SetUpdatedAt(time.Now())
-		}).
-		ID(ctx)
+		Save(ctx)
+		// OnConflict(
+		// 	sql.ConflictColumns(
+		// 		recreation.FieldUserID,
+		// 		recreation.FieldRecreationID,
+		// 	),
+		// ).
+		// Update(func(r *ent.RecreationUpsert) {
+		// 	r.SetGenre(req.Genre)
+		// 	r.SetTitle(req.Title)
+		// 	r.SetContent(req.Content)
+		// 	r.SetYoutubeID(req.YouTubeID)
+		// 	r.SetTargetNumber(req.TargetNumber)
+		// 	r.SetRequiredTime(req.RequiredTime)
+		// 	r.SetPublish(false)
+		// 	r.SetUpdatedAt(time.Now())
+		// }).
+		// ID(ctx)
+
+	if err != nil {
+		if !ent.IsConstraintError(err) {
+			applog.Panic(err)
+		}
+	}
 
 	if err != nil {
 		if ent.IsConstraintError(err) {
-			// ent側の制約エラー
-			return usecase.Response{}, fmt.Errorf("duplicate")
+			_, err := r.DBConn.Recreation.Update().
+				Where(
+					recreation.UserIDEQ(req.UserID),
+					recreation.RecreationIDEQ(req.RecreationID),
+				).
+				SetGenre(req.Genre).
+				SetTitle(req.Title).
+				SetContent(req.Content).
+				SetYoutubeID(req.YouTubeID).
+				SetTargetNumber(req.TargetNumber).
+				SetRequiredTime(req.RequiredTime).
+				SetPublish(false).
+				SetUpdatedAt(time.Now()).
+				Save(ctx)
+
+			if err != nil {
+				applog.Panic(err)
+			}
 		}
 	}
 
