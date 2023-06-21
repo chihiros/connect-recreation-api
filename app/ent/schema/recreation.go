@@ -37,6 +37,8 @@ func (Recreation) Fields() []ent.Field {
 		field.Time("updated_at").
 			Default(time.Now).
 			UpdateDefault(time.Now),
+		field.Time("published_at").
+			Optional(),
 	}
 }
 
