@@ -10,7 +10,6 @@ CREATE TABLE recreations (
   required_time INT,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-  published_at TIMESTAMP DEFAULT NULL,
 );
 
 ALTER TABLE recreations
@@ -40,3 +39,6 @@ WHERE
   OR recreation_id = '0c2643c1-4b20-40c6-9163-1d8567954334'
   OR recreation_id = 'df3ed291-32b3-44d3-86c2-e01537e066c6'
 ;
+
+ALTER TABLE recreations
+ADD COLUMN published_at TIMESTAMP DEFAULT NULL;
