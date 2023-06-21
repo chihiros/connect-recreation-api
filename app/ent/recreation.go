@@ -37,7 +37,7 @@ type Recreation struct {
 	// RequiredTime holds the value of the "required_time" field.
 	RequiredTime int `json:"required_time,omitempty"`
 	// Publish holds the value of the "publish" field.
-	Publish bool `json:"publish,omitempty"`
+	Publish bool `json:"publish,required"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
