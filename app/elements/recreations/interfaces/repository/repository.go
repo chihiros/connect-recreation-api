@@ -112,6 +112,8 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 		SetUpdatedAt(time.Now()).
 		SetPublishedAt(time.Now()).
 		Save(ctx)
+		// ↓ 本当はこの用にUpsertを実装したいんだけど、entのバグ？仕様上で[]intの配列が正常に保存できないみたいなので
+		// 　Insertをしてみてコンフリクトが起きたらUpdateするようにする
 		// OnConflict(
 		// 	sql.ConflictColumns(
 		// 		recreation.FieldUserID,
