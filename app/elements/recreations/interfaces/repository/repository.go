@@ -138,7 +138,7 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 	}
 
 	if err != nil {
-		panic(err)
+		applog.Panic(err)
 	}
 
 	rec, err := r.DBConn.Recreation.Query().
@@ -146,7 +146,7 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 		Only(ctx)
 
 	if err != nil {
-		panic(err)
+		applog.Panic(err)
 	}
 
 	res := usecase.Response{Data: rec}
@@ -159,7 +159,7 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 // 		Exec(ctx)
 
 // 	if err != nil {
-// 		panic(err)
+// 		applog.Panic(err)
 // 	}
 
 // 	return err
@@ -204,7 +204,7 @@ func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usec
 	}
 
 	if err != nil {
-		panic(err)
+		applog.Panic(err)
 	}
 
 	rec, err := r.DBConn.Recreation.Query().
@@ -212,7 +212,7 @@ func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usec
 		Only(ctx)
 
 	if err != nil {
-		panic(err)
+		applog.Panic(err)
 	}
 
 	res := usecase.Response{Data: rec}
