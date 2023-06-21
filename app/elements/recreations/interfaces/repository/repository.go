@@ -138,7 +138,7 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 // }
 
 func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	user, err := r.DBConn.Recreation.Create().
+	_, err := r.DBConn.Recreation.Create().
 		SetUserID(req.UserID).
 		SetRecreationID(req.RecreationID).
 		SetGenre(req.Genre).
@@ -177,6 +177,14 @@ func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usec
 		panic(err)
 	}
 
-	res := usecase.Response{Data: user}
+	rec, err := r.DBConn.Recreation.Query().
+		Where(recreation.RecreationIDEQ(req.RecreationID)).
+		Only(ctx)
+
+	if err != nil {
+		panic(err)
+	}
+
+	res := usecase.Response{Data: rec}
 	return res, err
 }
