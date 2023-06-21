@@ -149,7 +149,22 @@ func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usec
 		SetRequiredTime(req.RequiredTime).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
-		Save(ctx)
+		OnConflict(
+			sql.ConflictColumns(
+				recreation.FieldUserID,
+				recreation.FieldRecreationID,
+			),
+		).
+		Update(func(r *ent.RecreationUpsert) {
+			r.SetGenre(req.Genre)
+			r.SetTitle(req.Title)
+			r.SetContent(req.Content)
+			r.SetYoutubeID(req.YouTubeID)
+			r.SetTargetNumber(req.TargetNumber)
+			r.SetRequiredTime(req.RequiredTime)
+			r.SetUpdatedAt(time.Now())
+		}).
+		ID(ctx)
 
 	if err != nil {
 		if ent.IsConstraintError(err) {
