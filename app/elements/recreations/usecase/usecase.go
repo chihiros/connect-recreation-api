@@ -11,6 +11,7 @@ type RecreationUseCase interface {
 	GetRecreationsByID(context.Context, uuid.UUID) (Response, error)
 	PostRecreations(context.Context, Request) (Response, error)
 	// DeleteRecreationsByID(context.Context, int) error
+	PutRecreationsDraft(context.Context, Request) (Response, error)
 }
 
 type RecreationRepository interface {
@@ -18,6 +19,7 @@ type RecreationRepository interface {
 	GetRecreationsByID(context.Context, uuid.UUID) (Response, error)
 	PostRecreations(context.Context, Request) (Response, error)
 	// DeleteRecreationsByID(context.Context, int) error
+	PutRecreationsDraft(context.Context, Request) (Response, error)
 }
 
 type RecreationUsecase struct {
@@ -39,3 +41,7 @@ func (u *RecreationUsecase) PostRecreations(ctx context.Context, req Request) (R
 // func (u *RecreationUsecase) DeleteRecreationsByID(ctx context.Context, id int) error {
 // 	return u.Repository.DeleteRecreationsByID(ctx, id)
 // }
+
+func (u *RecreationUsecase) PutRecreationsDraft(ctx context.Context, req Request) (Response, error) {
+	return u.Repository.PostRecreations(ctx, req)
+}

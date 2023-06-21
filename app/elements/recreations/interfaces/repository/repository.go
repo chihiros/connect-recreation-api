@@ -136,3 +136,32 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 
 // 	return err
 // }
+
+func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usecase.Request) (usecase.Response, error) {
+	user, err := r.DBConn.Recreation.Create().
+		SetUserID(req.UserID).
+		SetRecreationID(req.RecreationID).
+		SetGenre(req.Genre).
+		SetTitle(req.Title).
+		SetContent(req.Content).
+		SetYoutubeID(req.YouTubeID).
+		SetTargetNumber(req.TargetNumber).
+		SetRequiredTime(req.RequiredTime).
+		SetCreatedAt(time.Now()).
+		SetUpdatedAt(time.Now()).
+		Save(ctx)
+
+	if err != nil {
+		if ent.IsConstraintError(err) {
+			// ent側の制約エラー
+			return usecase.Response{}, fmt.Errorf("duplicate")
+		}
+	}
+
+	if err != nil {
+		panic(err)
+	}
+
+	res := usecase.Response{Data: user}
+	return res, err
+}

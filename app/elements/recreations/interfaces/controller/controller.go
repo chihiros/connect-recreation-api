@@ -134,3 +134,43 @@ func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Re
 // 	w.WriteHeader(http.StatusNoContent)
 // 	json.NewEncoder(w).Encode(user)
 // }
+
+func (c *RecreationController) PutRecreationsDraft(w http.ResponseWriter, r *http.Request) {
+	// bodyの中身をbindする
+	req := usecase.Request{}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		fmt.Printf("%v\n", err)
+	}
+
+	// jwtのplayloadからuser_idを取得
+	payload, ok := r.Context().Value(authrization.PayloadKey).(*authrization.SupabaseJwtPayload)
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode("Unauthorized")
+		return
+	}
+
+	user_id, err := uuid.Parse(payload.Subject)
+	if err != nil {
+		applog.Error(err.Error())
+	}
+
+	req.UserID = user_id
+	recreation, err := c.Usecase.PostRecreations(context.Background(), req)
+	if err != nil {
+		fmt.Printf("%v\n", err)
+	}
+
+	if err != nil {
+		switch err.Error() {
+		case "duplicate":
+			w.WriteHeader(http.StatusConflict)
+			json.NewEncoder(w).Encode(recreation)
+		default:
+			panic(err)
+		}
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(recreation)
+}
