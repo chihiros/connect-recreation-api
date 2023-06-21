@@ -225,9 +225,7 @@ func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usec
 		if !ent.IsConstraintError(err) {
 			applog.Panic(err)
 		}
-	}
 
-	if err != nil {
 		if ent.IsConstraintError(err) {
 			_, err := r.DBConn.Recreation.Update().
 				Where(
@@ -248,10 +246,6 @@ func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usec
 				applog.Panic(err)
 			}
 		}
-	}
-
-	if err != nil {
-		applog.Panic(err)
 	}
 
 	rec, err := r.DBConn.Recreation.Query().
