@@ -111,34 +111,58 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
 		SetPublishedAt(time.Now()).
-		OnConflict(
-			sql.ConflictColumns(
-				recreation.FieldUserID,
-				recreation.FieldRecreationID,
-			),
-		).
-		Update(func(r *ent.RecreationUpsert) {
-			r.SetGenre(req.Genre)
-			r.SetTitle(req.Title)
-			r.SetContent(req.Content)
-			r.SetYoutubeID(req.YouTubeID)
-			r.SetTargetNumber(req.TargetNumber)
-			r.SetRequiredTime(req.RequiredTime)
-			r.SetPublish(true)
-			r.SetUpdatedAt(time.Now())
-			r.SetPublishedAt(time.Now())
-		}).
-		ID(ctx)
+		Save(ctx)
+		// OnConflict(
+		// 	sql.ConflictColumns(
+		// 		recreation.FieldUserID,
+		// 		recreation.FieldRecreationID,
+		// 	),
+		// ).
+		// Update(func(ru *ent.RecreationUpsert) {
+		// 	ru.UpdateGenre().Set(
+		// 		recreation.FieldGenre,
+		// 		req.Genre,
+		// 	)
+
+		// 	// // r.SetGenre(req.Genre)
+		// 	// ru.SetGenre([]int{1, 2, 3})
+		// 	ru.SetTitle(req.Title)
+		// 	ru.SetContent(req.Content)
+		// 	ru.SetYoutubeID(req.YouTubeID)
+		// 	ru.SetTargetNumber(req.TargetNumber)
+		// 	ru.SetRequiredTime(req.RequiredTime)
+		// 	ru.SetPublish(true)
+		// 	ru.SetUpdatedAt(time.Now())
+		// 	ru.SetPublishedAt(time.Now())
+		// }).
+		// ID(ctx)
 
 	if err != nil {
-		if ent.IsConstraintError(err) {
-			// ent側の制約エラー
-			return usecase.Response{}, fmt.Errorf("duplicate")
+		if !ent.IsConstraintError(err) {
+			applog.Panic(err)
 		}
 	}
 
-	if err != nil {
-		applog.Panic(err)
+	if ent.IsConstraintError(err) {
+		_, err := r.DBConn.Recreation.Update().
+			Where(
+				recreation.UserIDEQ(req.UserID),
+				recreation.RecreationIDEQ(req.RecreationID),
+			).
+			SetGenre(req.Genre).
+			SetTitle(req.Title).
+			SetContent(req.Content).
+			SetYoutubeID(req.YouTubeID).
+			SetTargetNumber(req.TargetNumber).
+			SetRequiredTime(req.RequiredTime).
+			SetPublish(true).
+			SetUpdatedAt(time.Now()).
+			SetPublishedAt(time.Now()).
+			Save(ctx)
+
+		if err != nil {
+			applog.Panic(err)
+		}
 	}
 
 	rec, err := r.DBConn.Recreation.Query().
