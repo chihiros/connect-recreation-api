@@ -10,6 +10,7 @@ CREATE TABLE recreations (
   required_time INT,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  published_at TIMESTAMP DEFAULT NULL,
 );
 
 ALTER TABLE recreations
