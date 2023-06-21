@@ -80,6 +80,20 @@ func (rc *RecreationCreate) SetRequiredTime(i int) *RecreationCreate {
 	return rc
 }
 
+// SetPublish sets the "publish" field.
+func (rc *RecreationCreate) SetPublish(b bool) *RecreationCreate {
+	rc.mutation.SetPublish(b)
+	return rc
+}
+
+// SetNillablePublish sets the "publish" field if the given value is not nil.
+func (rc *RecreationCreate) SetNillablePublish(b *bool) *RecreationCreate {
+	if b != nil {
+		rc.SetPublish(*b)
+	}
+	return rc
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (rc *RecreationCreate) SetCreatedAt(t time.Time) *RecreationCreate {
 	rc.mutation.SetCreatedAt(t)
@@ -162,6 +176,10 @@ func (rc *RecreationCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (rc *RecreationCreate) defaults() {
+	if _, ok := rc.mutation.Publish(); !ok {
+		v := recreation.DefaultPublish
+		rc.mutation.SetPublish(v)
+	}
 	if _, ok := rc.mutation.CreatedAt(); !ok {
 		v := recreation.DefaultCreatedAt()
 		rc.mutation.SetCreatedAt(v)
@@ -194,6 +212,9 @@ func (rc *RecreationCreate) check() error {
 	}
 	if _, ok := rc.mutation.RequiredTime(); !ok {
 		return &ValidationError{Name: "required_time", err: errors.New(`ent: missing required field "Recreation.required_time"`)}
+	}
+	if _, ok := rc.mutation.Publish(); !ok {
+		return &ValidationError{Name: "publish", err: errors.New(`ent: missing required field "Recreation.publish"`)}
 	}
 	if _, ok := rc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Recreation.created_at"`)}
@@ -259,6 +280,10 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 	if value, ok := rc.mutation.RequiredTime(); ok {
 		_spec.SetField(recreation.FieldRequiredTime, field.TypeInt, value)
 		_node.RequiredTime = value
+	}
+	if value, ok := rc.mutation.Publish(); ok {
+		_spec.SetField(recreation.FieldPublish, field.TypeBool, value)
+		_node.Publish = value
 	}
 	if value, ok := rc.mutation.CreatedAt(); ok {
 		_spec.SetField(recreation.FieldCreatedAt, field.TypeTime, value)
@@ -427,6 +452,18 @@ func (u *RecreationUpsert) AddRequiredTime(v int) *RecreationUpsert {
 	return u
 }
 
+// SetPublish sets the "publish" field.
+func (u *RecreationUpsert) SetPublish(v bool) *RecreationUpsert {
+	u.Set(recreation.FieldPublish, v)
+	return u
+}
+
+// UpdatePublish sets the "publish" field to the value that was provided on create.
+func (u *RecreationUpsert) UpdatePublish() *RecreationUpsert {
+	u.SetExcluded(recreation.FieldPublish)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *RecreationUpsert) SetUpdatedAt(v time.Time) *RecreationUpsert {
 	u.Set(recreation.FieldUpdatedAt, v)
@@ -592,6 +629,20 @@ func (u *RecreationUpsertOne) AddRequiredTime(v int) *RecreationUpsertOne {
 func (u *RecreationUpsertOne) UpdateRequiredTime() *RecreationUpsertOne {
 	return u.Update(func(s *RecreationUpsert) {
 		s.UpdateRequiredTime()
+	})
+}
+
+// SetPublish sets the "publish" field.
+func (u *RecreationUpsertOne) SetPublish(v bool) *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.SetPublish(v)
+	})
+}
+
+// UpdatePublish sets the "publish" field to the value that was provided on create.
+func (u *RecreationUpsertOne) UpdatePublish() *RecreationUpsertOne {
+	return u.Update(func(s *RecreationUpsert) {
+		s.UpdatePublish()
 	})
 }
 
@@ -924,6 +975,20 @@ func (u *RecreationUpsertBulk) AddRequiredTime(v int) *RecreationUpsertBulk {
 func (u *RecreationUpsertBulk) UpdateRequiredTime() *RecreationUpsertBulk {
 	return u.Update(func(s *RecreationUpsert) {
 		s.UpdateRequiredTime()
+	})
+}
+
+// SetPublish sets the "publish" field.
+func (u *RecreationUpsertBulk) SetPublish(v bool) *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.SetPublish(v)
+	})
+}
+
+// UpdatePublish sets the "publish" field to the value that was provided on create.
+func (u *RecreationUpsertBulk) UpdatePublish() *RecreationUpsertBulk {
+	return u.Update(func(s *RecreationUpsert) {
+		s.UpdatePublish()
 	})
 }
 

@@ -91,6 +91,11 @@ func RequiredTime(v int) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldRequiredTime, v))
 }
 
+// Publish applies equality check predicate on the "publish" field. It's identical to PublishEQ.
+func Publish(v bool) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldPublish, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldCreatedAt, v))
@@ -464,6 +469,16 @@ func RequiredTimeLT(v int) predicate.Recreation {
 // RequiredTimeLTE applies the LTE predicate on the "required_time" field.
 func RequiredTimeLTE(v int) predicate.Recreation {
 	return predicate.Recreation(sql.FieldLTE(FieldRequiredTime, v))
+}
+
+// PublishEQ applies the EQ predicate on the "publish" field.
+func PublishEQ(v bool) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldPublish, v))
+}
+
+// PublishNEQ applies the NEQ predicate on the "publish" field.
+func PublishNEQ(v bool) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldPublish, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

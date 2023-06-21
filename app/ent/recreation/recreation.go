@@ -30,6 +30,8 @@ const (
 	FieldTargetNumber = "target_number"
 	// FieldRequiredTime holds the string denoting the required_time field in the database.
 	FieldRequiredTime = "required_time"
+	// FieldPublish holds the string denoting the publish field in the database.
+	FieldPublish = "publish"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -58,6 +60,7 @@ var Columns = []string{
 	FieldYoutubeID,
 	FieldTargetNumber,
 	FieldRequiredTime,
+	FieldPublish,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -84,6 +87,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultPublish holds the default value on creation for the "publish" field.
+	DefaultPublish bool
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
@@ -133,6 +138,11 @@ func ByTargetNumber(opts ...sql.OrderTermOption) OrderOption {
 // ByRequiredTime orders the results by the required_time field.
 func ByRequiredTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRequiredTime, opts...).ToFunc()
+}
+
+// ByPublish orders the results by the publish field.
+func ByPublish(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublish, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

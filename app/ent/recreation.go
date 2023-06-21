@@ -36,6 +36,8 @@ type Recreation struct {
 	TargetNumber int `json:"target_number,omitempty"`
 	// RequiredTime holds the value of the "required_time" field.
 	RequiredTime int `json:"required_time,omitempty"`
+	// Publish holds the value of the "publish" field.
+	Publish bool `json:"publish,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -76,6 +78,8 @@ func (*Recreation) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case recreation.FieldGenre:
 			values[i] = new([]byte)
+		case recreation.FieldPublish:
+			values[i] = new(sql.NullBool)
 		case recreation.FieldID, recreation.FieldTargetNumber, recreation.FieldRequiredTime:
 			values[i] = new(sql.NullInt64)
 		case recreation.FieldTitle, recreation.FieldContent, recreation.FieldYoutubeID:
@@ -156,6 +160,12 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field required_time", values[i])
 			} else if value.Valid {
 				r.RequiredTime = int(value.Int64)
+			}
+		case recreation.FieldPublish:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field publish", values[i])
+			} else if value.Valid {
+				r.Publish = value.Bool
 			}
 		case recreation.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -240,6 +250,9 @@ func (r *Recreation) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("required_time=")
 	builder.WriteString(fmt.Sprintf("%v", r.RequiredTime))
+	builder.WriteString(", ")
+	builder.WriteString("publish=")
+	builder.WriteString(fmt.Sprintf("%v", r.Publish))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(r.CreatedAt.Format(time.ANSIC))

@@ -101,6 +101,20 @@ func (ru *RecreationUpdate) AddRequiredTime(i int) *RecreationUpdate {
 	return ru
 }
 
+// SetPublish sets the "publish" field.
+func (ru *RecreationUpdate) SetPublish(b bool) *RecreationUpdate {
+	ru.mutation.SetPublish(b)
+	return ru
+}
+
+// SetNillablePublish sets the "publish" field if the given value is not nil.
+func (ru *RecreationUpdate) SetNillablePublish(b *bool) *RecreationUpdate {
+	if b != nil {
+		ru.SetPublish(*b)
+	}
+	return ru
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (ru *RecreationUpdate) SetUpdatedAt(t time.Time) *RecreationUpdate {
 	ru.mutation.SetUpdatedAt(t)
@@ -219,6 +233,9 @@ func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := ru.mutation.AddedRequiredTime(); ok {
 		_spec.AddField(recreation.FieldRequiredTime, field.TypeInt, value)
+	}
+	if value, ok := ru.mutation.Publish(); ok {
+		_spec.SetField(recreation.FieldPublish, field.TypeBool, value)
 	}
 	if value, ok := ru.mutation.UpdatedAt(); ok {
 		_spec.SetField(recreation.FieldUpdatedAt, field.TypeTime, value)
@@ -341,6 +358,20 @@ func (ruo *RecreationUpdateOne) SetRequiredTime(i int) *RecreationUpdateOne {
 // AddRequiredTime adds i to the "required_time" field.
 func (ruo *RecreationUpdateOne) AddRequiredTime(i int) *RecreationUpdateOne {
 	ruo.mutation.AddRequiredTime(i)
+	return ruo
+}
+
+// SetPublish sets the "publish" field.
+func (ruo *RecreationUpdateOne) SetPublish(b bool) *RecreationUpdateOne {
+	ruo.mutation.SetPublish(b)
+	return ruo
+}
+
+// SetNillablePublish sets the "publish" field if the given value is not nil.
+func (ruo *RecreationUpdateOne) SetNillablePublish(b *bool) *RecreationUpdateOne {
+	if b != nil {
+		ruo.SetPublish(*b)
+	}
 	return ruo
 }
 
@@ -492,6 +523,9 @@ func (ruo *RecreationUpdateOne) sqlSave(ctx context.Context) (_node *Recreation,
 	}
 	if value, ok := ruo.mutation.AddedRequiredTime(); ok {
 		_spec.AddField(recreation.FieldRequiredTime, field.TypeInt, value)
+	}
+	if value, ok := ruo.mutation.Publish(); ok {
+		_spec.SetField(recreation.FieldPublish, field.TypeBool, value)
 	}
 	if value, ok := ruo.mutation.UpdatedAt(); ok {
 		_spec.SetField(recreation.FieldUpdatedAt, field.TypeTime, value)
