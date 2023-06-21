@@ -98,7 +98,7 @@ func (r *RecreationRepository) GetRecreationsByID(ctx context.Context, id uuid.U
 }
 
 func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	rec, err := r.DBConn.Recreation.Create().
+	_, err := r.DBConn.Recreation.Create().
 		SetUserID(req.UserID).
 		SetRecreationID(req.RecreationID).
 		SetGenre(req.Genre).
@@ -107,9 +107,28 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 		SetYoutubeID(req.YouTubeID).
 		SetTargetNumber(req.TargetNumber).
 		SetRequiredTime(req.RequiredTime).
+		SetPublish(true).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
-		Save(ctx)
+		SetPublishedAt(time.Now()).
+		OnConflict(
+			sql.ConflictColumns(
+				recreation.FieldUserID,
+				recreation.FieldRecreationID,
+			),
+		).
+		Update(func(r *ent.RecreationUpsert) {
+			r.SetGenre(req.Genre)
+			r.SetTitle(req.Title)
+			r.SetContent(req.Content)
+			r.SetYoutubeID(req.YouTubeID)
+			r.SetTargetNumber(req.TargetNumber)
+			r.SetRequiredTime(req.RequiredTime)
+			r.SetPublish(true)
+			r.SetUpdatedAt(time.Now())
+			r.SetPublishedAt(time.Now())
+		}).
+		ID(ctx)
 
 	if err != nil {
 		if ent.IsConstraintError(err) {
