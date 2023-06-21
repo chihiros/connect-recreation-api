@@ -91,6 +91,11 @@ func RequiredTime(v int) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldRequiredTime, v))
 }
 
+// Publish applies equality check predicate on the "publish" field. It's identical to PublishEQ.
+func Publish(v bool) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldPublish, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldCreatedAt, v))
@@ -99,6 +104,11 @@ func CreatedAt(v time.Time) predicate.Recreation {
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// PublishedAt applies equality check predicate on the "published_at" field. It's identical to PublishedAtEQ.
+func PublishedAt(v time.Time) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldPublishedAt, v))
 }
 
 // UserIDEQ applies the EQ predicate on the "user_id" field.
@@ -466,6 +476,16 @@ func RequiredTimeLTE(v int) predicate.Recreation {
 	return predicate.Recreation(sql.FieldLTE(FieldRequiredTime, v))
 }
 
+// PublishEQ applies the EQ predicate on the "publish" field.
+func PublishEQ(v bool) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldPublish, v))
+}
+
+// PublishNEQ applies the NEQ predicate on the "publish" field.
+func PublishNEQ(v bool) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldPublish, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Recreation {
 	return predicate.Recreation(sql.FieldEQ(FieldCreatedAt, v))
@@ -544,6 +564,56 @@ func UpdatedAtLT(v time.Time) predicate.Recreation {
 // UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
 func UpdatedAtLTE(v time.Time) predicate.Recreation {
 	return predicate.Recreation(sql.FieldLTE(FieldUpdatedAt, v))
+}
+
+// PublishedAtEQ applies the EQ predicate on the "published_at" field.
+func PublishedAtEQ(v time.Time) predicate.Recreation {
+	return predicate.Recreation(sql.FieldEQ(FieldPublishedAt, v))
+}
+
+// PublishedAtNEQ applies the NEQ predicate on the "published_at" field.
+func PublishedAtNEQ(v time.Time) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNEQ(FieldPublishedAt, v))
+}
+
+// PublishedAtIn applies the In predicate on the "published_at" field.
+func PublishedAtIn(vs ...time.Time) predicate.Recreation {
+	return predicate.Recreation(sql.FieldIn(FieldPublishedAt, vs...))
+}
+
+// PublishedAtNotIn applies the NotIn predicate on the "published_at" field.
+func PublishedAtNotIn(vs ...time.Time) predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotIn(FieldPublishedAt, vs...))
+}
+
+// PublishedAtGT applies the GT predicate on the "published_at" field.
+func PublishedAtGT(v time.Time) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGT(FieldPublishedAt, v))
+}
+
+// PublishedAtGTE applies the GTE predicate on the "published_at" field.
+func PublishedAtGTE(v time.Time) predicate.Recreation {
+	return predicate.Recreation(sql.FieldGTE(FieldPublishedAt, v))
+}
+
+// PublishedAtLT applies the LT predicate on the "published_at" field.
+func PublishedAtLT(v time.Time) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLT(FieldPublishedAt, v))
+}
+
+// PublishedAtLTE applies the LTE predicate on the "published_at" field.
+func PublishedAtLTE(v time.Time) predicate.Recreation {
+	return predicate.Recreation(sql.FieldLTE(FieldPublishedAt, v))
+}
+
+// PublishedAtIsNil applies the IsNil predicate on the "published_at" field.
+func PublishedAtIsNil() predicate.Recreation {
+	return predicate.Recreation(sql.FieldIsNull(FieldPublishedAt))
+}
+
+// PublishedAtNotNil applies the NotNil predicate on the "published_at" field.
+func PublishedAtNotNil() predicate.Recreation {
+	return predicate.Recreation(sql.FieldNotNull(FieldPublishedAt))
 }
 
 // HasProfile applies the HasEdge predicate on the "profile" edge.
