@@ -73,6 +73,7 @@ func NewRouter() *chi.Mux {
 		r.Route("/contact", func(r chi.Router) {
 			r.Post("/", ccon.PostContact)
 		})
+
 		// 疎通確認用のAPI
 		r.Route("/now", func(r chi.Router) {
 			r.Get("/", func(w http.ResponseWriter, r *http.Request) {
