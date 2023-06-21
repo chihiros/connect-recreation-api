@@ -148,6 +148,7 @@ func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usec
 		SetYoutubeID(req.YouTubeID).
 		SetTargetNumber(req.TargetNumber).
 		SetRequiredTime(req.RequiredTime).
+		SetPublish(false).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
 		OnConflict(
@@ -163,6 +164,7 @@ func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usec
 			r.SetYoutubeID(req.YouTubeID)
 			r.SetTargetNumber(req.TargetNumber)
 			r.SetRequiredTime(req.RequiredTime)
+			r.SetPublish(false)
 			r.SetUpdatedAt(time.Now())
 		}).
 		ID(ctx)
