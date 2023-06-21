@@ -130,16 +130,20 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 		}).
 		ID(ctx)
 
-	rec, err := r.DBConn.Recreation.Query().
-		Where(recreation.RecreationIDEQ(req.RecreationID)).
-		Only(ctx)
-
 	if err != nil {
 		if ent.IsConstraintError(err) {
 			// ent側の制約エラー
 			return usecase.Response{}, fmt.Errorf("duplicate")
 		}
 	}
+
+	if err != nil {
+		panic(err)
+	}
+
+	rec, err := r.DBConn.Recreation.Query().
+		Where(recreation.RecreationIDEQ(req.RecreationID)).
+		Only(ctx)
 
 	if err != nil {
 		panic(err)
