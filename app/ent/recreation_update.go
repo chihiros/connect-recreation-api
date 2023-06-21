@@ -121,6 +121,26 @@ func (ru *RecreationUpdate) SetUpdatedAt(t time.Time) *RecreationUpdate {
 	return ru
 }
 
+// SetPublishedAt sets the "published_at" field.
+func (ru *RecreationUpdate) SetPublishedAt(t time.Time) *RecreationUpdate {
+	ru.mutation.SetPublishedAt(t)
+	return ru
+}
+
+// SetNillablePublishedAt sets the "published_at" field if the given value is not nil.
+func (ru *RecreationUpdate) SetNillablePublishedAt(t *time.Time) *RecreationUpdate {
+	if t != nil {
+		ru.SetPublishedAt(*t)
+	}
+	return ru
+}
+
+// ClearPublishedAt clears the value of the "published_at" field.
+func (ru *RecreationUpdate) ClearPublishedAt() *RecreationUpdate {
+	ru.mutation.ClearPublishedAt()
+	return ru
+}
+
 // SetProfileID sets the "profile" edge to the Profile entity by ID.
 func (ru *RecreationUpdate) SetProfileID(id int) *RecreationUpdate {
 	ru.mutation.SetProfileID(id)
@@ -239,6 +259,12 @@ func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := ru.mutation.UpdatedAt(); ok {
 		_spec.SetField(recreation.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := ru.mutation.PublishedAt(); ok {
+		_spec.SetField(recreation.FieldPublishedAt, field.TypeTime, value)
+	}
+	if ru.mutation.PublishedAtCleared() {
+		_spec.ClearField(recreation.FieldPublishedAt, field.TypeTime)
 	}
 	if ru.mutation.ProfileCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -378,6 +404,26 @@ func (ruo *RecreationUpdateOne) SetNillablePublish(b *bool) *RecreationUpdateOne
 // SetUpdatedAt sets the "updated_at" field.
 func (ruo *RecreationUpdateOne) SetUpdatedAt(t time.Time) *RecreationUpdateOne {
 	ruo.mutation.SetUpdatedAt(t)
+	return ruo
+}
+
+// SetPublishedAt sets the "published_at" field.
+func (ruo *RecreationUpdateOne) SetPublishedAt(t time.Time) *RecreationUpdateOne {
+	ruo.mutation.SetPublishedAt(t)
+	return ruo
+}
+
+// SetNillablePublishedAt sets the "published_at" field if the given value is not nil.
+func (ruo *RecreationUpdateOne) SetNillablePublishedAt(t *time.Time) *RecreationUpdateOne {
+	if t != nil {
+		ruo.SetPublishedAt(*t)
+	}
+	return ruo
+}
+
+// ClearPublishedAt clears the value of the "published_at" field.
+func (ruo *RecreationUpdateOne) ClearPublishedAt() *RecreationUpdateOne {
+	ruo.mutation.ClearPublishedAt()
 	return ruo
 }
 
@@ -529,6 +575,12 @@ func (ruo *RecreationUpdateOne) sqlSave(ctx context.Context) (_node *Recreation,
 	}
 	if value, ok := ruo.mutation.UpdatedAt(); ok {
 		_spec.SetField(recreation.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := ruo.mutation.PublishedAt(); ok {
+		_spec.SetField(recreation.FieldPublishedAt, field.TypeTime, value)
+	}
+	if ruo.mutation.PublishedAtCleared() {
+		_spec.ClearField(recreation.FieldPublishedAt, field.TypeTime)
 	}
 	if ruo.mutation.ProfileCleared() {
 		edge := &sqlgraph.EdgeSpec{

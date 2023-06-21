@@ -42,6 +42,8 @@ type Recreation struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// PublishedAt holds the value of the "published_at" field.
+	PublishedAt time.Time `json:"published_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RecreationQuery when eager-loading is set.
 	Edges               RecreationEdges `json:"edges"`
@@ -84,7 +86,7 @@ func (*Recreation) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case recreation.FieldTitle, recreation.FieldContent, recreation.FieldYoutubeID:
 			values[i] = new(sql.NullString)
-		case recreation.FieldCreatedAt, recreation.FieldUpdatedAt:
+		case recreation.FieldCreatedAt, recreation.FieldUpdatedAt, recreation.FieldPublishedAt:
 			values[i] = new(sql.NullTime)
 		case recreation.FieldUserID, recreation.FieldRecreationID:
 			values[i] = new(uuid.UUID)
@@ -179,6 +181,12 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				r.UpdatedAt = value.Time
 			}
+		case recreation.FieldPublishedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field published_at", values[i])
+			} else if value.Valid {
+				r.PublishedAt = value.Time
+			}
 		case recreation.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field profile_recreations", value)
@@ -259,6 +267,9 @@ func (r *Recreation) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(r.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("published_at=")
+	builder.WriteString(r.PublishedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

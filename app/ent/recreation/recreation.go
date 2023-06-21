@@ -36,6 +36,8 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldPublishedAt holds the string denoting the published_at field in the database.
+	FieldPublishedAt = "published_at"
 	// EdgeProfile holds the string denoting the profile edge name in mutations.
 	EdgeProfile = "profile"
 	// Table holds the table name of the recreation in the database.
@@ -63,6 +65,7 @@ var Columns = []string{
 	FieldPublish,
 	FieldCreatedAt,
 	FieldUpdatedAt,
+	FieldPublishedAt,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "recreations"
@@ -153,6 +156,11 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByPublishedAt orders the results by the published_at field.
+func ByPublishedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublishedAt, opts...).ToFunc()
 }
 
 // ByProfileField orders the results by profile field.
