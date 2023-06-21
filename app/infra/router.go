@@ -68,6 +68,9 @@ func NewRouter() *chi.Mux {
 			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
 				// レクリエーションを投稿するためのAPI
 				r.Post("/", rcon.PostRecreations)
+
+				// レクリエーションの途中保存で使うAPI
+				r.Put("/draft", rcon.PutRecreationsDraft)
 			})
 		})
 
