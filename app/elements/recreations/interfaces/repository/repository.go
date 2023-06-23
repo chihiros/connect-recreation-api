@@ -38,6 +38,7 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset
 	recreation, err := r.DBConn.Recreation.
 		Query().
 		Order(ent.Desc(recreation.FieldCreatedAt)).
+		Where(recreation.PublishEQ(true)). // 公開されているものだけを取得
 		Limit(limit).
 		Offset(offset).
 		All(ctx)
@@ -74,7 +75,10 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset
 func (r *RecreationRepository) GetRecreationsByID(ctx context.Context, id uuid.UUID) (usecase.Response, error) {
 	recreation, err := r.DBConn.Recreation.
 		Query().
-		Where(recreation.RecreationIDEQ(id)).
+		Where(
+			recreation.RecreationIDEQ(id),
+			recreation.PublishEQ(true), // 公開されていることを確認してから取得
+		).
 		Only(ctx)
 
 	if err != nil {
