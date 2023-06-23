@@ -87,6 +87,46 @@ func (c *RecreationController) GetRecreationsByID(w http.ResponseWriter, r *http
 	json.NewEncoder(w).Encode(users)
 }
 
+func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Request) {
+	// bodyの中身をbindする
+	req := usecase.Request{}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		fmt.Printf("%v\n", err)
+	}
+
+	// jwtのplayloadからuser_idを取得
+	payload, ok := r.Context().Value(authrization.PayloadKey).(*authrization.SupabaseJwtPayload)
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode("Unauthorized")
+		return
+	}
+
+	user_id, err := uuid.Parse(payload.Subject)
+	if err != nil {
+		applog.Error(err.Error())
+	}
+
+	req.UserID = user_id
+	recreation, err := c.Usecase.PostRecreations(context.Background(), req)
+	if err != nil {
+		fmt.Printf("%v\n", err)
+	}
+
+	if err != nil {
+		switch err.Error() {
+		case "duplicate":
+			w.WriteHeader(http.StatusConflict)
+			json.NewEncoder(w).Encode(recreation)
+		default:
+			panic(err)
+		}
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(recreation)
+}
+
 func (c *RecreationController) GetRecreationsDraft(w http.ResponseWriter, r *http.Request) {
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
@@ -140,54 +180,6 @@ func (c *RecreationController) GetRecreationsDraftByID(w http.ResponseWriter, r 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(users)
 }
-
-func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Request) {
-	// bodyの中身をbindする
-	req := usecase.Request{}
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		fmt.Printf("%v\n", err)
-	}
-
-	// jwtのplayloadからuser_idを取得
-	payload, ok := r.Context().Value(authrization.PayloadKey).(*authrization.SupabaseJwtPayload)
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Unauthorized")
-		return
-	}
-
-	user_id, err := uuid.Parse(payload.Subject)
-	if err != nil {
-		applog.Error(err.Error())
-	}
-
-	req.UserID = user_id
-	recreation, err := c.Usecase.PostRecreations(context.Background(), req)
-	if err != nil {
-		fmt.Printf("%v\n", err)
-	}
-
-	if err != nil {
-		switch err.Error() {
-		case "duplicate":
-			w.WriteHeader(http.StatusConflict)
-			json.NewEncoder(w).Encode(recreation)
-		default:
-			panic(err)
-		}
-	}
-
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(recreation)
-}
-
-// func (c *RecreationController) DeleteRecreationsByID(w http.ResponseWriter, r *http.Request) {
-// 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
-// 	user := c.Usecase.DeleteRecreationsByID(context.Background(), id)
-
-// 	w.WriteHeader(http.StatusNoContent)
-// 	json.NewEncoder(w).Encode(user)
-// }
 
 func (c *RecreationController) PutRecreationsDraft(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする
