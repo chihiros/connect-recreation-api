@@ -87,6 +87,60 @@ func (c *RecreationController) GetRecreationsByID(w http.ResponseWriter, r *http
 	json.NewEncoder(w).Encode(users)
 }
 
+func (c *RecreationController) GetRecreationsDraft(w http.ResponseWriter, r *http.Request) {
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil {
+		applog.Error(err.Error())
+		limit = 10
+	}
+
+	if limit <= 0 {
+		limit = 10
+	}
+
+	offset, err := strconv.Atoi(r.URL.Query().Get("offset"))
+	if err != nil {
+		applog.Error(err.Error())
+		offset = 0
+	}
+
+	if offset < 0 {
+		offset = 0
+	}
+
+	users, err := c.Usecase.GetRecreations(context.Background(), limit, offset)
+	if err != nil {
+		panic(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(users)
+}
+
+func (c *RecreationController) GetRecreationsDraftByID(w http.ResponseWriter, r *http.Request) {
+	var users usecase.Response
+	id := r.URL.Query().Get("id")
+
+	if id == "" {
+		c.GetRecreations(w, r)
+		return
+	}
+
+	// idをUUIDに変換
+	recID, err := uuid.Parse(id)
+	if err != nil {
+		panic(err)
+	}
+
+	users, err = c.Usecase.GetRecreationsByID(context.Background(), recID)
+	if err != nil {
+		panic(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(users)
+}
+
 func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする
 	req := usecase.Request{}
