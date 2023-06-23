@@ -29,7 +29,10 @@ type RecreationResponse struct {
 
 func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset int) (usecase.Response, error) {
 	// count all records first
-	count, err := r.DBConn.Recreation.Query().Count(ctx)
+	count, err := r.DBConn.Recreation.
+		Query().
+		Where(recreation.PublishEQ(true)). // 公開されているものだけを取得
+		Count(ctx)
 	if err != nil {
 		applog.Panic(err)
 	}
