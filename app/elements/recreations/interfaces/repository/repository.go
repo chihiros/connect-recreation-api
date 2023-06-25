@@ -196,77 +196,6 @@ func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.
 // 	return err
 // }
 
-func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	_, err := r.DBConn.Recreation.Create().
-		SetUserID(req.UserID).
-		SetRecreationID(req.RecreationID).
-		SetGenre(req.Genre).
-		SetTitle(req.Title).
-		SetContent(req.Content).
-		SetYoutubeID(req.YouTubeID).
-		SetTargetNumber(req.TargetNumber).
-		SetRequiredTime(req.RequiredTime).
-		SetPublish(false).
-		SetCreatedAt(time.Now()).
-		SetUpdatedAt(time.Now()).
-		Save(ctx)
-		// OnConflict(
-		// 	sql.ConflictColumns(
-		// 		recreation.FieldUserID,
-		// 		recreation.FieldRecreationID,
-		// 	),
-		// ).
-		// Update(func(r *ent.RecreationUpsert) {
-		// 	r.SetGenre(req.Genre)
-		// 	r.SetTitle(req.Title)
-		// 	r.SetContent(req.Content)
-		// 	r.SetYoutubeID(req.YouTubeID)
-		// 	r.SetTargetNumber(req.TargetNumber)
-		// 	r.SetRequiredTime(req.RequiredTime)
-		// 	r.SetPublish(false)
-		// 	r.SetUpdatedAt(time.Now())
-		// }).
-		// ID(ctx)
-
-	if err != nil {
-		if !ent.IsConstraintError(err) {
-			applog.Panic(err)
-		}
-
-		if ent.IsConstraintError(err) {
-			_, err := r.DBConn.Recreation.Update().
-				Where(
-					recreation.UserIDEQ(req.UserID),
-					recreation.RecreationIDEQ(req.RecreationID),
-				).
-				SetGenre(req.Genre).
-				SetTitle(req.Title).
-				SetContent(req.Content).
-				SetYoutubeID(req.YouTubeID).
-				SetTargetNumber(req.TargetNumber).
-				SetRequiredTime(req.RequiredTime).
-				SetPublish(false).
-				SetUpdatedAt(time.Now()).
-				Save(ctx)
-
-			if err != nil {
-				applog.Panic(err)
-			}
-		}
-	}
-
-	rec, err := r.DBConn.Recreation.Query().
-		Where(recreation.RecreationIDEQ(req.RecreationID)).
-		Only(ctx)
-
-	if err != nil {
-		applog.Panic(err)
-	}
-
-	res := usecase.Response{Data: rec}
-	return res, err
-}
-
 func (r *RecreationRepository) GetRecreationsDraft(ctx context.Context, user_id uuid.UUID, limit, offset int) (usecase.Response, error) {
 	// count all records first
 	count, err := r.DBConn.Recreation.
@@ -346,5 +275,76 @@ func (r *RecreationRepository) GetRecreationsDraftByID(ctx context.Context, rec_
 	recreation.Edges.Profile = profile
 
 	res := usecase.Response{Data: recreation}
+	return res, err
+}
+
+func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usecase.Request) (usecase.Response, error) {
+	_, err := r.DBConn.Recreation.Create().
+		SetUserID(req.UserID).
+		SetRecreationID(req.RecreationID).
+		SetGenre(req.Genre).
+		SetTitle(req.Title).
+		SetContent(req.Content).
+		SetYoutubeID(req.YouTubeID).
+		SetTargetNumber(req.TargetNumber).
+		SetRequiredTime(req.RequiredTime).
+		SetPublish(false).
+		SetCreatedAt(time.Now()).
+		SetUpdatedAt(time.Now()).
+		Save(ctx)
+		// OnConflict(
+		// 	sql.ConflictColumns(
+		// 		recreation.FieldUserID,
+		// 		recreation.FieldRecreationID,
+		// 	),
+		// ).
+		// Update(func(r *ent.RecreationUpsert) {
+		// 	r.SetGenre(req.Genre)
+		// 	r.SetTitle(req.Title)
+		// 	r.SetContent(req.Content)
+		// 	r.SetYoutubeID(req.YouTubeID)
+		// 	r.SetTargetNumber(req.TargetNumber)
+		// 	r.SetRequiredTime(req.RequiredTime)
+		// 	r.SetPublish(false)
+		// 	r.SetUpdatedAt(time.Now())
+		// }).
+		// ID(ctx)
+
+	if err != nil {
+		if !ent.IsConstraintError(err) {
+			applog.Panic(err)
+		}
+
+		if ent.IsConstraintError(err) {
+			_, err := r.DBConn.Recreation.Update().
+				Where(
+					recreation.UserIDEQ(req.UserID),
+					recreation.RecreationIDEQ(req.RecreationID),
+				).
+				SetGenre(req.Genre).
+				SetTitle(req.Title).
+				SetContent(req.Content).
+				SetYoutubeID(req.YouTubeID).
+				SetTargetNumber(req.TargetNumber).
+				SetRequiredTime(req.RequiredTime).
+				SetPublish(false).
+				SetUpdatedAt(time.Now()).
+				Save(ctx)
+
+			if err != nil {
+				applog.Panic(err)
+			}
+		}
+	}
+
+	rec, err := r.DBConn.Recreation.Query().
+		Where(recreation.RecreationIDEQ(req.RecreationID)).
+		Only(ctx)
+
+	if err != nil {
+		applog.Panic(err)
+	}
+
+	res := usecase.Response{Data: rec}
 	return res, err
 }
