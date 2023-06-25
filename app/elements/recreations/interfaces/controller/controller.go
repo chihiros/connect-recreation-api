@@ -127,7 +127,7 @@ func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Re
 	json.NewEncoder(w).Encode(recreation)
 }
 
-func (c *RecreationController) GetRecreationsDraft(w http.ResponseWriter, r *http.Request) {
+func (c *RecreationController) GetRecreationsDraft(w http.ResponseWriter, r *http.Request, user_id uuid.UUID) {
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
 		applog.Error(err.Error())
@@ -148,7 +148,12 @@ func (c *RecreationController) GetRecreationsDraft(w http.ResponseWriter, r *htt
 		offset = 0
 	}
 
-	users, err := c.Usecase.GetRecreations(context.Background(), limit, offset)
+	users, err := c.Usecase.GetRecreationsDraft(
+		context.Background(),
+		user_id,
+		limit,
+		offset,
+	)
 	if err != nil {
 		panic(err)
 	}
@@ -173,7 +178,7 @@ func (c *RecreationController) GetRecreationsDraftByID(w http.ResponseWriter, r 
 
 	id := r.URL.Query().Get("id")
 	if id == "" {
-		c.GetRecreations(w, r)
+		c.GetRecreationsDraft(w, r, user_id)
 		return
 	}
 
