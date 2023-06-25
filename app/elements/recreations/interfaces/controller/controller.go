@@ -158,9 +158,20 @@ func (c *RecreationController) GetRecreationsDraft(w http.ResponseWriter, r *htt
 }
 
 func (c *RecreationController) GetRecreationsDraftByID(w http.ResponseWriter, r *http.Request) {
-	var users usecase.Response
-	id := r.URL.Query().Get("id")
+	// jwtのplayloadからuser_idを取得
+	payload, ok := r.Context().Value(authrization.PayloadKey).(*authrization.SupabaseJwtPayload)
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode("Unauthorized")
+		return
+	}
 
+	user_id, err := uuid.Parse(payload.Subject)
+	if err != nil {
+		applog.Error(err.Error())
+	}
+
+	id := r.URL.Query().Get("id")
 	if id == "" {
 		c.GetRecreations(w, r)
 		return
@@ -172,7 +183,13 @@ func (c *RecreationController) GetRecreationsDraftByID(w http.ResponseWriter, r 
 		panic(err)
 	}
 
-	users, err = c.Usecase.GetRecreationsByID(context.Background(), recID)
+	var users usecase.Response
+	users, err = c.Usecase.GetRecreationsDraftByID(
+		context.Background(),
+		recID,
+		user_id,
+	)
+
 	if err != nil {
 		panic(err)
 	}
