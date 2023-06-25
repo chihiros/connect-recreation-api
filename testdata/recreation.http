@@ -26,6 +26,14 @@ Authorization: Bearer {{TOKEN}}
     "required_time":2
 }
 
+#### 非公開のレクリエーションを取得する
+GET {{HOST}}/v1/recreation/draft
+Authorization: Bearer {{TOKEN}}
+
+#### 非公開のレクリエーションを取得する
+GET {{HOST}}/v1/recreation/draft?id=bb0ca752-8a86-4185-b767-a7c1c9297342
+Authorization: Bearer {{TOKEN}}
+
 #### レクリエーションの追加
 PUT {{HOST}}/v1/recreation/draft
 Context-Type: application/json
