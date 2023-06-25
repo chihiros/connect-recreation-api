@@ -271,7 +271,10 @@ func (r *RecreationRepository) GetRecreationsDraft(ctx context.Context, user_id 
 	// count all records first
 	count, err := r.DBConn.Recreation.
 		Query().
-		Where(recreation.PublishEQ(false)). // 公開されていないものだけを取得
+		Where(
+			recreation.PublishEQ(false),  // 公開されていないものだけを取得
+			recreation.UserIDEQ(user_id), // Draftだけは自分のものだけを取得
+		).
 		Count(ctx)
 	if err != nil {
 		applog.Panic(err)
@@ -281,7 +284,10 @@ func (r *RecreationRepository) GetRecreationsDraft(ctx context.Context, user_id 
 	recreation, err := r.DBConn.Recreation.
 		Query().
 		Order(ent.Desc(recreation.FieldCreatedAt)).
-		Where(recreation.PublishEQ(false)). // 公開されていないものだけを取得
+		Where(
+			recreation.PublishEQ(false),  // 公開されていないものだけを取得
+			recreation.UserIDEQ(user_id), // Draftだけは自分のものだけを取得
+		).
 		Limit(limit).
 		Offset(offset).
 		All(ctx)
@@ -319,8 +325,9 @@ func (r *RecreationRepository) GetRecreationsDraftByID(ctx context.Context, rec_
 	recreation, err := r.DBConn.Recreation.
 		Query().
 		Where(
+			recreation.PublishEQ(false),  // 公開されていないものだけを取得
+			recreation.UserIDEQ(user_id), // Draftだけは自分のものだけを取得
 			recreation.RecreationIDEQ(rec_id),
-			recreation.PublishEQ(false), // 公開されていないものだけを取得
 		).
 		Only(ctx)
 
