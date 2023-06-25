@@ -69,6 +69,8 @@ func NewRouter() *chi.Mux {
 				// レクリエーションを投稿するためのAPI
 				r.Post("/", rcon.PostRecreations)
 
+				// 下書きのレクリエーションを取得するためのAPI
+				r.Get("/draft", rcon.GetRecreationsDraftByID)
 				// レクリエーションの途中保存で使うAPI
 				r.Put("/draft", rcon.PutRecreationsDraft)
 			})
