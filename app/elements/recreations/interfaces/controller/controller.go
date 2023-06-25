@@ -36,7 +36,7 @@ func NewRecreationUsecase(conn *ent.Client) *usecase.RecreationUsecase {
 func (c *RecreationController) GetRecreations(w http.ResponseWriter, r *http.Request) {
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
-		applog.Error(err.Error())
+		applog.Warn(err.Error())
 		limit = 10
 	}
 
@@ -46,7 +46,7 @@ func (c *RecreationController) GetRecreations(w http.ResponseWriter, r *http.Req
 
 	offset, err := strconv.Atoi(r.URL.Query().Get("offset"))
 	if err != nil {
-		applog.Error(err.Error())
+		applog.Warn(err.Error())
 		offset = 0
 	}
 
@@ -130,7 +130,7 @@ func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Re
 func (c *RecreationController) GetRecreationsDraft(w http.ResponseWriter, r *http.Request, user_id uuid.UUID) {
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
-		applog.Error(err.Error())
+		applog.Warn(err.Error())
 		limit = 10
 	}
 
@@ -140,7 +140,7 @@ func (c *RecreationController) GetRecreationsDraft(w http.ResponseWriter, r *htt
 
 	offset, err := strconv.Atoi(r.URL.Query().Get("offset"))
 	if err != nil {
-		applog.Error(err.Error())
+		applog.Warn(err.Error())
 		offset = 0
 	}
 
