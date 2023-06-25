@@ -261,6 +261,10 @@ func (r *RecreationRepository) GetRecreationsDraftByID(ctx context.Context, rec_
 		Only(ctx)
 
 	if err != nil {
+		if ent.IsNotFound(err) {
+			return usecase.Response{}, nil
+		}
+
 		applog.Panic(err)
 	}
 
