@@ -36,7 +36,7 @@ func NewRecreationUsecase(conn *ent.Client) *usecase.RecreationUsecase {
 func (c *RecreationController) GetRecreations(w http.ResponseWriter, r *http.Request) {
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 	if err != nil {
-		applog.Error(err.Error())
+		applog.Warn(err.Error())
 		limit = 10
 	}
 
@@ -46,7 +46,7 @@ func (c *RecreationController) GetRecreations(w http.ResponseWriter, r *http.Req
 
 	offset, err := strconv.Atoi(r.URL.Query().Get("offset"))
 	if err != nil {
-		applog.Error(err.Error())
+		applog.Warn(err.Error())
 		offset = 0
 	}
 
@@ -127,13 +127,81 @@ func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Re
 	json.NewEncoder(w).Encode(recreation)
 }
 
-// func (c *RecreationController) DeleteRecreationsByID(w http.ResponseWriter, r *http.Request) {
-// 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
-// 	user := c.Usecase.DeleteRecreationsByID(context.Background(), id)
+func (c *RecreationController) GetRecreationsDraft(w http.ResponseWriter, r *http.Request, user_id uuid.UUID) {
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil {
+		applog.Warn(err.Error())
+		limit = 10
+	}
 
-// 	w.WriteHeader(http.StatusNoContent)
-// 	json.NewEncoder(w).Encode(user)
-// }
+	if limit <= 0 {
+		limit = 10
+	}
+
+	offset, err := strconv.Atoi(r.URL.Query().Get("offset"))
+	if err != nil {
+		applog.Warn(err.Error())
+		offset = 0
+	}
+
+	if offset < 0 {
+		offset = 0
+	}
+
+	users, err := c.Usecase.GetRecreationsDraft(
+		context.Background(),
+		user_id,
+		limit,
+		offset,
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(users)
+}
+
+func (c *RecreationController) GetRecreationsDraftByID(w http.ResponseWriter, r *http.Request) {
+	// jwtのplayloadからuser_idを取得
+	payload, ok := r.Context().Value(authrization.PayloadKey).(*authrization.SupabaseJwtPayload)
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode("Unauthorized")
+		return
+	}
+
+	user_id, err := uuid.Parse(payload.Subject)
+	if err != nil {
+		applog.Error(err.Error())
+	}
+
+	id := r.URL.Query().Get("id")
+	if id == "" {
+		c.GetRecreationsDraft(w, r, user_id)
+		return
+	}
+
+	// idをUUIDに変換
+	recID, err := uuid.Parse(id)
+	if err != nil {
+		panic(err)
+	}
+
+	var users usecase.Response
+	users, err = c.Usecase.GetRecreationsDraftByID(
+		context.Background(),
+		recID,
+		user_id,
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(users)
+}
 
 func (c *RecreationController) PutRecreationsDraft(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする
