@@ -48,11 +48,6 @@ func NewRouter() *chi.Mux {
 	}
 	pcon := profile_controller.NewProfileController(conn2)
 	r.Route("/v1", func(r chi.Router) {
-		// お問い合わせ用のAPI
-		r.Route("/contact", func(r chi.Router) {
-			r.Post("/", ccon.PostContact)
-		})
-
 		// プロフィール用のAPI
 		r.Route("/profile", func(r chi.Router) {
 			r.Use(authrization.AuthMiddleware) // Dockerで開発するときはコメントアウトする
@@ -61,6 +56,29 @@ func NewRouter() *chi.Mux {
 			r.Post("/", pcon.PostProfiles)
 			r.Put("/", pcon.PutProfiles)
 			r.Delete("/", pcon.DeleteProfiles)
+		})
+
+		// レクリエーション用のAPI
+		r.Route("/recreation", func(r chi.Router) {
+			// JWTが不要なやつ
+			// 公開されているレクリエーションの一覧を取得するためのAPI
+			r.Get("/", rcon.GetRecreationsByID)
+
+			// JWTが必要なやつ
+			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
+				// レクリエーションを投稿するためのAPI
+				r.Post("/", rcon.PostRecreations)
+
+				// 下書きのレクリエーションを取得するためのAPI
+				r.Get("/draft", rcon.GetRecreationsDraftByID)
+				// レクリエーションの途中保存で使うAPI
+				r.Put("/draft", rcon.PutRecreationsDraft)
+			})
+		})
+
+		// お問い合わせ用のAPI
+		r.Route("/contact", func(r chi.Router) {
+			r.Post("/", ccon.PostContact)
 		})
 
 		// 疎通確認用のAPI
@@ -73,17 +91,6 @@ func NewRouter() *chi.Mux {
 				now := time.Now().In(jst)
 				w.WriteHeader(http.StatusOK)
 				json.NewEncoder(w).Encode(now)
-			})
-		})
-
-		// レクリエーション用のAPI
-		r.Route("/recreation", func(r chi.Router) {
-			// JWTが不要なやつ
-			r.Get("/", rcon.GetRecreationsByID)
-
-			// JWTが必要なやつ
-			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
-				r.Post("/", rcon.PostRecreations)
 			})
 		})
 

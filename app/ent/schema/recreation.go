@@ -29,12 +29,17 @@ func (Recreation) Fields() []ent.Field {
 			Optional(),
 		field.Int("target_number"),
 		field.Int("required_time"),
+		field.Bool("publish").
+			Default(false).
+			StructTag(`json:"publish,required"`),
 		field.Time("created_at").
 			Immutable().
 			Default(time.Now),
 		field.Time("updated_at").
 			Default(time.Now).
 			UpdateDefault(time.Now),
+		field.Time("published_at").
+			Optional(),
 	}
 }
 

@@ -36,10 +36,14 @@ type Recreation struct {
 	TargetNumber int `json:"target_number,omitempty"`
 	// RequiredTime holds the value of the "required_time" field.
 	RequiredTime int `json:"required_time,omitempty"`
+	// Publish holds the value of the "publish" field.
+	Publish bool `json:"publish,required"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// PublishedAt holds the value of the "published_at" field.
+	PublishedAt time.Time `json:"published_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RecreationQuery when eager-loading is set.
 	Edges               RecreationEdges `json:"edges"`
@@ -76,11 +80,13 @@ func (*Recreation) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case recreation.FieldGenre:
 			values[i] = new([]byte)
+		case recreation.FieldPublish:
+			values[i] = new(sql.NullBool)
 		case recreation.FieldID, recreation.FieldTargetNumber, recreation.FieldRequiredTime:
 			values[i] = new(sql.NullInt64)
 		case recreation.FieldTitle, recreation.FieldContent, recreation.FieldYoutubeID:
 			values[i] = new(sql.NullString)
-		case recreation.FieldCreatedAt, recreation.FieldUpdatedAt:
+		case recreation.FieldCreatedAt, recreation.FieldUpdatedAt, recreation.FieldPublishedAt:
 			values[i] = new(sql.NullTime)
 		case recreation.FieldUserID, recreation.FieldRecreationID:
 			values[i] = new(uuid.UUID)
@@ -157,6 +163,12 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				r.RequiredTime = int(value.Int64)
 			}
+		case recreation.FieldPublish:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field publish", values[i])
+			} else if value.Valid {
+				r.Publish = value.Bool
+			}
 		case recreation.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -168,6 +180,12 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				r.UpdatedAt = value.Time
+			}
+		case recreation.FieldPublishedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field published_at", values[i])
+			} else if value.Valid {
+				r.PublishedAt = value.Time
 			}
 		case recreation.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -241,11 +259,17 @@ func (r *Recreation) String() string {
 	builder.WriteString("required_time=")
 	builder.WriteString(fmt.Sprintf("%v", r.RequiredTime))
 	builder.WriteString(", ")
+	builder.WriteString("publish=")
+	builder.WriteString(fmt.Sprintf("%v", r.Publish))
+	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(r.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(r.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("published_at=")
+	builder.WriteString(r.PublishedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

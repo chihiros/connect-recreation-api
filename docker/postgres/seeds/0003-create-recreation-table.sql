@@ -25,3 +25,20 @@ INSERT INTO recreations (user_id, recreation_id, genre, title, content, target_n
 
 ALTER TABLE recreations
 ADD COLUMN youtube_id text;
+
+-- publish Booleanのカラムを追加する
+ALTER TABLE recreations
+ADD COLUMN publish BOOLEAN NOT NULL DEFAULT FALSE;
+
+UPDATE
+  recreations
+SET
+  publish = TRUE
+WHERE
+  recreation_id = 'c5c29ef8-dd34-45f8-8013-e80840356ea4'
+  OR recreation_id = '0c2643c1-4b20-40c6-9163-1d8567954334'
+  OR recreation_id = 'df3ed291-32b3-44d3-86c2-e01537e066c6'
+;
+
+ALTER TABLE recreations
+ADD COLUMN published_at TIMESTAMP DEFAULT NULL;

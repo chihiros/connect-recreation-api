@@ -30,10 +30,14 @@ const (
 	FieldTargetNumber = "target_number"
 	// FieldRequiredTime holds the string denoting the required_time field in the database.
 	FieldRequiredTime = "required_time"
+	// FieldPublish holds the string denoting the publish field in the database.
+	FieldPublish = "publish"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldPublishedAt holds the string denoting the published_at field in the database.
+	FieldPublishedAt = "published_at"
 	// EdgeProfile holds the string denoting the profile edge name in mutations.
 	EdgeProfile = "profile"
 	// Table holds the table name of the recreation in the database.
@@ -58,8 +62,10 @@ var Columns = []string{
 	FieldYoutubeID,
 	FieldTargetNumber,
 	FieldRequiredTime,
+	FieldPublish,
 	FieldCreatedAt,
 	FieldUpdatedAt,
+	FieldPublishedAt,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "recreations"
@@ -84,6 +90,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultPublish holds the default value on creation for the "publish" field.
+	DefaultPublish bool
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
@@ -135,6 +143,11 @@ func ByRequiredTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRequiredTime, opts...).ToFunc()
 }
 
+// ByPublish orders the results by the publish field.
+func ByPublish(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublish, opts...).ToFunc()
+}
+
 // ByCreatedAt orders the results by the created_at field.
 func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
@@ -143,6 +156,11 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByPublishedAt orders the results by the published_at field.
+func ByPublishedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublishedAt, opts...).ToFunc()
 }
 
 // ByProfileField orders the results by profile field.
