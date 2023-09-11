@@ -156,7 +156,7 @@ func NewRouter() *chi.Mux {
 				}
 
 				x := 145.0
-				y := 150.0
+				y := 175.0
 				for _, line := range strings.Split(formatTitle, "\n") {
 					dc.DrawString(line, x, y)
 					y += 64
