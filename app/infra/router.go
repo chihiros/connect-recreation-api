@@ -93,7 +93,7 @@ func NewRouter() *chi.Mux {
 		// OG画像用のAPI
 		r.Route("/og", func(r chi.Router) {
 			r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-				// // 1200x630の画像を生成
+				// 1200x630の画像を生成
 				dc := gg.NewContext(1200, 630)
 
 				// 左上から右下に向かってグラデーション
@@ -103,12 +103,7 @@ func NewRouter() *chi.Mux {
 				grad.AddColorStop(0.6943, color.RGBA{255, 249, 195, 255})
 				grad.AddColorStop(1, color.RGBA{206, 249, 255, 255})
 				dc.SetFillStyle(grad)
-				dc.MoveTo(0, 0)
-				dc.LineTo(1200, 0)
-				dc.LineTo(1200, 630)
-				dc.LineTo(0, 630)
-				dc.ClosePath()
-				dc.Fill()
+				dc.Clear()
 
 				// 図形のサイズと位置を計算
 				rectWidth := 1200 - 2*43
