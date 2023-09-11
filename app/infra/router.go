@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"image/color"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/chihiros/logger"
@@ -16,7 +17,13 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+	"golang.org/x/image/font/opentype"
+
+	_ "embed"
 )
+
+//go:embed DINAlternate-Bold.ttf
+var font []byte
 
 func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
@@ -113,6 +120,24 @@ func NewRouter() *chi.Mux {
 				dc.SetColor(color.RGBA{255, 255, 255, 255})
 				dc.DrawRoundedRectangle(float64(rectX), float64(rectY), float64(rectWidth), float64(rectHeight), 16)
 				dc.Fill()
+
+				// フォントを読み込む
+				fontFace, err := opentype.Parse(font)
+				if err != nil {
+					http.Error(w, "Failed to parse font", http.StatusInternalServerError)
+					return
+				}
+
+				face, err := opentype.NewFace(fontFace, &opentype.FaceOptions{
+					Size: 64,
+					DPI:  72,
+				})
+				if err != nil {
+					http.Error(w, "Failed to create font face", http.StatusInternalServerError)
+					return
+				}
+				dc.SetFontFace(face)
+
 
 				// 画像をレスポンスとして返す
 				w.Header().Set("Content-Type", "image/png")
