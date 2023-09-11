@@ -25,7 +25,10 @@ import (
 )
 
 //go:embed SourceHanSansHW-Bold.otf
-var font []byte
+var fontJp []byte
+
+//go:embed "Microsoft Sans Serif.ttf"
+var fontEn []byte
 
 //go:embed logo.png
 var logo []byte
@@ -125,7 +128,7 @@ func NewRouter() *chi.Mux {
 				dc.Fill()
 
 				// フォントを読み込む
-				fontFace, err := opentype.Parse(font)
+				fontFace, err := opentype.Parse(fontJp)
 				if err != nil {
 					http.Error(w, "Failed to parse font", http.StatusInternalServerError)
 					return
@@ -179,6 +182,19 @@ func NewRouter() *chi.Mux {
 
 				// ロゴを挿入
 				dc.DrawImage(resizedLogoImg, 850, 500)
+
+				// フォントを読み込む
+				fontFace, err = opentype.Parse(fontEn)
+				if err != nil {
+					http.Error(w, "Failed to parse font", http.StatusInternalServerError)
+					return
+				}
+
+				face, _ = opentype.NewFace(fontFace, &opentype.FaceOptions{
+					Size: 48,
+					DPI:  72,
+				})
+				dc.SetFontFace(face)
 
 				// 画像をレスポンスとして返す
 				w.Header().Set("Content-Type", "image/png")
