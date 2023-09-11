@@ -22,7 +22,7 @@ import (
 	_ "embed"
 )
 
-//go:embed DINAlternate-Bold.ttf
+//go:embed SourceHanSansHW-Bold.otf
 var font []byte
 
 func NewRouter() *chi.Mux {
