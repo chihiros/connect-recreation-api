@@ -196,6 +196,17 @@ func NewRouter() *chi.Mux {
 				})
 				dc.SetFontFace(face)
 
+				// 投稿者の名前を挿入
+				postName := "@chihiros"
+				dc.SetRGB(0, 0, 0) // 文字色を黒に設定
+
+				x = 160.0
+				y = 520.0
+				for _, line := range strings.Split(postName, "\n") {
+					dc.DrawString(line, x, y)
+					y += 48
+				}
+
 				// 画像をレスポンスとして返す
 				w.Header().Set("Content-Type", "image/png")
 				dc.EncodePNG(w)
