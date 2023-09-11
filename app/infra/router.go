@@ -103,7 +103,10 @@ func NewRouter() *chi.Mux {
 				grad.AddColorStop(0.6943, color.RGBA{255, 249, 195, 255})
 				grad.AddColorStop(1, color.RGBA{206, 249, 255, 255})
 				dc.SetFillStyle(grad)
-				dc.Clear()
+
+				// 画像全体の矩形を描画してグラデーションを適用
+				dc.DrawRectangle(0, 0, 1200, 630)
+				dc.Fill()
 
 				// 図形のサイズと位置を計算
 				rectWidth := 1200 - 2*43
