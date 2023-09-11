@@ -7,6 +7,7 @@ import (
 	"app/middle/applog"
 	"app/middle/authrization"
 	"encoding/json"
+	"image"
 	"image/color"
 	"net/http"
 	"strings"
@@ -17,6 +18,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+	"github.com/nfnt/resize"
 	"golang.org/x/image/font/opentype"
 
 	_ "embed"
@@ -24,6 +26,9 @@ import (
 
 //go:embed SourceHanSansHW-Bold.otf
 var font []byte
+
+//go:embed logo.png
+var logo []byte
 
 func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
@@ -161,6 +166,19 @@ func NewRouter() *chi.Mux {
 					dc.DrawString(line, x, y)
 					y += 64
 				}
+
+				// サイトのロゴを挿入
+				logoImg, _, err := image.Decode(strings.NewReader(string(logo)))
+				if err != nil {
+					http.Error(w, "Failed to decode logo image", http.StatusInternalServerError)
+					return
+				}
+
+				// ロゴのサイズを変更
+				resizedLogoImg := resize.Resize(0, 50, logoImg, resize.Lanczos3)
+
+				// ロゴを挿入
+				dc.DrawImage(resizedLogoImg, 850, 500)
 
 				// 画像をレスポンスとして返す
 				w.Header().Set("Content-Type", "image/png")
