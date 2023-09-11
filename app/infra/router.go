@@ -7,10 +7,12 @@ import (
 	"app/middle/applog"
 	"app/middle/authrization"
 	"encoding/json"
+	"image/color"
 	"net/http"
 	"time"
 
 	"github.com/chihiros/logger"
+	"github.com/fogleman/gg"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -79,6 +81,43 @@ func NewRouter() *chi.Mux {
 		// お問い合わせ用のAPI
 		r.Route("/contact", func(r chi.Router) {
 			r.Post("/", ccon.PostContact)
+		})
+
+		// OG画像用のAPI
+		r.Route("/og", func(r chi.Router) {
+			r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+				// // 1200x630の画像を生成
+				dc := gg.NewContext(1200, 630)
+
+				// 左上から右下に向かってグラデーション
+				grad := gg.NewLinearGradient(0, 0, 1200, 630)
+				grad.AddColorStop(0, color.RGBA{255, 197, 193, 255})
+				grad.AddColorStop(0.25, color.RGBA{244, 222, 244, 255})
+				grad.AddColorStop(0.6943, color.RGBA{255, 249, 195, 255})
+				grad.AddColorStop(1, color.RGBA{206, 249, 255, 255})
+				dc.SetFillStyle(grad)
+				dc.MoveTo(0, 0)
+				dc.LineTo(1200, 0)
+				dc.LineTo(1200, 630)
+				dc.LineTo(0, 630)
+				dc.ClosePath()
+				dc.Fill()
+
+				// 図形のサイズと位置を計算
+				rectWidth := 1200 - 2*43
+				rectHeight := 630 - 2*41
+				rectX := 43
+				rectY := 41
+
+				// 背景色を設定
+				dc.SetColor(color.RGBA{255, 255, 255, 255})
+				dc.DrawRoundedRectangle(float64(rectX), float64(rectY), float64(rectWidth), float64(rectHeight), 16)
+				dc.Fill()
+
+				// 画像をレスポンスとして返す
+				w.Header().Set("Content-Type", "image/png")
+				dc.EncodePNG(w)
+			})
 		})
 
 		// 疎通確認用のAPI
