@@ -24,13 +24,13 @@ import (
 	_ "embed"
 )
 
-//go:embed SourceHanSansHW-Bold.otf
-var fontJp []byte
+//go:embed embed/NotoSansJP-Medium.otf
+var fontTitle []byte
 
-//go:embed "Microsoft Sans Serif.ttf"
-var fontEn []byte
+//go:embed embed/NotoSansJP-Regular.otf
+var fontUserName []byte
 
-//go:embed logo.png
+//go:embed embed/logo.png
 var logo []byte
 
 func NewRouter() *chi.Mux {
@@ -101,6 +101,9 @@ func NewRouter() *chi.Mux {
 		// OG画像用のAPI
 		r.Route("/og", func(r chi.Router) {
 			r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+				title := r.URL.Query().Get("title")
+				userName := r.URL.Query().Get("user")
+
 				// 1200x630の画像を生成
 				dc := gg.NewContext(1200, 630)
 
@@ -128,7 +131,7 @@ func NewRouter() *chi.Mux {
 				dc.Fill()
 
 				// フォントを読み込む
-				fontFace, err := opentype.Parse(fontJp)
+				fontFace, err := opentype.Parse(fontTitle)
 				if err != nil {
 					http.Error(w, "Failed to parse font", http.StatusInternalServerError)
 					return
@@ -145,7 +148,6 @@ func NewRouter() *chi.Mux {
 				dc.SetFontFace(face)
 
 				// 文字を挿入
-				title := "ジョン・ブラウンのおじさんのやりかた"
 				dc.SetRGB(0, 0, 0) // 文字色を黒に設定
 
 				maxWidth := 910.0
@@ -184,7 +186,7 @@ func NewRouter() *chi.Mux {
 				dc.DrawImage(resizedLogoImg, 850, 500)
 
 				// フォントを読み込む
-				fontFace, err = opentype.Parse(fontEn)
+				fontFace, err = opentype.Parse(fontUserName)
 				if err != nil {
 					http.Error(w, "Failed to parse font", http.StatusInternalServerError)
 					return
@@ -197,12 +199,11 @@ func NewRouter() *chi.Mux {
 				dc.SetFontFace(face)
 
 				// 投稿者の名前を挿入
-				postName := "@chihiros"
 				dc.SetRGB(0, 0, 0) // 文字色を黒に設定
 
 				x = 160.0
 				y = 520.0
-				for _, line := range strings.Split(postName, "\n") {
+				for _, line := range strings.Split(userName, "\n") {
 					dc.DrawString(line, x, y)
 					y += 48
 				}
