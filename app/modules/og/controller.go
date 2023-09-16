@@ -174,8 +174,17 @@ type Position struct {
 }
 
 func (og *OGImage) drawString(options DrawStringOptions) {
-	og.dc.SetRGBA(0, 0, 0, 255) // 文字色を黒に設定
+	if options.Color == (color.RGBA{}) {
+		options.Color = color.RGBA{0, 0, 0, 255}
+	}
 
+	if options.MaxWidth == 0 {
+		options.MaxWidth = 910.0
+	}
+
+	if options.BetweenLine == 0 {
+		options.BetweenLine = 82
+	}
 	formatTitle := ""
 	tmp := 0.0
 	for _, word := range options.Text {
