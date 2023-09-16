@@ -22,10 +22,20 @@ var fontUserName []byte
 //go:embed embed/logo.png
 var logo []byte
 
+type OGImage struct {
+	dc *gg.Context
+}
+
+func NewOGImage() *OGImage {
+	return &OGImage{}
+}
+
 func GenerateOGImage() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		title := r.URL.Query().Get("title")
 		userName := r.URL.Query().Get("user")
+
+		og := NewOGImage()
 
 		dc := getBackgroundImage()
 
