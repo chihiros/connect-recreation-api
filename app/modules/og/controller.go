@@ -82,14 +82,15 @@ func GenerateOGImage() func(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// 投稿者の名前を挿入
-		dc.SetRGB(0, 0, 0) // 文字色を黒に設定
-
-		x = 160.0
-		y = 520.0
-		for _, line := range strings.Split(userName, "\n") {
-			dc.DrawString(line, x, y)
-			y += 48
-		}
+		og.drawString(DrawStringOptions{
+			Color:       color.RGBA{0, 0, 0, 255},
+			Text:        userName,
+			BetweenLine: 48,
+			Position: Position{
+				X: 160.0,
+				Y: 520.0,
+			},
+		})
 
 		// 画像をレスポンスとして返す
 		w.Header().Set("Content-Type", "image/png")
