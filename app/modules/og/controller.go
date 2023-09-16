@@ -47,30 +47,17 @@ func GenerateOGImage() func(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// 文字を挿入
-		dc.SetRGB(0, 0, 0) // 文字色を黒に設定
-
-		maxWidth := 910.0
-		formatTitle := ""
-
-		tmp := 0.0
-		for _, word := range title {
-			fw, _ := dc.MeasureString(string(word))
-			if tmp+fw > maxWidth {
-				formatTitle += "\n"
-				tmp = 0.0
-			}
-
-			formatTitle += string(word)
-			tmp += fw
-		}
-
-		x := 145.0
-		y := 175.0
-		for _, line := range strings.Split(formatTitle, "\n") {
-			dc.DrawString(line, x, y)
-			y += 64
-		}
+		//　タイトルを挿入
+		og.drawString(DrawStringOptions{
+			Color:       color.RGBA{0, 0, 0, 255},
+			MaxWidth:    910.0,
+			BetweenLine: 82,
+			Text:        title,
+			Position: Position{
+				X: 145.0,
+				Y: 175.0,
+			},
+		})
 
 		// サイトのロゴを挿入
 		logoImg, _, err := image.Decode(strings.NewReader(string(logo)))
