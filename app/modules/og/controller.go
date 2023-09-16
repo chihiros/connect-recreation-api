@@ -64,7 +64,10 @@ func RecreationOGImage() func(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 
-		og := generateOGImage(data.Data.Title, data.Data.Edges.Prodile.Nickname)
+		og, err := generateOGImage(data.Data.Title, data.Data.Edges.Prodile.Nickname)
+		if err != nil {
+			http.Error(w, "Failed to parse font", http.StatusInternalServerError)
+		}
 
 		// 画像をレスポンスとして返す
 		w.Header().Set("Content-Type", "image/png")
@@ -72,7 +75,7 @@ func RecreationOGImage() func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func generateOGImage(title, userName string) *OGImage {
+func generateOGImage(title, userName string) (*OGImage, error) {
 	og := NewOGImage()
 	og.dc = getBackgroundImage()
 
@@ -81,8 +84,7 @@ func generateOGImage(title, userName string) *OGImage {
 		Size: 64,
 		DPI:  72,
 	}); err != nil {
-		// http.Error(w, "Failed to parse font", http.StatusInternalServerError)
-		// return
+		return nil, err
 	}
 
 	//　タイトルを挿入
@@ -100,8 +102,7 @@ func generateOGImage(title, userName string) *OGImage {
 	// サイトのロゴを挿入
 	logoImg, _, err := image.Decode(strings.NewReader(string(logo)))
 	if err != nil {
-		// http.Error(w, "Failed to decode logo image", http.StatusInternalServerError)
-		// return
+		return nil, err
 	}
 
 	// ロゴのサイズを変更
@@ -115,8 +116,7 @@ func generateOGImage(title, userName string) *OGImage {
 		Size: 48,
 		DPI:  72,
 	}); err != nil {
-		// http.Error(w, "Failed to parse font", http.StatusInternalServerError)
-		// return
+		return nil, err
 	}
 
 	// 投稿者の名前を挿入
@@ -130,7 +130,7 @@ func generateOGImage(title, userName string) *OGImage {
 		},
 	})
 
-	return og
+	return og, nil
 }
 
 func getBackgroundImage() *gg.Context {
