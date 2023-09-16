@@ -27,31 +27,7 @@ func GenerateOGImage() func(w http.ResponseWriter, r *http.Request) {
 		title := r.URL.Query().Get("title")
 		userName := r.URL.Query().Get("user")
 
-		// 1200x630の画像を生成
-		dc := gg.NewContext(1200, 630)
-
-		// 左上から右下に向かってグラデーション
-		grad := gg.NewLinearGradient(0, 0, 1200, 630)
-		grad.AddColorStop(0, color.RGBA{255, 197, 193, 255})
-		grad.AddColorStop(0.25, color.RGBA{244, 222, 244, 255})
-		grad.AddColorStop(0.6943, color.RGBA{255, 249, 195, 255})
-		grad.AddColorStop(1, color.RGBA{206, 249, 255, 255})
-		dc.SetFillStyle(grad)
-
-		// 画像全体の矩形を描画してグラデーションを適用
-		dc.DrawRectangle(0, 0, 1200, 630)
-		dc.Fill()
-
-		// 図形のサイズと位置を計算
-		rectWidth := 1200 - 2*43
-		rectHeight := 630 - 2*41
-		rectX := 43
-		rectY := 41
-
-		// 背景色を設定
-		dc.SetColor(color.RGBA{255, 255, 255, 255})
-		dc.DrawRoundedRectangle(float64(rectX), float64(rectY), float64(rectWidth), float64(rectHeight), 16)
-		dc.Fill()
+		dc := getBackgroundImage()
 
 		// フォントを読み込む
 		fontFace, err := opentype.Parse(fontTitle)
@@ -136,4 +112,34 @@ func GenerateOGImage() func(w http.ResponseWriter, r *http.Request) {
 		dc.EncodePNG(w)
 	}
 
+}
+
+func getBackgroundImage() *gg.Context {
+	// 1200x630の画像を生成
+	dc := gg.NewContext(1200, 630)
+
+	// 左上から右下に向かってグラデーション
+	grad := gg.NewLinearGradient(0, 0, 1200, 630)
+	grad.AddColorStop(0, color.RGBA{255, 197, 193, 255})
+	grad.AddColorStop(0.25, color.RGBA{244, 222, 244, 255})
+	grad.AddColorStop(0.6943, color.RGBA{255, 249, 195, 255})
+	grad.AddColorStop(1, color.RGBA{206, 249, 255, 255})
+	dc.SetFillStyle(grad)
+
+	// 画像全体の矩形を描画してグラデーションを適用
+	dc.DrawRectangle(0, 0, 1200, 630)
+	dc.Fill()
+
+	// 図形のサイズと位置を計算
+	rectWidth := 1200 - 2*43
+	rectHeight := 630 - 2*41
+	rectX := 43
+	rectY := 41
+
+	// 背景色を設定
+	dc.SetColor(color.RGBA{255, 255, 255, 255})
+	dc.DrawRoundedRectangle(float64(rectX), float64(rectY), float64(rectWidth), float64(rectHeight), 16)
+	dc.Fill()
+
+	return dc
 }
