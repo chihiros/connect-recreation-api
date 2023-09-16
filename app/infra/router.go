@@ -84,7 +84,7 @@ func NewRouter() *chi.Mux {
 
 		// OG画像用のAPI
 		r.Route("/og", func(r chi.Router) {
-			r.Get("/", og.GenerateOGImage())
+			r.Get("/recreation", og.RecreationOGImage())
 		})
 
 		// 疎通確認用のAPI

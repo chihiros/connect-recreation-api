@@ -1,8 +1,11 @@
 package og
 
 import (
+	"encoding/json"
 	"image"
 	"image/color"
+	"io"
+	"log"
 	"net/http"
 	"strings"
 
@@ -30,73 +33,103 @@ func NewOGImage() *OGImage {
 	return &OGImage{}
 }
 
-func GenerateOGImage() func(w http.ResponseWriter, r *http.Request) {
+func RecreationOGImage() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		title := r.URL.Query().Get("title")
-		userName := r.URL.Query().Get("user")
-
-		og := NewOGImage()
-		og.dc = getBackgroundImage()
-
-		// フォントを読み込む
-		if err := og.setFont(fontTitle, opentype.FaceOptions{
-			Size: 64,
-			DPI:  72,
-		}); err != nil {
-			http.Error(w, "Failed to parse font", http.StatusInternalServerError)
-			return
+		type Response struct {
+			Data struct {
+				Title string `json:"title"`
+				Edges struct {
+					Prodile struct {
+						Nickname string `json:"nickname"`
+					} `json:"profile"`
+				} `json:"edges"`
+			} `json:"data"`
 		}
 
-		//　タイトルを挿入
-		og.drawString(DrawStringOptions{
-			Color:       color.RGBA{0, 0, 0, 255},
-			MaxWidth:    910.0,
-			BetweenLine: 82,
-			Text:        title,
-			Position: Position{
-				X: 145.0,
-				Y: 175.0,
-			},
-		})
-
-		// サイトのロゴを挿入
-		logoImg, _, err := image.Decode(strings.NewReader(string(logo)))
+		resp, err := http.Get("https://api-stg.topicpost.net/v1/recreation?id=21efc871-386a-45ea-9f18-c3fbe07748f4")
 		if err != nil {
-			http.Error(w, "Failed to decode logo image", http.StatusInternalServerError)
-			return
+			log.Fatal(err)
+		}
+		defer resp.Body.Close()
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatal(err)
 		}
 
-		// ロゴのサイズを変更
-		resizedLogoImg := resize.Resize(0, 50, logoImg, resize.Lanczos3)
+		var data Response
+		// data := make([]Item, 0) のように要素数0の slice としても良い
 
-		// ロゴを挿入
-		og.dc.DrawImage(resizedLogoImg, 850, 500)
-
-		// フォントを読み込む
-		if err := og.setFont(fontUserName, opentype.FaceOptions{
-			Size: 48,
-			DPI:  72,
-		}); err != nil {
-			http.Error(w, "Failed to parse font", http.StatusInternalServerError)
-			return
+		if err := json.Unmarshal(body, &data); err != nil {
+			log.Fatal(err)
 		}
 
-		// 投稿者の名前を挿入
-		og.drawString(DrawStringOptions{
-			Color:       color.RGBA{0, 0, 0, 255},
-			Text:        userName,
-			BetweenLine: 48,
-			Position: Position{
-				X: 160.0,
-				Y: 520.0,
-			},
-		})
+		og := generateOGImage(data.Data.Title, data.Data.Edges.Prodile.Nickname)
 
 		// 画像をレスポンスとして返す
 		w.Header().Set("Content-Type", "image/png")
 		og.dc.EncodePNG(w)
 	}
+}
 
+func generateOGImage(title, userName string) *OGImage {
+	og := NewOGImage()
+	og.dc = getBackgroundImage()
+
+	// フォントを読み込む
+	if err := og.setFont(fontTitle, opentype.FaceOptions{
+		Size: 64,
+		DPI:  72,
+	}); err != nil {
+		// http.Error(w, "Failed to parse font", http.StatusInternalServerError)
+		// return
+	}
+
+	//　タイトルを挿入
+	og.drawString(DrawStringOptions{
+		Color:       color.RGBA{0, 0, 0, 255},
+		MaxWidth:    910.0,
+		BetweenLine: 82,
+		Text:        title,
+		Position: Position{
+			X: 145.0,
+			Y: 175.0,
+		},
+	})
+
+	// サイトのロゴを挿入
+	logoImg, _, err := image.Decode(strings.NewReader(string(logo)))
+	if err != nil {
+		// http.Error(w, "Failed to decode logo image", http.StatusInternalServerError)
+		// return
+	}
+
+	// ロゴのサイズを変更
+	resizedLogoImg := resize.Resize(0, 50, logoImg, resize.Lanczos3)
+
+	// ロゴを挿入
+	og.dc.DrawImage(resizedLogoImg, 850, 500)
+
+	// フォントを読み込む
+	if err := og.setFont(fontUserName, opentype.FaceOptions{
+		Size: 48,
+		DPI:  72,
+	}); err != nil {
+		// http.Error(w, "Failed to parse font", http.StatusInternalServerError)
+		// return
+	}
+
+	// 投稿者の名前を挿入
+	og.drawString(DrawStringOptions{
+		Color:       color.RGBA{0, 0, 0, 255},
+		Text:        userName,
+		BetweenLine: 48,
+		Position: Position{
+			X: 160.0,
+			Y: 520.0,
+		},
+	})
+
+	return og
 }
 
 func getBackgroundImage() *gg.Context {
