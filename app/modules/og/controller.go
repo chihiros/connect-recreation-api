@@ -57,7 +57,6 @@ func RecreationOGImage() func(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var data Response
-		// data := make([]Item, 0) のように要素数0の slice としても良い
 
 		if err := json.Unmarshal(body, &data); err != nil {
 			log.Fatal(err)
