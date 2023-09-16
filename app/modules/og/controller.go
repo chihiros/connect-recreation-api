@@ -159,3 +159,38 @@ func (og *OGImage) setFont(font []byte, options opentype.FaceOptions) error {
 
 	return nil
 }
+
+type DrawStringOptions struct {
+	Color       color.RGBA // 文字色
+	MaxWidth    float64    // 最大幅, 折り返すのPx数
+	BetweenLine float64    // 行間
+	Text        string     // 描画する文字列
+	Position    Position   // 描画する位置
+}
+
+type Position struct {
+	X float64 // X座標
+	Y float64 // Y座標
+}
+
+func (og *OGImage) drawString(options DrawStringOptions) {
+	og.dc.SetRGBA(0, 0, 0, 255) // 文字色を黒に設定
+
+	formatTitle := ""
+	tmp := 0.0
+	for _, word := range options.Text {
+		fw, _ := og.dc.MeasureString(string(word))
+		if tmp+fw > options.MaxWidth {
+			formatTitle += "\n"
+			tmp = 0.0
+		}
+
+		formatTitle += string(word)
+		tmp += fw
+	}
+
+	for _, line := range strings.Split(formatTitle, "\n") {
+		og.dc.DrawString(line, options.Position.X, options.Position.Y)
+		options.Position.Y += options.BetweenLine
+	}
+}
