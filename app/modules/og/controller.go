@@ -70,7 +70,7 @@ func GenerateOGImage() func(w http.ResponseWriter, r *http.Request) {
 		resizedLogoImg := resize.Resize(0, 50, logoImg, resize.Lanczos3)
 
 		// ロゴを挿入
-		dc.DrawImage(resizedLogoImg, 850, 500)
+		og.dc.DrawImage(resizedLogoImg, 850, 500)
 
 		// フォントを読み込む
 		if err := og.setFont(fontUserName, opentype.FaceOptions{
@@ -94,7 +94,7 @@ func GenerateOGImage() func(w http.ResponseWriter, r *http.Request) {
 
 		// 画像をレスポンスとして返す
 		w.Header().Set("Content-Type", "image/png")
-		dc.EncodePNG(w)
+		og.dc.EncodePNG(w)
 	}
 
 }
