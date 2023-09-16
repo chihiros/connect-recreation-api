@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"app/elements/contact/usecase"
 	"app/middle/webhook"
+	"app/modules/contact/usecase"
 	"context"
 	"os"
 )

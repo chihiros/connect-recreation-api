@@ -1,11 +1,11 @@
 package repository
 
 import (
-	"app/elements/recreations/usecase"
 	"app/ent"
 	"app/ent/profile"
 	"app/ent/recreation"
 	"app/middle/applog"
+	"app/modules/recreations/usecase"
 	"context"
 	"time"
 

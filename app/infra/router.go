@@ -1,12 +1,12 @@
 package infra
 
 import (
-	contact_controller "app/elements/contact/interfaces/controller"
-	"app/elements/og"
-	profile_controller "app/elements/profiles/interfaces/controller"
-	rec_controller "app/elements/recreations/interfaces/controller"
 	"app/middle/applog"
 	"app/middle/authrization"
+	contact_controller "app/modules/contact/interfaces/controller"
+	"app/modules/og"
+	profile_controller "app/modules/profiles/interfaces/controller"
+	rec_controller "app/modules/recreations/interfaces/controller"
 	"encoding/json"
 	"net/http"
 	"time"

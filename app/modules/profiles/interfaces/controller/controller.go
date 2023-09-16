@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"app/elements/profiles/interfaces/repository"
-	"app/elements/profiles/usecase"
 	"app/ent"
 	"app/middle/applog"
 	"app/middle/authrization"
+	"app/modules/profiles/interfaces/repository"
+	"app/modules/profiles/usecase"
 	"context"
 	"encoding/json"
 	"errors"

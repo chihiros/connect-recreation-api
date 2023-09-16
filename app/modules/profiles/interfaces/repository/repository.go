@@ -1,10 +1,10 @@
 package repository
 
 import (
-	"app/elements/profiles/usecase"
 	"app/ent"
 	"app/ent/profile"
 	"app/middle/applog"
+	"app/modules/profiles/usecase"
 	"context"
 	"fmt"
 	"time"

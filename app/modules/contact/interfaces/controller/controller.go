@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"app/elements/contact/interfaces/repository"
-	"app/elements/contact/usecase"
+	"app/modules/contact/interfaces/repository"
+	"app/modules/contact/usecase"
 	"context"
 	"encoding/json"
 	"net/http"
