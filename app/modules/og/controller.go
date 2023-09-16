@@ -35,6 +35,8 @@ func NewOGImage() *OGImage {
 
 func RecreationOGImage() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.URL.Query().Get("id")
+
 		type Response struct {
 			Data struct {
 				Title string `json:"title"`
@@ -46,7 +48,7 @@ func RecreationOGImage() func(w http.ResponseWriter, r *http.Request) {
 			} `json:"data"`
 		}
 
-		resp, err := http.Get("https://api-stg.topicpost.net/v1/recreation?id=21efc871-386a-45ea-9f18-c3fbe07748f4")
+		resp, err := http.Get("https://api-stg.topicpost.net/v1/recreation?id=" + id)
 		if err != nil {
 			log.Fatal(err)
 		}
