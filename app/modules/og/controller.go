@@ -86,17 +86,13 @@ func GenerateOGImage() func(w http.ResponseWriter, r *http.Request) {
 		dc.DrawImage(resizedLogoImg, 850, 500)
 
 		// フォントを読み込む
-		fontFace, err = opentype.Parse(fontUserName)
-		if err != nil {
+		if err := og.setFont(fontUserName, opentype.FaceOptions{
+			Size: 48,
+			DPI:  72,
+		}); err != nil {
 			http.Error(w, "Failed to parse font", http.StatusInternalServerError)
 			return
 		}
-
-		face, _ = opentype.NewFace(fontFace, &opentype.FaceOptions{
-			Size: 48,
-			DPI:  72,
-		})
-		dc.SetFontFace(face)
 
 		// 投稿者の名前を挿入
 		dc.SetRGB(0, 0, 0) // 文字色を黒に設定
