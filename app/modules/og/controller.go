@@ -39,21 +39,13 @@ func GenerateOGImage() func(w http.ResponseWriter, r *http.Request) {
 		og.dc = getBackgroundImage()
 
 		// フォントを読み込む
-		fontFace, err := opentype.Parse(fontTitle)
-		if err != nil {
+		if err := og.setFont(fontTitle, opentype.FaceOptions{
+			Size: 64,
+			DPI:  72,
+		}); err != nil {
 			http.Error(w, "Failed to parse font", http.StatusInternalServerError)
 			return
 		}
-
-		face, err := opentype.NewFace(fontFace, &opentype.FaceOptions{
-			Size: 64,
-			DPI:  72,
-		})
-		if err != nil {
-			http.Error(w, "Failed to create font face", http.StatusInternalServerError)
-			return
-		}
-		dc.SetFontFace(face)
 
 		// 文字を挿入
 		dc.SetRGB(0, 0, 0) // 文字色を黒に設定
@@ -151,4 +143,23 @@ func getBackgroundImage() *gg.Context {
 	dc.Fill()
 
 	return dc
+}
+
+func (og *OGImage) setFont(font []byte, options opentype.FaceOptions) error {
+	// フォントを読み込む
+	f, err := opentype.Parse(font)
+	if err != nil {
+		return err
+	}
+
+	face, err := opentype.NewFace(f, &opentype.FaceOptions{
+		Size: options.Size,
+		DPI:  options.DPI,
+	})
+	if err != nil {
+		return err
+	}
+	og.dc.SetFontFace(face)
+
+	return nil
 }
