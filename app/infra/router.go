@@ -1,11 +1,12 @@
 package infra
 
 import (
-	contact_controller "app/elements/contact/interfaces/controller"
-	profile_controller "app/elements/profiles/interfaces/controller"
-	rec_controller "app/elements/recreations/interfaces/controller"
 	"app/middle/applog"
 	"app/middle/authrization"
+	contact_controller "app/modules/contact/interfaces/controller"
+	"app/modules/og"
+	profile_controller "app/modules/profiles/interfaces/controller"
+	rec_controller "app/modules/recreations/interfaces/controller"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -79,6 +80,11 @@ func NewRouter() *chi.Mux {
 		// お問い合わせ用のAPI
 		r.Route("/contact", func(r chi.Router) {
 			r.Post("/", ccon.PostContact)
+		})
+
+		// OG画像用のAPI
+		r.Route("/og", func(r chi.Router) {
+			r.Get("/recreation", og.RecreationOGImage())
 		})
 
 		// 疎通確認用のAPI
