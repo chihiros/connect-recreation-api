@@ -185,6 +185,8 @@ func (og *OGImage) drawString(options DrawStringOptions) {
 	if options.BetweenLine == 0 {
 		options.BetweenLine = 82
 	}
+
+	og.dc.SetColor(options.Color)
 	formatTitle := ""
 	tmp := 0.0
 	for _, word := range options.Text {
