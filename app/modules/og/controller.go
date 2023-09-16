@@ -36,8 +36,7 @@ func GenerateOGImage() func(w http.ResponseWriter, r *http.Request) {
 		userName := r.URL.Query().Get("user")
 
 		og := NewOGImage()
-
-		dc := getBackgroundImage()
+		og.dc = getBackgroundImage()
 
 		// フォントを読み込む
 		fontFace, err := opentype.Parse(fontTitle)
