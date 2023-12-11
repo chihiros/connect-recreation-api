@@ -16,6 +16,53 @@ servers:
   - url: "https://api.topicpost.net/v1"
     description: 本番環境
 paths:
+  /recreation:
+    get:
+      summary: レクリエーションを取得するAPI
+      tags:
+        - recreation
+      responses:
+        "200":
+          description: |-
+            # OK
+
+            ## `id` を指定した場合
+            指定したレクリエーションIDが
+
+            **存在する場合**
+              指定したレクリエーションの長さ1の配列データが返ります
+
+            **存在しない場合**
+              空の配列が返ります
+
+            ## `limit` `offset` を指定した場合
+            指定した数のlimit分の配列データが返ります
+            デフォルト：limit=10, offset=0
+      operationId: get-recreation
+      description: |-
+        # レクリエーションを取得するAPI
+        `id`：レクリエーションIDを指定することで特定のレクリエーションのみ取得できます
+        `limit,offset`：複数個まとめて取得することもできます
+      parameters:
+        - schema:
+            type: string
+            example: 21efc871-386a-45ea-9f18-c3fbe07748f4
+            format: uuid
+          in: query
+          name: id
+          description: "`id:レクリエーションID` を指定する"
+        - schema:
+            type: string
+            example: "10"
+          in: query
+          name: limit
+          description: 一度に取得する個数を指定できる
+        - schema:
+            type: string
+            example: "0"
+          in: query
+          name: offset
+          description: 取得する位置をしてい出来る
   /contact:
     post:
       summary: "`お問い合わせ`をするためのAPI"
@@ -148,3 +195,4 @@ tags:
   - name: contact
   - name: now
   - name: og
+  - name: recreation
