@@ -30,6 +30,12 @@ func (c *ContactController) PostContact(w http.ResponseWriter, r *http.Request) 
 	// bodyの中身をbindする
 	req := usecase.Request{}
 	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	result, err := c.Usecase.PostContact(context.Background(), req)
 
 	if err != nil {
