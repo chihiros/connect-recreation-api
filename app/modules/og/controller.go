@@ -48,6 +48,15 @@ func RecreationOGImage() func(w http.ResponseWriter, r *http.Request) {
 			} `json:"data"`
 		}
 
+		// .pngが含まれていない場合は404を返す
+		if !strings.Contains(id, ".png") {
+			http.Error(w, "Not Found", http.StatusNotFound)
+			return
+		}
+
+		// URLから末尾の.pngを削除
+		id = strings.Replace(id, ".png", "", 1)
+
 		resp, err := http.Get("https://api-stg.topicpost.net/v1/recreation?id=" + id)
 		if err != nil {
 			log.Fatal(err)
