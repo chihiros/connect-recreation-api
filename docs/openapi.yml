@@ -16,6 +16,41 @@ servers:
   - url: "https://api.topicpost.net/v1"
     description: 本番環境
 paths:
+  /contact:
+    post:
+      summary: "`お問い合わせ`をするためのAPI"
+      operationId: post-contact
+      responses:
+        "201":
+          description: |-
+            # Created
+            お問い合わせの送信に成功した場合は201を返します
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseContact"
+                x-examples:
+                  Example 1:
+                    name: テスト太郎
+                    email: contact@example.com
+                    content: これってなんですか？
+              examples:
+                Example 1:
+                  value:
+                    name: テスト太郎
+                    email: contact@example.com
+                    content: これってなんですか？
+      tags:
+        - contact
+      description: |-
+        # お問い合わせ用のAPI
+        お問い合わせのフォームから質問を送るときに使うAPIです
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Contact"
+        description: ""
   /og/recreation:
     get:
       summary: OGPを返すAPI
@@ -62,7 +97,54 @@ paths:
         # 疎通確認用のAPIです
         APIが正常に起動しているかの確認をするときに使います
 components:
-  schemas: {}
+  schemas:
+    Contact:
+      type: object
+      x-examples:
+        Example 1:
+          name: テスト太郎
+          email: contact@example.com
+          content: これってなんですか？
+      examples:
+        - name: テスト太郎
+          email: contact@example.com
+          content: これってなんですか？
+      properties:
+        name:
+          type: string
+          example: テスト太郎
+        email:
+          type: string
+          example: contact@example.com
+        content:
+          type: string
+          example: これってなんですか？
+      description: ""
+    ResponseContact:
+      type: object
+      x-examples:
+        Example 1:
+          data: success
+          errors:
+            code: ""
+            message: ""
+      properties:
+        data:
+          type: string
+          example: success
+        errors:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+      examples:
+        - data: success
+          errors:
+            code: ""
+            message: ""
 tags:
+  - name: contact
   - name: now
   - name: og
