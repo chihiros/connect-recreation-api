@@ -9,8 +9,36 @@ info:
     email: szrkw2ui2a@gmail.com
   description: TopicPostで利用しているAPIのドキュメントです
 servers:
-  - url: "http://localhost:3000"
-paths: {}
+  - url: "http://localhost:8686/v1"
+    description: ローカル
+  - url: "https://api-stg.topicpost.net/v1"
+    description: 検証環境
+  - url: "https://api.topicpost.net/v1"
+    description: 本番環境
+paths:
+  /now:
+    get:
+      summary: 疎通確認用のAPI
+      tags:
+        - now
+      responses:
+        "200":
+          description: |-
+            # OK
+            正常にレスポンスが返った場合は現時刻が返ります
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '"2023-12-11T17:34:35.783789172+09:00"'
+              examples:
+                成功時:
+                  value: '"2023-12-11T17:34:35.783789172+09:00"'
+      operationId: get-now
+      description: |-
+        # 疎通確認用のAPIです
+        APIが正常に起動しているかの確認をするときに使います
 components:
   schemas: {}
-  securitySchemes: {}
+tags:
+  - name: now
