@@ -1,0 +1,16 @@
+openapi: 3.1.0
+x-stoplight:
+  id: yk3nadd3vsef7
+info:
+  title: TopicPost
+  version: "1.0"
+  contact:
+    name: chihiros
+    email: szrkw2ui2a@gmail.com
+  description: TopicPostで利用しているAPIのドキュメントです
+servers:
+  - url: "http://localhost:3000"
+paths: {}
+components:
+  schemas: {}
+  securitySchemes: {}
