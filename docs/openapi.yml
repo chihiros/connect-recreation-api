@@ -3,17 +3,17 @@ x-stoplight:
   id: yk3nadd3vsef7
 info:
   title: TopicPost
-  version: "1.0"
+  version: '1.0'
   contact:
     name: chihiros
     email: szrkw2ui2a@gmail.com
   description: TopicPostで利用しているAPIのドキュメントです
 servers:
-  - url: "http://localhost:8686/v1"
+  - url: 'http://localhost:8686/v1'
     description: ローカル
-  - url: "https://api-stg.topicpost.net/v1"
+  - url: 'https://api-stg.topicpost.net/v1'
     description: 検証環境
-  - url: "https://api.topicpost.net/v1"
+  - url: 'https://api.topicpost.net/v1'
     description: 本番環境
 paths:
   /recreation:
@@ -22,22 +22,18 @@ paths:
       tags:
         - recreation
       responses:
-        "200":
+        '200':
           description: |-
             # OK
 
             ## `id` を指定した場合
             指定したレクリエーションIDが
 
-            **存在する場合**
-
+            **存在する場合**  
               指定したレクリエーションの長さ1の配列データが返ります
 
-
-            **存在しない場合**
-
+            **存在しない場合**  
               空の配列が返ります
-
 
             ## `limit` `offset` を指定した場合
             指定した数のlimit分の配列データが返ります
@@ -45,9 +41,8 @@ paths:
       operationId: get-recreation
       description: |-
         # レクリエーションを取得するAPI
-        `id`：レクリエーションIDを指定することで特定のレクリエーションのみ取得できます
-
-        `limit,offset`：複数個まとめて取得することもできます
+        `id`：レクリエーションIDを指定することで特定のレクリエーションのみ取得できます 
+        `limit,offset`：複数個まとめて取得することもできます  
       parameters:
         - schema:
             type: string
@@ -55,32 +50,32 @@ paths:
             format: uuid
           in: query
           name: id
-          description: "`id:レクリエーションID` を指定する"
+          description: '`id:レクリエーションID` を指定する'
         - schema:
             type: string
-            example: "10"
+            example: '10'
           in: query
           name: limit
           description: 一度に取得する個数を指定できる
         - schema:
             type: string
-            example: "0"
+            example: '0'
           in: query
           name: offset
           description: 取得する位置をしてい出来る
   /contact:
     post:
-      summary: "`お問い合わせ`をするためのAPI"
+      summary: '`お問い合わせ`をするためのAPI'
       operationId: post-contact
       responses:
-        "201":
+        '201':
           description: |-
             # Created
             お問い合わせの送信に成功した場合は201を返します
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ResponseContact"
+                $ref: '#/components/schemas/ResponseContact'
                 x-examples:
                   Example 1:
                     name: テスト太郎
@@ -101,15 +96,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Contact"
-        description: ""
+              $ref: '#/components/schemas/Contact'
+        description: ''
   /og/recreation:
     get:
       summary: OGPを返すAPI
       tags:
         - og
       responses:
-        "200":
+        '200':
           description: |-
             # OK
             `Content-Type: image/png` で画像データが返されます
@@ -132,7 +127,7 @@ paths:
       tags:
         - now
       responses:
-        "200":
+        '200':
           description: |-
             # OK
             正常にレスポンスが返った場合は現時刻が返ります
@@ -171,15 +166,15 @@ components:
         content:
           type: string
           example: これってなんですか？
-      description: ""
+      description: ''
     ResponseContact:
       type: object
       x-examples:
         Example 1:
           data: success
           errors:
-            code: ""
-            message: ""
+            code: ''
+            message: ''
       properties:
         data:
           type: string
@@ -194,8 +189,8 @@ components:
       examples:
         - data: success
           errors:
-            code: ""
-            message: ""
+            code: ''
+            message: ''
 tags:
   - name: contact
   - name: now
