@@ -16,6 +16,29 @@ servers:
   - url: "https://api.topicpost.net/v1"
     description: 本番環境
 paths:
+  /og/recreation:
+    get:
+      summary: OGPを返すAPI
+      tags:
+        - og
+      responses:
+        "200":
+          description: |-
+            # OK
+            `Content-Type: image/png` で画像データが返されます
+          headers: {}
+      operationId: get-og
+      description: |-
+        # OGイメージを生成するAPI
+        クエリパラメータに `id:レクリエーションID` を指定することで利用出来ます
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: id
+          description: 指定された `レクリエーションID` のOGPを生成します
+          required: true
+    parameters: []
   /now:
     get:
       summary: 疎通確認用のAPI
@@ -42,3 +65,4 @@ components:
   schemas: {}
 tags:
   - name: now
+  - name: og
