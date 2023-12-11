@@ -34,51 +34,27 @@ func NewRecreationUsecase(conn *ent.Client) *usecase.RecreationUsecase {
 }
 
 func (c *RecreationController) GetRecreations(w http.ResponseWriter, r *http.Request) {
-	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	id := r.URL.Query().Get("id")
+
+	// idをUUIDに変換
+	rec_id, err := uuid.Parse(id)
 	if err != nil {
-		applog.Warn(err.Error())
-		limit = 10
+		rec_id = uuid.Nil
 	}
 
-	if limit <= 0 {
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil || limit < 0 {
 		limit = 10
 	}
 
 	offset, err := strconv.Atoi(r.URL.Query().Get("offset"))
-	if err != nil {
-		applog.Warn(err.Error())
+	if err != nil || offset < 0 {
 		offset = 0
 	}
 
-	if offset < 0 {
-		offset = 0
-	}
+	applog.Infof("%s -> id: %v, limit: %v, offset: %v", applog.CurrentFuncName(), rec_id, limit, offset)
 
-	users, err := c.Usecase.GetRecreations(context.Background(), limit, offset)
-	if err != nil {
-		panic(err)
-	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(users)
-}
-
-func (c *RecreationController) GetRecreationsByID(w http.ResponseWriter, r *http.Request) {
-	var users usecase.Response
-	id := r.URL.Query().Get("id")
-
-	if id == "" {
-		c.GetRecreations(w, r)
-		return
-	}
-
-	// idをUUIDに変換
-	recID, err := uuid.Parse(id)
-	if err != nil {
-		panic(err)
-	}
-
-	users, err = c.Usecase.GetRecreationsByID(context.Background(), recID)
+	users, err := c.Usecase.GetRecreations(context.Background(), rec_id, limit, offset)
 	if err != nil {
 		panic(err)
 	}

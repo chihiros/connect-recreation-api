@@ -27,7 +27,7 @@ type RecreationResponse struct {
 	TotalRecords int               `json:"total_records"`
 }
 
-func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset int) (usecase.Response, error) {
+func (r *RecreationRepository) GetRecreations(ctx context.Context, rec_id uuid.UUID, limit, offset int) (usecase.Response, error) {
 	// count all records first
 	count, err := r.DBConn.Recreation.
 		Query().
@@ -38,13 +38,19 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset
 	}
 
 	// then fetch paged records
-	recreation, err := r.DBConn.Recreation.
+	query := r.DBConn.Recreation.
 		Query().
 		Order(ent.Desc(recreation.FieldCreatedAt)).
 		Where(recreation.PublishEQ(true)). // 公開されているものだけを取得
 		Limit(limit).
-		Offset(offset).
-		All(ctx)
+		Offset(offset)
+
+	if rec_id != uuid.Nil {
+		query = query.Where(recreation.RecreationIDEQ(rec_id))
+	}
+
+	recreation, err := query.All(ctx)
+
 	if err != nil {
 		applog.Panic(err)
 	}
@@ -72,33 +78,6 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context, limit, offset
 	res := usecase.Response{
 		Data: recRes,
 	}
-	return res, err
-}
-
-func (r *RecreationRepository) GetRecreationsByID(ctx context.Context, id uuid.UUID) (usecase.Response, error) {
-	recreation, err := r.DBConn.Recreation.
-		Query().
-		Where(
-			recreation.RecreationIDEQ(id),
-			recreation.PublishEQ(true), // 公開されていることを確認してから取得
-		).
-		Only(ctx)
-
-	if err != nil {
-		applog.Panic(err)
-	}
-
-	profile, err := r.DBConn.Profile.Query().
-		Where(profile.UUIDEQ(recreation.UserID)).
-		First(ctx)
-
-	if err != nil {
-		applog.Panic(err)
-	}
-
-	recreation.Edges.Profile = profile
-
-	res := usecase.Response{Data: recreation}
 	return res, err
 }
 

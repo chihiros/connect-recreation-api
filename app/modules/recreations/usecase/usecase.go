@@ -7,8 +7,7 @@ import (
 )
 
 type RecreationUseCase interface {
-	GetRecreations(context.Context, int, int) (Response, error)
-	GetRecreationsByID(context.Context, uuid.UUID) (Response, error)
+	GetRecreations(context.Context, uuid.UUID, int, int) (Response, error)
 	PostRecreations(context.Context, Request) (Response, error)
 	// DeleteRecreationsByID(context.Context, int) error
 	GetRecreationsDraft(context.Context, uuid.UUID, int, int) (Response, error)
@@ -17,8 +16,7 @@ type RecreationUseCase interface {
 }
 
 type RecreationRepository interface {
-	GetRecreations(context.Context, int, int) (Response, error)
-	GetRecreationsByID(context.Context, uuid.UUID) (Response, error)
+	GetRecreations(context.Context, uuid.UUID, int, int) (Response, error)
 	PostRecreations(context.Context, Request) (Response, error)
 	// DeleteRecreationsByID(context.Context, int) error
 	GetRecreationsDraft(context.Context, uuid.UUID, int, int) (Response, error)
@@ -30,12 +28,8 @@ type RecreationUsecase struct {
 	Repository RecreationRepository
 }
 
-func (u *RecreationUsecase) GetRecreations(ctx context.Context, limit, offset int) (Response, error) {
-	return u.Repository.GetRecreations(ctx, limit, offset)
-}
-
-func (u *RecreationUsecase) GetRecreationsByID(ctx context.Context, id uuid.UUID) (Response, error) {
-	return u.Repository.GetRecreationsByID(ctx, id)
+func (u *RecreationUsecase) GetRecreations(ctx context.Context, rec_id uuid.UUID, limit, offset int) (Response, error) {
+	return u.Repository.GetRecreations(ctx, rec_id, limit, offset)
 }
 
 func (u *RecreationUsecase) PostRecreations(ctx context.Context, req Request) (Response, error) {
