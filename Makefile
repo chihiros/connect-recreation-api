@@ -64,6 +64,10 @@ unsetFlyEnvPrd:
 # cat .env.prd | flyctl secrets import -c ./.github/workflows/fly.production.toml
 # cat .env.stg | flyctl secrets import -c ./.github/workflows/fly.staging.toml
 
+golint:
+	cd app; \
+	golangci-lint run ./...
+
 # OpenAPI Generatorでコード生成が出来るかを確認するためのコマンド
 ogen:
 	docker run --rm \
