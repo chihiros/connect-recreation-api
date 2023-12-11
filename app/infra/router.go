@@ -21,6 +21,7 @@ func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(logger.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(cacheControlMiddleware)
 
 	// Access-Control-Allow-Originを許可する
 	r.Use(cors.Handler(cors.Options{
@@ -117,4 +118,26 @@ func NewRouter() *chi.Mux {
 	})
 
 	return r
+}
+
+func cacheControlMiddleware(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		header := map[string]string{
+			"Cache-Control":             "no-cache, no-store",
+			"Pragma":                    "no-cache",
+			"Expires":                   "-1",
+			"X-Content-Type-Options":    "nosniff",
+			"X-XSS-Protection":          "1; mode=block",
+			"Strict-Transport-Security": "max-age=15552000",
+			"X-Frame-Options":           "SAMEORIGIN",
+		}
+
+		for k, v := range header {
+			w.Header().Set(k, v)
+		}
+
+		next.ServeHTTP(w, r)
+	}
+
+	return http.HandlerFunc(fn)
 }
