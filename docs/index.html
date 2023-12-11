@@ -24,7 +24,8 @@
   <script>
     window.onload = () => {
       window.ui = SwaggerUIBundle({
-        url: 'https://oas.topicpost.net/openapi.yml',
+        // url: location.protocol + '//' + location.host + '/openapi.yml',
+        url: './openapi.yml',
         dom_id: '#swagger-ui',
         presets: [
           SwaggerUIBundle.presets.apis,
