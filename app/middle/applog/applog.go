@@ -106,3 +106,9 @@ func genMessage(args interface{}) string {
 	msg := fmt.Sprintf("%s:%d %s %v", file, line, fn, args)
 	return msg
 }
+
+func CurrentFuncName() string {
+	pc, _, _, _ := runtime.Caller(1)
+	fn := runtime.FuncForPC(pc).Name()
+	return fn
+}
