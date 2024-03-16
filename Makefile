@@ -30,40 +30,6 @@ deploy-stg:
 deploy-prod:
 	flyctl deploy --config $(prd-config) --build-target deploy --remote-only
 
-setFlyEnvStg:
-	ifeq ($(key),)
-	$(error key is not set)
-	endif
-	ifeq ($(value),)
-	$(error value is not set)
-	endif
-	flyctl -c $(stg-config) secrets set $(key)=$(value)
-
-unsetFlyEnvStg:
-	ifeq ($(key),)
-	$(error key is not set)
-	endif
-	flyctl -c $(stg-config) secrets unset $(key)
-
-setFlyEnvPrd:
-	ifeq ($(key),)
-	$(error key is not set)
-	endif
-	ifeq ($(value),)
-	$(error value is not set)
-	endif
-	flyctl -c $(prd-config) secrets set $(key)=$(value)
-
-unsetFlyEnvPrd:
-	ifeq ($(key),)
-	$(error key is not set)
-	endif
-	flyctl -c $(prd-config) secrets unset $(key)
-
-# memo
-# cat .env.prd | flyctl secrets import -c ./.github/workflows/fly.production.toml
-# cat .env.stg | flyctl secrets import -c ./.github/workflows/fly.staging.toml
-
 golint:
 	cd app; \
 	golangci-lint run ./...
