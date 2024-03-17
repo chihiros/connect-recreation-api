@@ -33,7 +33,7 @@ services:
       POSTGRES_PASSWORD: postgres
       TZ: Asia/Tokyo
     volumes:
-      - ./docker/postgres/seeds:/docker-entrypoint-initdb.d
+      - ./schema/init:/docker-entrypoint-initdb.d
     healthcheck:
       test:
         [
