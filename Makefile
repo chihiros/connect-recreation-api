@@ -1,8 +1,25 @@
-build-up:
-	DOCKER_BUILDKIT=1 docker compose up --build $(filter-out $@,$(MAKECMDGOALS))
-
 %:
 	@:
+
+up: docker-up-db goose-migration-up goose-seed-up docker-up-api
+
+docker-up:
+	docker compose up -d
+
+docker-up-db:
+	docker compose up -d db
+	@echo "Waiting for DB to be ready..."
+	@until docker compose exec db pg_isready -U postgres > /dev/null 2>&1; do \
+		sleep 1; \
+		echo -n "."; \
+	done
+	@echo "DB is ready."
+
+docker-up-api:
+	docker compose up api
+
+build-up:
+	DOCKER_BUILDKIT=1 docker compose up --build $(filter-out $@,$(MAKECMDGOALS))
 
 down:
 	docker compose down
