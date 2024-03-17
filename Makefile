@@ -42,3 +42,4 @@ ogen:
 		-g typescript-axios \
 		--additional-properties supportsES6=true,withInterfaces=true \
 		-o /local/docs/test-generate
+	rm -rf docs/test-generate
