@@ -43,3 +43,21 @@ ogen:
 		--additional-properties supportsES6=true,withInterfaces=true \
 		-o /local/docs/test-generate
 	rm -rf docs/test-generate
+
+goose-create-migration:
+	goose -dir ./schema/migrations create $(filter-out $@,$(MAKECMDGOALS)) sql
+
+goose-create-seed:
+	goose -dir ./schema/seeds create $(filter-out $@,$(MAKECMDGOALS)) sql
+
+goose-migration-up:
+	goose -dir ./schema/migrations postgres "user=postgres password=postgres host=localhost port=5432 dbname=postgres" up
+
+goose-migration-down:
+	goose -dir ./schema/migrations postgres "user=postgres password=postgres host=localhost port=5432 dbname=postgres" down
+
+goose-seed-up:
+	goose -dir ./schema/seeds postgres "user=postgres password=postgres host=localhost port=5432 dbname=postgres" up
+
+goose-seed-down:
+	goose -dir ./schema/seeds postgres "user=postgres password=postgres host=localhost port=5432 dbname=postgres" down
