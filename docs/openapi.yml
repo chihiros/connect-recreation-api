@@ -9,11 +9,11 @@ info:
     email: szrkw2ui2a@gmail.com
   description: TopicPostで利用しているAPIのドキュメントです
 servers:
-  - url: 'http://localhost:8686/v1'
+  - url: http://localhost:8686/v1
     description: ローカル
-  - url: 'https://api-stg.topicpost.net/v1'
+  - url: https://api-stg.topicpost.net/v1
     description: 検証環境
-  - url: 'https://api.topicpost.net/v1'
+  - url: https://api.topicpost.net/v1
     description: 本番環境
 paths:
   /recreation:
@@ -25,24 +25,20 @@ paths:
         '200':
           description: |-
             # OK
-
             ## `id` を指定した場合
             指定したレクリエーションIDが
-
-            **存在する場合**  
+            **存在する場合**
               指定したレクリエーションの長さ1の配列データが返ります
-
-            **存在しない場合**  
+            **存在しない場合**
               空の配列が返ります
-
             ## `limit` `offset` を指定した場合
             指定した数のlimit分の配列データが返ります
             デフォルト：limit=10, offset=0
       operationId: get-recreation
       description: |-
         # レクリエーションを取得するAPI
-        `id`：レクリエーションIDを指定することで特定のレクリエーションのみ取得できます 
-        `limit,offset`：複数個まとめて取得することもできます  
+        `id`：レクリエーションIDを指定することで特定のレクリエーションのみ取得できます
+        `limit,offset`：複数個まとめて取得することもできます
       parameters:
         - schema:
             type: string
