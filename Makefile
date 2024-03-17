@@ -25,7 +25,7 @@ down:
 	docker compose down
 
 db-in:
-	docker compose exec db bash -c "psql \"user=postgres password=postgres_pw host=localhost port=5432 dbname=postgres\""
+	docker compose exec db bash -c "psql \"user=postgres password=postgres host=localhost port=5432 dbname=postgres\""
 
 prune:
 	docker system prune
