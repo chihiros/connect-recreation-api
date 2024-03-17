@@ -1,4 +1,4 @@
-up:
+build-up:
 	DOCKER_BUILDKIT=1 docker compose up --build $(filter-out $@,$(MAKECMDGOALS))
 
 %:
