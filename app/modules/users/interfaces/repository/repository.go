@@ -25,7 +25,7 @@ func NewUserRepository(conn *ent.Client) *UserRepository {
 
 func (r *UserRepository) GetUsers(ctx context.Context, uuid uuid.UUID) (usecase.Response, error) {
 	p, err := r.DBConn.User.Query().
-		Where(user.UUIDEQ(uuid)).
+		Where(user.UserID(uuid)).
 		Only(ctx)
 
 	if err != nil {
@@ -52,7 +52,7 @@ func (r *UserRepository) GetUsers(ctx context.Context, uuid uuid.UUID) (usecase.
 
 func (r *UserRepository) PostUsers(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	user, err := r.DBConn.User.Create().
-		SetUserID(req.UUID).
+		SetUserID(req.UserID).
 		SetNickname(req.Nickname).
 		SetIconURL(req.IconURL).
 		SetCreatedAt(time.Now()).
@@ -76,13 +76,13 @@ func (r *UserRepository) PostUsers(ctx context.Context, req usecase.Request) (us
 
 func (r *UserRepository) PutUsers(ctx context.Context, req usecase.Request) (usecase.Response, error) {
 	_, err := r.DBConn.User.Create().
-		SetUserID(req.UUID).
+		SetUserID(req.UserID).
 		SetNickname(req.Nickname).
 		SetIconURL(req.IconURL).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
 		OnConflict(
-			sql.ConflictColumns(user.FieldUUID),
+			sql.ConflictColumns(user.FieldUserID),
 		).
 		Update(func(p *ent.UserUpsert) {
 			p.SetNickname(req.Nickname)
@@ -97,7 +97,7 @@ func (r *UserRepository) PutUsers(ctx context.Context, req usecase.Request) (use
 
 	// 更新に成功したら、更新後のデータを返す
 	user, err := r.DBConn.User.Query().
-		Where(user.UUIDEQ(req.UUID)).
+		Where(user.UserIDEQ(req.UserID)).
 		Only(ctx)
 
 	res := usecase.Response{Data: user}
@@ -106,7 +106,7 @@ func (r *UserRepository) PutUsers(ctx context.Context, req usecase.Request) (use
 
 func (r *UserRepository) DeleteUsers(ctx context.Context, uuid uuid.UUID) error {
 	_, err := r.DBConn.User.Delete().
-		Where(user.UUIDEQ(uuid)).
+		Where(user.UserID(uuid)).
 		Exec(ctx)
 
 	if err != nil {

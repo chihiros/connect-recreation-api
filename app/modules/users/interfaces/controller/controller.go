@@ -68,7 +68,9 @@ func (c *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 func (c *UserController) PostUsers(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする
 	req := usecase.Request{}
-	err := json.NewDecoder(r.Body).Decode(&req)
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		applog.Panic(err)
+	}
 
 	// jwtのplayloadからuser_idを取得
 	payload := getPayload(r)
@@ -81,7 +83,7 @@ func (c *UserController) PostUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req.UUID = uuid
+	req.UserID = uuid
 	req.IconURL = payload.UserMetadata.AvatarURL
 	if payload.UserMetadata.UserName != "" {
 		req.Nickname = payload.UserMetadata.UserName
@@ -115,8 +117,8 @@ func (c *UserController) PutUsers(w http.ResponseWriter, r *http.Request) {
 	req := usecase.Request{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 
-	// Request.UUIDを上書きする
-	req.UUID = getUUIDWithPayload(r)
+	// Request.UserIDを上書きする
+	req.UserID = getUUIDWithPayload(r)
 
 	user, err := c.Usecase.PutUsers(context.Background(), req)
 
