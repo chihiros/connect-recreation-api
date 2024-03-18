@@ -3,8 +3,8 @@
 package ent
 
 import (
-	"app/ent/profile"
 	"app/ent/recreation"
+	"app/ent/user"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -46,31 +46,29 @@ type Recreation struct {
 	PublishedAt time.Time `json:"published_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RecreationQuery when eager-loading is set.
-	Edges               RecreationEdges `json:"edges"`
-	profile_recreations *int
-	selectValues        sql.SelectValues
+	Edges            RecreationEdges `json:"edges"`
+	user_recreations *int
+	selectValues     sql.SelectValues
 }
 
 // RecreationEdges holds the relations/edges for other nodes in the graph.
 type RecreationEdges struct {
-	// Profile holds the value of the profile edge.
-	Profile *Profile `json:"profile,omitempty"`
+	// Users holds the value of the users edge.
+	Users *User `json:"users,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// ProfileOrErr returns the Profile value or an error if the edge
+// UsersOrErr returns the Users value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e RecreationEdges) ProfileOrErr() (*Profile, error) {
-	if e.loadedTypes[0] {
-		if e.Profile == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: profile.Label}
-		}
-		return e.Profile, nil
+func (e RecreationEdges) UsersOrErr() (*User, error) {
+	if e.Users != nil {
+		return e.Users, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: user.Label}
 	}
-	return nil, &NotLoadedError{edge: "profile"}
+	return nil, &NotLoadedError{edge: "users"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -90,7 +88,7 @@ func (*Recreation) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullTime)
 		case recreation.FieldUserID, recreation.FieldRecreationID:
 			values[i] = new(uuid.UUID)
-		case recreation.ForeignKeys[0]: // profile_recreations
+		case recreation.ForeignKeys[0]: // user_recreations
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -189,10 +187,10 @@ func (r *Recreation) assignValues(columns []string, values []any) error {
 			}
 		case recreation.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field profile_recreations", value)
+				return fmt.Errorf("unexpected type %T for edge-field user_recreations", value)
 			} else if value.Valid {
-				r.profile_recreations = new(int)
-				*r.profile_recreations = int(value.Int64)
+				r.user_recreations = new(int)
+				*r.user_recreations = int(value.Int64)
 			}
 		default:
 			r.selectValues.Set(columns[i], values[i])
@@ -207,9 +205,9 @@ func (r *Recreation) Value(name string) (ent.Value, error) {
 	return r.selectValues.Get(name)
 }
 
-// QueryProfile queries the "profile" edge of the Recreation entity.
-func (r *Recreation) QueryProfile() *ProfileQuery {
-	return NewRecreationClient(r.config).QueryProfile(r)
+// QueryUsers queries the "users" edge of the Recreation entity.
+func (r *Recreation) QueryUsers() *UserQuery {
+	return NewRecreationClient(r.config).QueryUsers(r)
 }
 
 // Update returns a builder for updating this Recreation.

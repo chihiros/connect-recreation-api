@@ -4,8 +4,8 @@ package ent
 
 import (
 	"app/ent/predicate"
-	"app/ent/profile"
 	"app/ent/recreation"
+	"app/ent/user"
 	"context"
 	"errors"
 	"fmt"
@@ -49,9 +49,25 @@ func (ru *RecreationUpdate) SetTitle(s string) *RecreationUpdate {
 	return ru
 }
 
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (ru *RecreationUpdate) SetNillableTitle(s *string) *RecreationUpdate {
+	if s != nil {
+		ru.SetTitle(*s)
+	}
+	return ru
+}
+
 // SetContent sets the "content" field.
 func (ru *RecreationUpdate) SetContent(s string) *RecreationUpdate {
 	ru.mutation.SetContent(s)
+	return ru
+}
+
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (ru *RecreationUpdate) SetNillableContent(s *string) *RecreationUpdate {
+	if s != nil {
+		ru.SetContent(*s)
+	}
 	return ru
 }
 
@@ -82,6 +98,14 @@ func (ru *RecreationUpdate) SetTargetNumber(i int) *RecreationUpdate {
 	return ru
 }
 
+// SetNillableTargetNumber sets the "target_number" field if the given value is not nil.
+func (ru *RecreationUpdate) SetNillableTargetNumber(i *int) *RecreationUpdate {
+	if i != nil {
+		ru.SetTargetNumber(*i)
+	}
+	return ru
+}
+
 // AddTargetNumber adds i to the "target_number" field.
 func (ru *RecreationUpdate) AddTargetNumber(i int) *RecreationUpdate {
 	ru.mutation.AddTargetNumber(i)
@@ -92,6 +116,14 @@ func (ru *RecreationUpdate) AddTargetNumber(i int) *RecreationUpdate {
 func (ru *RecreationUpdate) SetRequiredTime(i int) *RecreationUpdate {
 	ru.mutation.ResetRequiredTime()
 	ru.mutation.SetRequiredTime(i)
+	return ru
+}
+
+// SetNillableRequiredTime sets the "required_time" field if the given value is not nil.
+func (ru *RecreationUpdate) SetNillableRequiredTime(i *int) *RecreationUpdate {
+	if i != nil {
+		ru.SetRequiredTime(*i)
+	}
 	return ru
 }
 
@@ -141,23 +173,23 @@ func (ru *RecreationUpdate) ClearPublishedAt() *RecreationUpdate {
 	return ru
 }
 
-// SetProfileID sets the "profile" edge to the Profile entity by ID.
-func (ru *RecreationUpdate) SetProfileID(id int) *RecreationUpdate {
-	ru.mutation.SetProfileID(id)
+// SetUsersID sets the "users" edge to the User entity by ID.
+func (ru *RecreationUpdate) SetUsersID(id int) *RecreationUpdate {
+	ru.mutation.SetUsersID(id)
 	return ru
 }
 
-// SetNillableProfileID sets the "profile" edge to the Profile entity by ID if the given value is not nil.
-func (ru *RecreationUpdate) SetNillableProfileID(id *int) *RecreationUpdate {
+// SetNillableUsersID sets the "users" edge to the User entity by ID if the given value is not nil.
+func (ru *RecreationUpdate) SetNillableUsersID(id *int) *RecreationUpdate {
 	if id != nil {
-		ru = ru.SetProfileID(*id)
+		ru = ru.SetUsersID(*id)
 	}
 	return ru
 }
 
-// SetProfile sets the "profile" edge to the Profile entity.
-func (ru *RecreationUpdate) SetProfile(p *Profile) *RecreationUpdate {
-	return ru.SetProfileID(p.ID)
+// SetUsers sets the "users" edge to the User entity.
+func (ru *RecreationUpdate) SetUsers(u *User) *RecreationUpdate {
+	return ru.SetUsersID(u.ID)
 }
 
 // Mutation returns the RecreationMutation object of the builder.
@@ -165,9 +197,9 @@ func (ru *RecreationUpdate) Mutation() *RecreationMutation {
 	return ru.mutation
 }
 
-// ClearProfile clears the "profile" edge to the Profile entity.
-func (ru *RecreationUpdate) ClearProfile() *RecreationUpdate {
-	ru.mutation.ClearProfile()
+// ClearUsers clears the "users" edge to the User entity.
+func (ru *RecreationUpdate) ClearUsers() *RecreationUpdate {
+	ru.mutation.ClearUsers()
 	return ru
 }
 
@@ -266,28 +298,28 @@ func (ru *RecreationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if ru.mutation.PublishedAtCleared() {
 		_spec.ClearField(recreation.FieldPublishedAt, field.TypeTime)
 	}
-	if ru.mutation.ProfileCleared() {
+	if ru.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   recreation.ProfileTable,
-			Columns: []string{recreation.ProfileColumn},
+			Table:   recreation.UsersTable,
+			Columns: []string{recreation.UsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ru.mutation.ProfileIDs(); len(nodes) > 0 {
+	if nodes := ru.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   recreation.ProfileTable,
-			Columns: []string{recreation.ProfileColumn},
+			Table:   recreation.UsersTable,
+			Columns: []string{recreation.UsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -335,9 +367,25 @@ func (ruo *RecreationUpdateOne) SetTitle(s string) *RecreationUpdateOne {
 	return ruo
 }
 
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (ruo *RecreationUpdateOne) SetNillableTitle(s *string) *RecreationUpdateOne {
+	if s != nil {
+		ruo.SetTitle(*s)
+	}
+	return ruo
+}
+
 // SetContent sets the "content" field.
 func (ruo *RecreationUpdateOne) SetContent(s string) *RecreationUpdateOne {
 	ruo.mutation.SetContent(s)
+	return ruo
+}
+
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (ruo *RecreationUpdateOne) SetNillableContent(s *string) *RecreationUpdateOne {
+	if s != nil {
+		ruo.SetContent(*s)
+	}
 	return ruo
 }
 
@@ -368,6 +416,14 @@ func (ruo *RecreationUpdateOne) SetTargetNumber(i int) *RecreationUpdateOne {
 	return ruo
 }
 
+// SetNillableTargetNumber sets the "target_number" field if the given value is not nil.
+func (ruo *RecreationUpdateOne) SetNillableTargetNumber(i *int) *RecreationUpdateOne {
+	if i != nil {
+		ruo.SetTargetNumber(*i)
+	}
+	return ruo
+}
+
 // AddTargetNumber adds i to the "target_number" field.
 func (ruo *RecreationUpdateOne) AddTargetNumber(i int) *RecreationUpdateOne {
 	ruo.mutation.AddTargetNumber(i)
@@ -378,6 +434,14 @@ func (ruo *RecreationUpdateOne) AddTargetNumber(i int) *RecreationUpdateOne {
 func (ruo *RecreationUpdateOne) SetRequiredTime(i int) *RecreationUpdateOne {
 	ruo.mutation.ResetRequiredTime()
 	ruo.mutation.SetRequiredTime(i)
+	return ruo
+}
+
+// SetNillableRequiredTime sets the "required_time" field if the given value is not nil.
+func (ruo *RecreationUpdateOne) SetNillableRequiredTime(i *int) *RecreationUpdateOne {
+	if i != nil {
+		ruo.SetRequiredTime(*i)
+	}
 	return ruo
 }
 
@@ -427,23 +491,23 @@ func (ruo *RecreationUpdateOne) ClearPublishedAt() *RecreationUpdateOne {
 	return ruo
 }
 
-// SetProfileID sets the "profile" edge to the Profile entity by ID.
-func (ruo *RecreationUpdateOne) SetProfileID(id int) *RecreationUpdateOne {
-	ruo.mutation.SetProfileID(id)
+// SetUsersID sets the "users" edge to the User entity by ID.
+func (ruo *RecreationUpdateOne) SetUsersID(id int) *RecreationUpdateOne {
+	ruo.mutation.SetUsersID(id)
 	return ruo
 }
 
-// SetNillableProfileID sets the "profile" edge to the Profile entity by ID if the given value is not nil.
-func (ruo *RecreationUpdateOne) SetNillableProfileID(id *int) *RecreationUpdateOne {
+// SetNillableUsersID sets the "users" edge to the User entity by ID if the given value is not nil.
+func (ruo *RecreationUpdateOne) SetNillableUsersID(id *int) *RecreationUpdateOne {
 	if id != nil {
-		ruo = ruo.SetProfileID(*id)
+		ruo = ruo.SetUsersID(*id)
 	}
 	return ruo
 }
 
-// SetProfile sets the "profile" edge to the Profile entity.
-func (ruo *RecreationUpdateOne) SetProfile(p *Profile) *RecreationUpdateOne {
-	return ruo.SetProfileID(p.ID)
+// SetUsers sets the "users" edge to the User entity.
+func (ruo *RecreationUpdateOne) SetUsers(u *User) *RecreationUpdateOne {
+	return ruo.SetUsersID(u.ID)
 }
 
 // Mutation returns the RecreationMutation object of the builder.
@@ -451,9 +515,9 @@ func (ruo *RecreationUpdateOne) Mutation() *RecreationMutation {
 	return ruo.mutation
 }
 
-// ClearProfile clears the "profile" edge to the Profile entity.
-func (ruo *RecreationUpdateOne) ClearProfile() *RecreationUpdateOne {
-	ruo.mutation.ClearProfile()
+// ClearUsers clears the "users" edge to the User entity.
+func (ruo *RecreationUpdateOne) ClearUsers() *RecreationUpdateOne {
+	ruo.mutation.ClearUsers()
 	return ruo
 }
 
@@ -582,28 +646,28 @@ func (ruo *RecreationUpdateOne) sqlSave(ctx context.Context) (_node *Recreation,
 	if ruo.mutation.PublishedAtCleared() {
 		_spec.ClearField(recreation.FieldPublishedAt, field.TypeTime)
 	}
-	if ruo.mutation.ProfileCleared() {
+	if ruo.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   recreation.ProfileTable,
-			Columns: []string{recreation.ProfileColumn},
+			Table:   recreation.UsersTable,
+			Columns: []string{recreation.UsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ruo.mutation.ProfileIDs(); len(nodes) > 0 {
+	if nodes := ruo.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   recreation.ProfileTable,
-			Columns: []string{recreation.ProfileColumn},
+			Table:   recreation.UsersTable,
+			Columns: []string{recreation.UsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

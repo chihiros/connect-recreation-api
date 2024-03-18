@@ -3,7 +3,7 @@
 package ent
 
 import (
-	"app/ent/profile"
+	"app/ent/user"
 	"fmt"
 	"strings"
 	"time"
@@ -13,13 +13,13 @@ import (
 	"github.com/google/uuid"
 )
 
-// Profile is the model entity for the Profile schema.
-type Profile struct {
+// User is the model entity for the User schema.
+type User struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// UUID holds the value of the "uuid" field.
-	UUID uuid.UUID `json:"uuid,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID uuid.UUID `json:"user_id,omitempty"`
 	// Nickname holds the value of the "nickname" field.
 	Nickname string `json:"nickname,omitempty"`
 	// IconURL holds the value of the "icon_url" field.
@@ -29,13 +29,13 @@ type Profile struct {
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the ProfileQuery when eager-loading is set.
-	Edges        ProfileEdges `json:"edges"`
+	// The values are being populated by the UserQuery when eager-loading is set.
+	Edges        UserEdges `json:"edges"`
 	selectValues sql.SelectValues
 }
 
-// ProfileEdges holds the relations/edges for other nodes in the graph.
-type ProfileEdges struct {
+// UserEdges holds the relations/edges for other nodes in the graph.
+type UserEdges struct {
 	// Recreations holds the value of the recreations edge.
 	Recreations []*Recreation `json:"recreations,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -45,7 +45,7 @@ type ProfileEdges struct {
 
 // RecreationsOrErr returns the Recreations value or an error if the edge
 // was not loaded in eager-loading.
-func (e ProfileEdges) RecreationsOrErr() ([]*Recreation, error) {
+func (e UserEdges) RecreationsOrErr() ([]*Recreation, error) {
 	if e.loadedTypes[0] {
 		return e.Recreations, nil
 	}
@@ -53,17 +53,17 @@ func (e ProfileEdges) RecreationsOrErr() ([]*Recreation, error) {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*Profile) scanValues(columns []string) ([]any, error) {
+func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case profile.FieldID:
+		case user.FieldID:
 			values[i] = new(sql.NullInt64)
-		case profile.FieldNickname, profile.FieldIconURL:
+		case user.FieldNickname, user.FieldIconURL:
 			values[i] = new(sql.NullString)
-		case profile.FieldCreatedAt, profile.FieldUpdatedAt:
+		case user.FieldCreatedAt, user.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case profile.FieldUUID:
+		case user.FieldUserID:
 			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -73,107 +73,107 @@ func (*Profile) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the Profile fields.
-func (pr *Profile) assignValues(columns []string, values []any) error {
+// to the User fields.
+func (u *User) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case profile.FieldID:
+		case user.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			pr.ID = int(value.Int64)
-		case profile.FieldUUID:
+			u.ID = int(value.Int64)
+		case user.FieldUserID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field uuid", values[i])
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value != nil {
-				pr.UUID = *value
+				u.UserID = *value
 			}
-		case profile.FieldNickname:
+		case user.FieldNickname:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field nickname", values[i])
 			} else if value.Valid {
-				pr.Nickname = value.String
+				u.Nickname = value.String
 			}
-		case profile.FieldIconURL:
+		case user.FieldIconURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field icon_url", values[i])
 			} else if value.Valid {
-				pr.IconURL = value.String
+				u.IconURL = value.String
 			}
-		case profile.FieldCreatedAt:
+		case user.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				pr.CreatedAt = value.Time
+				u.CreatedAt = value.Time
 			}
-		case profile.FieldUpdatedAt:
+		case user.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				pr.UpdatedAt = value.Time
+				u.UpdatedAt = value.Time
 			}
 		default:
-			pr.selectValues.Set(columns[i], values[i])
+			u.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the Profile.
+// Value returns the ent.Value that was dynamically selected and assigned to the User.
 // This includes values selected through modifiers, order, etc.
-func (pr *Profile) Value(name string) (ent.Value, error) {
-	return pr.selectValues.Get(name)
+func (u *User) Value(name string) (ent.Value, error) {
+	return u.selectValues.Get(name)
 }
 
-// QueryRecreations queries the "recreations" edge of the Profile entity.
-func (pr *Profile) QueryRecreations() *RecreationQuery {
-	return NewProfileClient(pr.config).QueryRecreations(pr)
+// QueryRecreations queries the "recreations" edge of the User entity.
+func (u *User) QueryRecreations() *RecreationQuery {
+	return NewUserClient(u.config).QueryRecreations(u)
 }
 
-// Update returns a builder for updating this Profile.
-// Note that you need to call Profile.Unwrap() before calling this method if this Profile
+// Update returns a builder for updating this User.
+// Note that you need to call User.Unwrap() before calling this method if this User
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (pr *Profile) Update() *ProfileUpdateOne {
-	return NewProfileClient(pr.config).UpdateOne(pr)
+func (u *User) Update() *UserUpdateOne {
+	return NewUserClient(u.config).UpdateOne(u)
 }
 
-// Unwrap unwraps the Profile entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the User entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (pr *Profile) Unwrap() *Profile {
-	_tx, ok := pr.config.driver.(*txDriver)
+func (u *User) Unwrap() *User {
+	_tx, ok := u.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: Profile is not a transactional entity")
+		panic("ent: User is not a transactional entity")
 	}
-	pr.config.driver = _tx.drv
-	return pr
+	u.config.driver = _tx.drv
+	return u
 }
 
 // String implements the fmt.Stringer.
-func (pr *Profile) String() string {
+func (u *User) String() string {
 	var builder strings.Builder
-	builder.WriteString("Profile(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", pr.ID))
-	builder.WriteString("uuid=")
-	builder.WriteString(fmt.Sprintf("%v", pr.UUID))
+	builder.WriteString("User(")
+	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
+	builder.WriteString("user_id=")
+	builder.WriteString(fmt.Sprintf("%v", u.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("nickname=")
-	builder.WriteString(pr.Nickname)
+	builder.WriteString(u.Nickname)
 	builder.WriteString(", ")
 	builder.WriteString("icon_url=")
-	builder.WriteString(pr.IconURL)
+	builder.WriteString(u.IconURL)
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(pr.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(pr.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// Profiles is a parsable slice of Profile.
-type Profiles []*Profile
+// Users is a parsable slice of User.
+type Users []*User
