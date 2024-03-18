@@ -4,8 +4,8 @@ import (
 	"app/ent"
 	"app/middle/applog"
 	"app/middle/authrization"
-	"app/modules/profiles/interfaces/repository"
-	"app/modules/profiles/usecase"
+	"app/modules/users/interfaces/repository"
+	"app/modules/users/usecase"
 	"context"
 	"encoding/json"
 	"errors"
@@ -14,20 +14,20 @@ import (
 	"github.com/google/uuid"
 )
 
-type ProfileController struct {
-	Usecase usecase.ProfileUseCase
+type UserController struct {
+	Usecase usecase.UserUseCase
 }
 
-func NewProfileController(conn *ent.Client) *ProfileController {
-	u := NewProfileUsecase(conn)
-	return &ProfileController{
+func NewUserController(conn *ent.Client) *UserController {
+	u := NewUserUsecase(conn)
+	return &UserController{
 		Usecase: u,
 	}
 }
 
-func NewProfileUsecase(conn *ent.Client) *usecase.ProfileUsecase {
-	repo := repository.NewProfileRepository(conn)
-	return &usecase.ProfileUsecase{
+func NewUserUsecase(conn *ent.Client) *usecase.UserUsecase {
+	repo := repository.NewUserRepository(conn)
+	return &usecase.UserUsecase{
 		Repository: repo,
 	}
 }
@@ -48,13 +48,13 @@ func getPayload(r *http.Request) *authrization.SupabaseJwtPayload {
 	return payload
 }
 
-func (c *ProfileController) GetProfiles(w http.ResponseWriter, r *http.Request) {
+func (c *UserController) GetUsers(w http.ResponseWriter, r *http.Request) {
 	uuid := getUUIDWithPayload(r)
-	profiles, err := c.Usecase.GetProfiles(context.Background(), uuid)
+	users, err := c.Usecase.GetUsers(context.Background(), uuid)
 	if err != nil {
 		if err.Error() == "not found" {
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(profiles)
+			json.NewEncoder(w).Encode(users)
 			return
 		}
 
@@ -62,10 +62,10 @@ func (c *ProfileController) GetProfiles(w http.ResponseWriter, r *http.Request) 
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(profiles)
+	json.NewEncoder(w).Encode(users)
 }
 
-func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request) {
+func (c *UserController) PostUsers(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする
 	req := usecase.Request{}
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -94,23 +94,23 @@ func (c *ProfileController) PostProfiles(w http.ResponseWriter, r *http.Request)
 	} else {
 		req.Nickname = ""
 	}
-	profile, err := c.Usecase.PostProfiles(context.Background(), req)
+	user, err := c.Usecase.PostUsers(context.Background(), req)
 
 	if err != nil {
 		switch err.Error() {
 		case "duplicate":
 			w.WriteHeader(http.StatusConflict)
-			json.NewEncoder(w).Encode(profile)
+			json.NewEncoder(w).Encode(user)
 		default:
 			applog.Panic(err)
 		}
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(profile)
+	json.NewEncoder(w).Encode(user)
 }
 
-func (c *ProfileController) PutProfiles(w http.ResponseWriter, r *http.Request) {
+func (c *UserController) PutUsers(w http.ResponseWriter, r *http.Request) {
 	// bodyの中身をbindする
 	req := usecase.Request{}
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -118,26 +118,26 @@ func (c *ProfileController) PutProfiles(w http.ResponseWriter, r *http.Request) 
 	// Request.UUIDを上書きする
 	req.UUID = getUUIDWithPayload(r)
 
-	profile, err := c.Usecase.PutProfiles(context.Background(), req)
+	user, err := c.Usecase.PutUsers(context.Background(), req)
 
 	if err != nil {
 		switch err.Error() {
 		case "duplicate":
 			w.WriteHeader(http.StatusConflict)
-			json.NewEncoder(w).Encode(profile)
+			json.NewEncoder(w).Encode(user)
 		default:
 			applog.Panic(err)
 		}
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(profile)
+	json.NewEncoder(w).Encode(user)
 }
 
-func (c *ProfileController) DeleteProfiles(w http.ResponseWriter, r *http.Request) {
+func (c *UserController) DeleteUsers(w http.ResponseWriter, r *http.Request) {
 	uuid := getUUIDWithPayload(r)
-	profile := c.Usecase.DeleteProfiles(context.Background(), uuid)
+	user := c.Usecase.DeleteUsers(context.Background(), uuid)
 
 	w.WriteHeader(http.StatusNoContent)
-	json.NewEncoder(w).Encode(profile)
+	json.NewEncoder(w).Encode(user)
 }

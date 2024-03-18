@@ -50,14 +50,14 @@ func NewRouter() *chi.Mux {
 	}
 	pcon := profile_controller.NewProfileController(conn2)
 	r.Route("/v1", func(r chi.Router) {
-		// プロフィール用のAPI
-		r.Route("/profile", func(r chi.Router) {
+		// ユーザー用のAPI
+		r.Route("/user", func(r chi.Router) {
 			r.Use(authrization.AuthMiddleware) // Dockerで開発するときはコメントアウトする
 
-			r.Get("/", pcon.GetProfiles)
-			r.Post("/", pcon.PostProfiles)
-			r.Put("/", pcon.PutProfiles)
-			r.Delete("/", pcon.DeleteProfiles)
+			r.Get("/", pcon.GetUsers)       // ユーザーを取得するためのAPI
+			r.Post("/", pcon.PostUsers)     // ユーザーを登録するためのAPI
+			r.Put("/", pcon.PutUsers)       // ユーザーを更新するためのAPI
+			r.Delete("/", pcon.DeleteUsers) // ユーザーを削除するためのAPI
 		})
 
 		// レクリエーション用のAPI

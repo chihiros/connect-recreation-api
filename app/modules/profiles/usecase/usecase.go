@@ -6,36 +6,36 @@ import (
 	"github.com/google/uuid"
 )
 
-type ProfileUseCase interface {
-	GetProfiles(context.Context, uuid.UUID) (Response, error)
-	PostProfiles(context.Context, Request) (Response, error)
-	PutProfiles(context.Context, Request) (Response, error)
-	DeleteProfiles(context.Context, uuid.UUID) error
+type UserUseCase interface {
+	GetUsers(context.Context, uuid.UUID) (Response, error)
+	PostUsers(context.Context, Request) (Response, error)
+	PutUsers(context.Context, Request) (Response, error)
+	DeleteUsers(context.Context, uuid.UUID) error
 }
 
-type ProfileRepository interface {
-	GetProfiles(context.Context, uuid.UUID) (Response, error)
-	PostProfiles(context.Context, Request) (Response, error)
-	PutProfiles(context.Context, Request) (Response, error)
-	DeleteProfiles(context.Context, uuid.UUID) error
+type UserRepository interface {
+	GetUsers(context.Context, uuid.UUID) (Response, error)
+	PostUsers(context.Context, Request) (Response, error)
+	PutUsers(context.Context, Request) (Response, error)
+	DeleteUsers(context.Context, uuid.UUID) error
 }
 
-type ProfileUsecase struct {
-	Repository ProfileRepository
+type UserUsecase struct {
+	Repository UserRepository
 }
 
-func (u *ProfileUsecase) GetProfiles(ctx context.Context, uuid uuid.UUID) (Response, error) {
-	return u.Repository.GetProfiles(ctx, uuid)
+func (u *UserUsecase) GetUsers(ctx context.Context, uuid uuid.UUID) (Response, error) {
+	return u.Repository.GetUsers(ctx, uuid)
 }
 
-func (u *ProfileUsecase) PostProfiles(ctx context.Context, req Request) (Response, error) {
-	return u.Repository.PostProfiles(ctx, req)
+func (u *UserUsecase) PostUsers(ctx context.Context, req Request) (Response, error) {
+	return u.Repository.PostUsers(ctx, req)
 }
 
-func (u *ProfileUsecase) PutProfiles(ctx context.Context, req Request) (Response, error) {
-	return u.Repository.PutProfiles(ctx, req)
+func (u *UserUsecase) PutUsers(ctx context.Context, req Request) (Response, error) {
+	return u.Repository.PutUsers(ctx, req)
 }
 
-func (u *ProfileUsecase) DeleteProfiles(ctx context.Context, uuid uuid.UUID) error {
-	return u.Repository.DeleteProfiles(ctx, uuid)
+func (u *UserUsecase) DeleteUsers(ctx context.Context, uuid uuid.UUID) error {
+	return u.Repository.DeleteUsers(ctx, uuid)
 }

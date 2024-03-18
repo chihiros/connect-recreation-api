@@ -2,9 +2,9 @@ package repository
 
 import (
 	"app/ent"
-	"app/ent/profile"
+	"app/ent/user"
 	"app/middle/applog"
-	"app/modules/profiles/usecase"
+	"app/modules/users/usecase"
 	"context"
 	"fmt"
 	"time"
@@ -13,19 +13,19 @@ import (
 	"github.com/google/uuid"
 )
 
-type ProfileRepository struct {
+type UserRepository struct {
 	DBConn *ent.Client
 }
 
-func NewProfileRepository(conn *ent.Client) *ProfileRepository {
-	return &ProfileRepository{
+func NewUserRepository(conn *ent.Client) *UserRepository {
+	return &UserRepository{
 		DBConn: conn,
 	}
 }
 
-func (r *ProfileRepository) GetProfiles(ctx context.Context, uuid uuid.UUID) (usecase.Response, error) {
-	p, err := r.DBConn.Profile.Query().
-		Where(profile.UUIDEQ(uuid)).
+func (r *UserRepository) GetUsers(ctx context.Context, uuid uuid.UUID) (usecase.Response, error) {
+	p, err := r.DBConn.User.Query().
+		Where(user.UUIDEQ(uuid)).
 		Only(ctx)
 
 	if err != nil {
@@ -50,9 +50,9 @@ func (r *ProfileRepository) GetProfiles(ctx context.Context, uuid uuid.UUID) (us
 	return res, err
 }
 
-func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	profile, err := r.DBConn.Profile.Create().
-		SetUUID(req.UUID).
+func (r *UserRepository) PostUsers(ctx context.Context, req usecase.Request) (usecase.Response, error) {
+	user, err := r.DBConn.User.Create().
+		SetUserID(req.UUID).
 		SetNickname(req.Nickname).
 		SetIconURL(req.IconURL).
 		SetCreatedAt(time.Now()).
@@ -70,21 +70,21 @@ func (r *ProfileRepository) PostProfiles(ctx context.Context, req usecase.Reques
 		panic(err)
 	}
 
-	res := usecase.Response{Data: profile}
+	res := usecase.Response{Data: user}
 	return res, err
 }
 
-func (r *ProfileRepository) PutProfiles(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	_, err := r.DBConn.Profile.Create().
-		SetUUID(req.UUID).
+func (r *UserRepository) PutUsers(ctx context.Context, req usecase.Request) (usecase.Response, error) {
+	_, err := r.DBConn.User.Create().
+		SetUserID(req.UUID).
 		SetNickname(req.Nickname).
 		SetIconURL(req.IconURL).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
 		OnConflict(
-			sql.ConflictColumns(profile.FieldUUID),
+			sql.ConflictColumns(user.FieldUUID),
 		).
-		Update(func(p *ent.ProfileUpsert) {
+		Update(func(p *ent.UserUpsert) {
 			p.SetNickname(req.Nickname)
 			p.SetIconURL(req.IconURL)
 			p.SetUpdatedAt(time.Now())
@@ -96,17 +96,17 @@ func (r *ProfileRepository) PutProfiles(ctx context.Context, req usecase.Request
 	}
 
 	// 更新に成功したら、更新後のデータを返す
-	profile, err := r.DBConn.Profile.Query().
-		Where(profile.UUIDEQ(req.UUID)).
+	user, err := r.DBConn.User.Query().
+		Where(user.UUIDEQ(req.UUID)).
 		Only(ctx)
 
-	res := usecase.Response{Data: profile}
+	res := usecase.Response{Data: user}
 	return res, err
 }
 
-func (r *ProfileRepository) DeleteProfiles(ctx context.Context, uuid uuid.UUID) error {
-	_, err := r.DBConn.Profile.Delete().
-		Where(profile.UUIDEQ(uuid)).
+func (r *UserRepository) DeleteUsers(ctx context.Context, uuid uuid.UUID) error {
+	_, err := r.DBConn.User.Delete().
+		Where(user.UUIDEQ(uuid)).
 		Exec(ctx)
 
 	if err != nil {
