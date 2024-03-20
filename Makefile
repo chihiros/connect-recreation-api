@@ -51,6 +51,9 @@ golint:
 	cd app; \
 	golangci-lint run ./...
 
+oaslint:
+	npx spectral lint docs/openapi.yml
+
 # OpenAPI Generatorでコード生成が出来るかを確認するためのコマンド
 ogen:
 	docker run --rm \
