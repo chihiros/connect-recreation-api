@@ -189,6 +189,10 @@ components:
             message: ''
 tags:
   - name: contact
+    description: お問い合わせ用のAPI
   - name: now
+    description: 疎通確認用のAPI
   - name: og
+    description: OGPを返すAPI
   - name: recreation
+    description: レクリエーション用のAPI
