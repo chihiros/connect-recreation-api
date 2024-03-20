@@ -63,45 +63,45 @@ func (c *RecreationController) GetRecreations(w http.ResponseWriter, r *http.Req
 	json.NewEncoder(w).Encode(users)
 }
 
-func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Request) {
-	// bodyの中身をbindする
-	req := usecase.Request{}
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		fmt.Printf("%v\n", err)
-	}
+// func (c *RecreationController) PostRecreations(w http.ResponseWriter, r *http.Request) {
+// 	// bodyの中身をbindする
+// 	req := usecase.Request{}
+// 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+// 		fmt.Printf("%v\n", err)
+// 	}
 
-	// jwtのplayloadからuser_idを取得
-	payload, ok := r.Context().Value(authrization.PayloadKey).(*authrization.SupabaseJwtPayload)
-	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Unauthorized")
-		return
-	}
+// 	// jwtのplayloadからuser_idを取得
+// 	payload, ok := r.Context().Value(authrization.PayloadKey).(*authrization.SupabaseJwtPayload)
+// 	if !ok {
+// 		w.WriteHeader(http.StatusUnauthorized)
+// 		json.NewEncoder(w).Encode("Unauthorized")
+// 		return
+// 	}
 
-	user_id, err := uuid.Parse(payload.Subject)
-	if err != nil {
-		applog.Error(err.Error())
-	}
+// 	user_id, err := uuid.Parse(payload.Subject)
+// 	if err != nil {
+// 		applog.Error(err.Error())
+// 	}
 
-	req.UserID = user_id
-	recreation, err := c.Usecase.PostRecreations(context.Background(), req)
-	if err != nil {
-		fmt.Printf("%v\n", err)
-	}
+// 	req.UserID = user_id
+// 	recreation, err := c.Usecase.PostRecreations(context.Background(), req)
+// 	if err != nil {
+// 		fmt.Printf("%v\n", err)
+// 	}
 
-	if err != nil {
-		switch err.Error() {
-		case "duplicate":
-			w.WriteHeader(http.StatusConflict)
-			json.NewEncoder(w).Encode(recreation)
-		default:
-			panic(err)
-		}
-	}
+// 	if err != nil {
+// 		switch err.Error() {
+// 		case "duplicate":
+// 			w.WriteHeader(http.StatusConflict)
+// 			json.NewEncoder(w).Encode(recreation)
+// 		default:
+// 			panic(err)
+// 		}
+// 	}
 
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(recreation)
-}
+// 	w.WriteHeader(http.StatusCreated)
+// 	json.NewEncoder(w).Encode(recreation)
+// }
 
 func (c *RecreationController) GetRecreationsDraft(w http.ResponseWriter, r *http.Request, user_id uuid.UUID) {
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
@@ -201,6 +201,46 @@ func (c *RecreationController) PutRecreationsDraft(w http.ResponseWriter, r *htt
 
 	req.UserID = user_id
 	recreation, err := c.Usecase.PutRecreationsDraft(context.Background(), req)
+	if err != nil {
+		fmt.Printf("%v\n", err)
+	}
+
+	if err != nil {
+		switch err.Error() {
+		case "duplicate":
+			w.WriteHeader(http.StatusConflict)
+			json.NewEncoder(w).Encode(recreation)
+		default:
+			panic(err)
+		}
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(recreation)
+}
+
+func (c *RecreationController) PutRecreation(w http.ResponseWriter, r *http.Request) {
+	// bodyの中身をbindする
+	req := usecase.Request{}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		fmt.Printf("%v\n", err)
+	}
+
+	// jwtのplayloadからuser_idを取得
+	payload, ok := r.Context().Value(authrization.PayloadKey).(*authrization.SupabaseJwtPayload)
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode("Unauthorized")
+		return
+	}
+
+	user_id, err := uuid.Parse(payload.Subject)
+	if err != nil {
+		applog.Error(err.Error())
+	}
+
+	req.UserID = user_id
+	recreation, err := c.Usecase.PutRecreation(context.Background(), req)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}

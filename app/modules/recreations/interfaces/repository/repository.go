@@ -2,8 +2,8 @@ package repository
 
 import (
 	"app/ent"
-	"app/ent/profile"
 	"app/ent/recreation"
+	"app/ent/user"
 	"app/middle/applog"
 	"app/modules/recreations/usecase"
 	"context"
@@ -55,19 +55,19 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context, rec_id uuid.U
 		applog.Panic(err)
 	}
 
-	stack := make(map[uuid.UUID]*ent.Profile)
+	stack := make(map[uuid.UUID]*ent.User)
 	for _, rec := range recreation {
 		if _, ok := stack[rec.UserID]; !ok {
-			profile, err := r.DBConn.Profile.Query().
-				Where(profile.UUIDEQ(rec.UserID)).
+			user, err := r.DBConn.User.Query().
+				Where(user.UserIDEQ(rec.UserID)).
 				First(ctx)
 
 			if err != nil {
 				applog.Panic(err)
 			}
-			stack[rec.UserID] = profile
+			stack[rec.UserID] = user
 		}
-		rec.Edges.Profile = stack[rec.UserID]
+		rec.Edges.Users = stack[rec.UserID]
 	}
 
 	recRes := RecreationResponse{
@@ -81,87 +81,87 @@ func (r *RecreationRepository) GetRecreations(ctx context.Context, rec_id uuid.U
 	return res, err
 }
 
-func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.Request) (usecase.Response, error) {
-	_, err := r.DBConn.Recreation.Create().
-		SetUserID(req.UserID).
-		SetRecreationID(req.RecreationID).
-		SetGenre(req.Genre).
-		SetTitle(req.Title).
-		SetContent(req.Content).
-		SetYoutubeID(req.YouTubeID).
-		SetTargetNumber(req.TargetNumber).
-		SetRequiredTime(req.RequiredTime).
-		SetPublish(true).
-		SetCreatedAt(time.Now()).
-		SetUpdatedAt(time.Now()).
-		SetPublishedAt(time.Now()).
-		Save(ctx)
-		// ↓ 本当はこの用にUpsertを実装したいんだけど、entのバグ？仕様上で[]intの配列が正常に保存できないみたいなので
-		// 　Insertをしてみてコンフリクトが起きたらUpdateするようにする
-		// OnConflict(
-		// 	sql.ConflictColumns(
-		// 		recreation.FieldUserID,
-		// 		recreation.FieldRecreationID,
-		// 	),
-		// ).
-		// Update(func(ru *ent.RecreationUpsert) {
-		// 	ru.UpdateGenre().Set(
-		// 		recreation.FieldGenre,
-		// 		req.Genre,
-		// 	)
+// func (r *RecreationRepository) PostRecreations(ctx context.Context, req usecase.Request) (usecase.Response, error) {
+// 	_, err := r.DBConn.Recreation.Create().
+// 		SetUserID(req.UserID).
+// 		SetRecreationID(req.RecreationID).
+// 		SetGenre(req.Genre).
+// 		SetTitle(req.Title).
+// 		SetContent(req.Content).
+// 		SetYoutubeID(req.YouTubeID).
+// 		SetTargetNumber(req.TargetNumber).
+// 		SetRequiredTime(req.RequiredTime).
+// 		SetPublish(true).
+// 		SetCreatedAt(time.Now()).
+// 		SetUpdatedAt(time.Now()).
+// 		SetPublishedAt(time.Now()).
+// 		Save(ctx)
+// 		// ↓ 本当はこの用にUpsertを実装したいんだけど、entのバグ？仕様上で[]intの配列が正常に保存できないみたいなので
+// 		// 　Insertをしてみてコンフリクトが起きたらUpdateするようにする
+// 		// OnConflict(
+// 		// 	sql.ConflictColumns(
+// 		// 		recreation.FieldUserID,
+// 		// 		recreation.FieldRecreationID,
+// 		// 	),
+// 		// ).
+// 		// Update(func(ru *ent.RecreationUpsert) {
+// 		// 	ru.UpdateGenre().Set(
+// 		// 		recreation.FieldGenre,
+// 		// 		req.Genre,
+// 		// 	)
 
-		// 	// // r.SetGenre(req.Genre)
-		// 	// ru.SetGenre([]int{1, 2, 3})
-		// 	ru.SetTitle(req.Title)
-		// 	ru.SetContent(req.Content)
-		// 	ru.SetYoutubeID(req.YouTubeID)
-		// 	ru.SetTargetNumber(req.TargetNumber)
-		// 	ru.SetRequiredTime(req.RequiredTime)
-		// 	ru.SetPublish(true)
-		// 	ru.SetUpdatedAt(time.Now())
-		// 	ru.SetPublishedAt(time.Now())
-		// }).
-		// ID(ctx)
+// 		// 	// // r.SetGenre(req.Genre)
+// 		// 	// ru.SetGenre([]int{1, 2, 3})
+// 		// 	ru.SetTitle(req.Title)
+// 		// 	ru.SetContent(req.Content)
+// 		// 	ru.SetYoutubeID(req.YouTubeID)
+// 		// 	ru.SetTargetNumber(req.TargetNumber)
+// 		// 	ru.SetRequiredTime(req.RequiredTime)
+// 		// 	ru.SetPublish(true)
+// 		// 	ru.SetUpdatedAt(time.Now())
+// 		// 	ru.SetPublishedAt(time.Now())
+// 		// }).
+// 		// ID(ctx)
 
-	if err != nil {
-		if !ent.IsConstraintError(err) {
-			applog.Panic(err)
-		}
-	}
+// 	if err != nil {
+// 		if !ent.IsConstraintError(err) {
+// 			applog.Panic(err)
+// 		}
+// 	}
 
-	if ent.IsConstraintError(err) {
-		_, err := r.DBConn.Recreation.Update().
-			Where(
-				recreation.UserIDEQ(req.UserID),
-				recreation.RecreationIDEQ(req.RecreationID),
-			).
-			SetGenre(req.Genre).
-			SetTitle(req.Title).
-			SetContent(req.Content).
-			SetYoutubeID(req.YouTubeID).
-			SetTargetNumber(req.TargetNumber).
-			SetRequiredTime(req.RequiredTime).
-			SetPublish(true).
-			SetUpdatedAt(time.Now()).
-			SetPublishedAt(time.Now()).
-			Save(ctx)
+// 	if ent.IsConstraintError(err) {
+// 		_, err := r.DBConn.Recreation.Update().
+// 			Where(
+// 				recreation.UserIDEQ(req.UserID),
+// 				recreation.RecreationIDEQ(req.RecreationID),
+// 			).
+// 			SetGenre(req.Genre).
+// 			SetTitle(req.Title).
+// 			SetContent(req.Content).
+// 			SetYoutubeID(req.YouTubeID).
+// 			SetTargetNumber(req.TargetNumber).
+// 			SetRequiredTime(req.RequiredTime).
+// 			SetPublish(true).
+// 			SetUpdatedAt(time.Now()).
+// 			SetPublishedAt(time.Now()).
+// 			Save(ctx)
 
-		if err != nil {
-			applog.Panic(err)
-		}
-	}
+// 		if err != nil {
+// 			applog.Panic(err)
+// 		}
+// 	}
 
-	rec, err := r.DBConn.Recreation.Query().
-		Where(recreation.RecreationIDEQ(req.RecreationID)).
-		Only(ctx)
+// 	rec, err := r.DBConn.Recreation.Query().
+// 		Where(recreation.RecreationIDEQ(req.RecreationID)).
+// 		Only(ctx)
 
-	if err != nil {
-		applog.Panic(err)
-	}
+// 	if err != nil {
+// 		applog.Panic(err)
+// 	}
 
-	res := usecase.Response{Data: rec}
-	return res, err
-}
+// 	res := usecase.Response{Data: rec}
+// 	return res, err
+// }
 
 // func (r *RecreationRepository) DeleteRecreationsByID(ctx context.Context, id int) error {
 // 	_, err := r.DBConn.Recreation.Delete().
@@ -203,19 +203,19 @@ func (r *RecreationRepository) GetRecreationsDraft(ctx context.Context, user_id 
 		applog.Panic(err)
 	}
 
-	stack := make(map[uuid.UUID]*ent.Profile)
+	stack := make(map[uuid.UUID]*ent.User)
 	for _, rec := range recreation {
 		if _, ok := stack[rec.UserID]; !ok {
-			profile, err := r.DBConn.Profile.Query().
-				Where(profile.UUIDEQ(rec.UserID)).
+			user, err := r.DBConn.User.Query().
+				Where(user.UserIDEQ(rec.UserID)).
 				First(ctx)
 
 			if err != nil {
 				applog.Panic(err)
 			}
-			stack[rec.UserID] = profile
+			stack[rec.UserID] = user
 		}
-		rec.Edges.Profile = stack[rec.UserID]
+		rec.Edges.Users = stack[rec.UserID]
 	}
 
 	recRes := RecreationResponse{
@@ -247,15 +247,15 @@ func (r *RecreationRepository) GetRecreationsDraftByID(ctx context.Context, rec_
 		applog.Panic(err)
 	}
 
-	profile, err := r.DBConn.Profile.Query().
-		Where(profile.UUIDEQ(recreation.UserID)).
+	user, err := r.DBConn.User.Query().
+		Where(user.UserIDEQ(recreation.UserID)).
 		First(ctx)
 
 	if err != nil {
 		applog.Panic(err)
 	}
 
-	recreation.Edges.Profile = profile
+	recreation.Edges.Users = user
 
 	res := usecase.Response{Data: recreation}
 	return res, err
@@ -318,6 +318,39 @@ func (r *RecreationRepository) PutRecreationsDraft(ctx context.Context, req usec
 				applog.Panic(err)
 			}
 		}
+	}
+
+	rec, err := r.DBConn.Recreation.Query().
+		Where(recreation.RecreationIDEQ(req.RecreationID)).
+		Only(ctx)
+
+	if err != nil {
+		applog.Panic(err)
+	}
+
+	res := usecase.Response{Data: rec}
+	return res, err
+}
+
+func (r *RecreationRepository) PutRecreation(ctx context.Context, req usecase.Request) (usecase.Response, error) {
+	_, err := r.DBConn.Recreation.Update().
+		Where(
+			recreation.UserIDEQ(req.UserID),
+			recreation.RecreationIDEQ(req.RecreationID),
+		).
+		SetGenre(req.Genre).
+		SetTitle(req.Title).
+		SetContent(req.Content).
+		SetYoutubeID(req.YouTubeID).
+		SetTargetNumber(req.TargetNumber).
+		SetRequiredTime(req.RequiredTime).
+		SetPublish(true).
+		SetUpdatedAt(time.Now()).
+		SetPublishedAt(time.Now()).
+		Save(ctx)
+
+	if err != nil {
+		applog.Panic(err)
 	}
 
 	rec, err := r.DBConn.Recreation.Query().
