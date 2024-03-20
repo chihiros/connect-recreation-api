@@ -34,3 +34,12 @@ func NewPostgresConnection() (*ent.Client, error) {
 
 	return client, nil
 }
+
+func NewPostgresConnectionX() *ent.Client {
+	conn, err := NewPostgresConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return conn
+}
