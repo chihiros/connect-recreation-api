@@ -3,11 +3,11 @@
 @TOKEN=
 
 ### プロフィールの取得
-GET {{HOST}}/v1/profile
+GET {{HOST}}/v1/users
 Authorization: Bearer {{TOKEN}}
 
 #### プロフィールの追加
-POST {{HOST}}/v1/profile
+POST {{HOST}}/v1/users
 Context-Type: application/json
 Authorization: Bearer {{TOKEN}}
 
@@ -17,7 +17,7 @@ Authorization: Bearer {{TOKEN}}
 }
 
 ### プロフィールの更新
-PUT {{HOST}}/v1/profile
+PUT {{HOST}}/v1/users
 Context-Type: application/json
 Authorization: Bearer {{TOKEN}}
 
@@ -27,5 +27,5 @@ Authorization: Bearer {{TOKEN}}
 }
 
 #### プロフィールの削除
-DELETE {{HOST}}/v1/profile
+DELETE {{HOST}}/v1/usersc
 Authorization: Bearer {{TOKEN}}
