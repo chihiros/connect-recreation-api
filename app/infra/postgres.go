@@ -26,7 +26,20 @@ func NewPostgresConnection() (*ent.Client, error) {
 	client, err := ent.Open("postgres", DB_URL)
 	if err != nil {
 		log.Printf("failed opening connection to postgres: %v", err)
+		return nil, err
 	}
 
-	return client, err
+	// Debug logging
+	// client = client.Debug()
+
+	return client, nil
+}
+
+func NewPostgresConnectionX() *ent.Client {
+	conn, err := NewPostgresConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return conn
 }

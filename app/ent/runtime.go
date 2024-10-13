@@ -3,9 +3,9 @@
 package ent
 
 import (
-	"app/ent/profile"
 	"app/ent/recreation"
 	"app/ent/schema"
+	"app/ent/user"
 	"time"
 )
 
@@ -13,16 +13,6 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	profileFields := schema.Profile{}.Fields()
-	_ = profileFields
-	// profileDescCreatedAt is the schema descriptor for created_at field.
-	profileDescCreatedAt := profileFields[3].Descriptor()
-	// profile.DefaultCreatedAt holds the default value on creation for the created_at field.
-	profile.DefaultCreatedAt = profileDescCreatedAt.Default.(func() time.Time)
-	// profileDescUpdatedAt is the schema descriptor for updated_at field.
-	profileDescUpdatedAt := profileFields[4].Descriptor()
-	// profile.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	profile.DefaultUpdatedAt = profileDescUpdatedAt.Default.(func() time.Time)
 	recreationFields := schema.Recreation{}.Fields()
 	_ = recreationFields
 	// recreationDescPublish is the schema descriptor for publish field.
@@ -39,4 +29,14 @@ func init() {
 	recreation.DefaultUpdatedAt = recreationDescUpdatedAt.Default.(func() time.Time)
 	// recreation.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	recreation.UpdateDefaultUpdatedAt = recreationDescUpdatedAt.UpdateDefault.(func() time.Time)
+	userFields := schema.User{}.Fields()
+	_ = userFields
+	// userDescCreatedAt is the schema descriptor for created_at field.
+	userDescCreatedAt := userFields[3].Descriptor()
+	// user.DefaultCreatedAt holds the default value on creation for the created_at field.
+	user.DefaultCreatedAt = userDescCreatedAt.Default.(func() time.Time)
+	// userDescUpdatedAt is the schema descriptor for updated_at field.
+	userDescUpdatedAt := userFields[4].Descriptor()
+	// user.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	user.DefaultUpdatedAt = userDescUpdatedAt.Default.(func() time.Time)
 }

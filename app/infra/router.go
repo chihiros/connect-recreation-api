@@ -1,11 +1,11 @@
 package infra
 
 import (
-	contact_controller "app/elements/contact/interfaces/controller"
-	profile_controller "app/elements/profiles/interfaces/controller"
-	rec_controller "app/elements/recreations/interfaces/controller"
-	"app/middle/applog"
 	"app/middle/authrization"
+	"app/modules/contact"
+	"app/modules/og"
+	"app/modules/recreations"
+	"app/modules/users"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -20,6 +20,7 @@ func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(logger.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(cacheControlMiddleware)
 
 	// Access-Control-Allow-Originを許可する
 	r.Use(cors.Handler(cors.Options{
@@ -34,52 +35,11 @@ func NewRouter() *chi.Mux {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	ccon := contact_controller.NewContactController()
-	// Postgresへのコネクションを取得する
-	conn1, err := NewPostgresConnection()
-	if err != nil {
-		applog.Panic(err)
-	}
-	rcon := rec_controller.NewRecreationController(conn1)
-
-	conn2, err := NewPostgresConnection()
-	if err != nil {
-		applog.Panic(err)
-	}
-	pcon := profile_controller.NewProfileController(conn2)
 	r.Route("/v1", func(r chi.Router) {
-		// プロフィール用のAPI
-		r.Route("/profile", func(r chi.Router) {
-			r.Use(authrization.AuthMiddleware) // Dockerで開発するときはコメントアウトする
-
-			r.Get("/", pcon.GetProfiles)
-			r.Post("/", pcon.PostProfiles)
-			r.Put("/", pcon.PutProfiles)
-			r.Delete("/", pcon.DeleteProfiles)
-		})
-
-		// レクリエーション用のAPI
-		r.Route("/recreation", func(r chi.Router) {
-			// JWTが不要なやつ
-			// 公開されているレクリエーションの一覧を取得するためのAPI
-			r.Get("/", rcon.GetRecreationsByID)
-
-			// JWTが必要なやつ
-			r.With(authrization.AuthMiddleware).Group(func(r chi.Router) {
-				// レクリエーションを投稿するためのAPI
-				r.Post("/", rcon.PostRecreations)
-
-				// 下書きのレクリエーションを取得するためのAPI
-				r.Get("/draft", rcon.GetRecreationsDraftByID)
-				// レクリエーションの途中保存で使うAPI
-				r.Put("/draft", rcon.PutRecreationsDraft)
-			})
-		})
-
-		// お問い合わせ用のAPI
-		r.Route("/contact", func(r chi.Router) {
-			r.Post("/", ccon.PostContact)
-		})
+		users.Router(r, NewPostgresConnectionX())
+		recreations.Router(r, NewPostgresConnectionX())
+		contact.Router(r)
+		og.Router(r)
 
 		// 疎通確認用のAPI
 		r.Route("/now", func(r chi.Router) {
@@ -111,4 +71,26 @@ func NewRouter() *chi.Mux {
 	})
 
 	return r
+}
+
+func cacheControlMiddleware(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		header := map[string]string{
+			"Cache-Control":             "no-cache, no-store",
+			"Pragma":                    "no-cache",
+			"Expires":                   "-1",
+			"X-Content-Type-Options":    "nosniff",
+			"X-XSS-Protection":          "1; mode=block",
+			"Strict-Transport-Security": "max-age=15552000",
+			"X-Frame-Options":           "SAMEORIGIN",
+		}
+
+		for k, v := range header {
+			w.Header().Set(k, v)
+		}
+
+		next.ServeHTTP(w, r)
+	}
+
+	return http.HandlerFunc(fn)
 }

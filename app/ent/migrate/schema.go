@@ -8,21 +8,6 @@ import (
 )
 
 var (
-	// ProfilesColumns holds the columns for the "profiles" table.
-	ProfilesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "uuid", Type: field.TypeUUID, Unique: true},
-		{Name: "nickname", Type: field.TypeString, Unique: true},
-		{Name: "icon_url", Type: field.TypeString, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-	}
-	// ProfilesTable holds the schema information for the "profiles" table.
-	ProfilesTable = &schema.Table{
-		Name:       "profiles",
-		Columns:    ProfilesColumns,
-		PrimaryKey: []*schema.Column{ProfilesColumns[0]},
-	}
 	// RecreationsColumns holds the columns for the "recreations" table.
 	RecreationsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -38,7 +23,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "published_at", Type: field.TypeTime, Nullable: true},
-		{Name: "profile_recreations", Type: field.TypeInt, Nullable: true},
+		{Name: "user_recreations", Type: field.TypeInt, Nullable: true},
 	}
 	// RecreationsTable holds the schema information for the "recreations" table.
 	RecreationsTable = &schema.Table{
@@ -47,20 +32,35 @@ var (
 		PrimaryKey: []*schema.Column{RecreationsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "recreations_profiles_recreations",
+				Symbol:     "recreations_users_recreations",
 				Columns:    []*schema.Column{RecreationsColumns[13]},
-				RefColumns: []*schema.Column{ProfilesColumns[0]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
 	}
+	// UsersColumns holds the columns for the "users" table.
+	UsersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "user_id", Type: field.TypeUUID, Unique: true},
+		{Name: "nickname", Type: field.TypeString, Unique: true},
+		{Name: "icon_url", Type: field.TypeString, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// UsersTable holds the schema information for the "users" table.
+	UsersTable = &schema.Table{
+		Name:       "users",
+		Columns:    UsersColumns,
+		PrimaryKey: []*schema.Column{UsersColumns[0]},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		ProfilesTable,
 		RecreationsTable,
+		UsersTable,
 	}
 )
 
 func init() {
-	RecreationsTable.ForeignKeys[0].RefTable = ProfilesTable
+	RecreationsTable.ForeignKeys[0].RefTable = UsersTable
 }

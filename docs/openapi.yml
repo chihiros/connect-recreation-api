@@ -1,0 +1,198 @@
+openapi: 3.0.0
+x-stoplight:
+  id: yk3nadd3vsef7
+info:
+  title: TopicPost
+  version: '1.0'
+  contact:
+    name: chihiros
+    email: szrkw2ui2a@gmail.com
+  description: TopicPostで利用しているAPIのドキュメントです
+servers:
+  - url: http://localhost:8686/v1
+    description: ローカル
+  - url: https://api-stg.topicpost.net/v1
+    description: 検証環境
+  - url: https://api.topicpost.net/v1
+    description: 本番環境
+paths:
+  /recreation:
+    get:
+      summary: レクリエーションを取得するAPI
+      tags:
+        - recreation
+      responses:
+        '200':
+          description: |-
+            # OK
+            ## `id` を指定した場合
+            指定したレクリエーションIDが
+            **存在する場合**
+              指定したレクリエーションの長さ1の配列データが返ります
+            **存在しない場合**
+              空の配列が返ります
+            ## `limit` `offset` を指定した場合
+            指定した数のlimit分の配列データが返ります
+            デフォルト：limit=10, offset=0
+      operationId: get-recreation
+      description: |-
+        # レクリエーションを取得するAPI
+        `id`：レクリエーションIDを指定することで特定のレクリエーションのみ取得できます
+        `limit,offset`：複数個まとめて取得することもできます
+      parameters:
+        - schema:
+            type: string
+            example: 21efc871-386a-45ea-9f18-c3fbe07748f4
+            format: uuid
+          in: query
+          name: id
+          description: '`id:レクリエーションID` を指定する'
+        - schema:
+            type: string
+            example: '10'
+          in: query
+          name: limit
+          description: 一度に取得する個数を指定できる
+        - schema:
+            type: string
+            example: '0'
+          in: query
+          name: offset
+          description: 取得する位置をしてい出来る
+  /contact:
+    post:
+      summary: '`お問い合わせ`をするためのAPI'
+      operationId: post-contact
+      responses:
+        '201':
+          description: |-
+            # Created
+            お問い合わせの送信に成功した場合は201を返します
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseContact'
+                x-examples:
+                  Example 1:
+                    name: テスト太郎
+                    email: contact@example.com
+                    content: これってなんですか？
+              examples:
+                Example 1:
+                  value:
+                    name: テスト太郎
+                    email: contact@example.com
+                    content: これってなんですか？
+      tags:
+        - contact
+      description: |-
+        # お問い合わせ用のAPI
+        お問い合わせのフォームから質問を送るときに使うAPIです
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+        description: ''
+  /og/recreation:
+    get:
+      summary: OGPを返すAPI
+      tags:
+        - og
+      responses:
+        '200':
+          description: |-
+            # OK
+            `Content-Type: image/png` で画像データが返されます
+          headers: {}
+      operationId: get-og
+      description: |-
+        # OGイメージを生成するAPI
+        クエリパラメータに `id:レクリエーションID` を指定することで利用出来ます
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: id
+          description: 指定された `レクリエーションID` のOGPを生成します
+          required: true
+    parameters: []
+  /now:
+    get:
+      summary: 疎通確認用のAPI
+      tags:
+        - now
+      responses:
+        '200':
+          description: |-
+            # OK
+            正常にレスポンスが返った場合は現時刻が返ります
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '"2023-12-11T17:34:35.783789172+09:00"'
+              examples:
+                成功時:
+                  value: '"2023-12-11T17:34:35.783789172+09:00"'
+      operationId: get-now
+      description: |-
+        # 疎通確認用のAPIです
+        APIが正常に起動しているかの確認をするときに使います
+components:
+  schemas:
+    Contact:
+      type: object
+      x-examples:
+        Example 1:
+          name: テスト太郎
+          email: contact@example.com
+          content: これってなんですか？
+      examples:
+        - name: テスト太郎
+          email: contact@example.com
+          content: これってなんですか？
+      properties:
+        name:
+          type: string
+          example: テスト太郎
+        email:
+          type: string
+          example: contact@example.com
+        content:
+          type: string
+          example: これってなんですか？
+      description: ''
+    ResponseContact:
+      type: object
+      x-examples:
+        Example 1:
+          data: success
+          errors:
+            code: ''
+            message: ''
+      properties:
+        data:
+          type: string
+          example: success
+        errors:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+      examples:
+        - data: success
+          errors:
+            code: ''
+            message: ''
+tags:
+  - name: contact
+    description: お問い合わせ用のAPI
+  - name: now
+    description: 疎通確認用のAPI
+  - name: og
+    description: OGPを返すAPI
+  - name: recreation
+    description: レクリエーション用のAPI

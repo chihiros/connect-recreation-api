@@ -3,8 +3,8 @@
 package ent
 
 import (
-	"app/ent/profile"
 	"app/ent/recreation"
+	"app/ent/user"
 	"context"
 	"errors"
 	"fmt"
@@ -136,23 +136,23 @@ func (rc *RecreationCreate) SetNillablePublishedAt(t *time.Time) *RecreationCrea
 	return rc
 }
 
-// SetProfileID sets the "profile" edge to the Profile entity by ID.
-func (rc *RecreationCreate) SetProfileID(id int) *RecreationCreate {
-	rc.mutation.SetProfileID(id)
+// SetUsersID sets the "users" edge to the User entity by ID.
+func (rc *RecreationCreate) SetUsersID(id int) *RecreationCreate {
+	rc.mutation.SetUsersID(id)
 	return rc
 }
 
-// SetNillableProfileID sets the "profile" edge to the Profile entity by ID if the given value is not nil.
-func (rc *RecreationCreate) SetNillableProfileID(id *int) *RecreationCreate {
+// SetNillableUsersID sets the "users" edge to the User entity by ID if the given value is not nil.
+func (rc *RecreationCreate) SetNillableUsersID(id *int) *RecreationCreate {
 	if id != nil {
-		rc = rc.SetProfileID(*id)
+		rc = rc.SetUsersID(*id)
 	}
 	return rc
 }
 
-// SetProfile sets the "profile" edge to the Profile entity.
-func (rc *RecreationCreate) SetProfile(p *Profile) *RecreationCreate {
-	return rc.SetProfileID(p.ID)
+// SetUsers sets the "users" edge to the User entity.
+func (rc *RecreationCreate) SetUsers(u *User) *RecreationCreate {
+	return rc.SetUsersID(u.ID)
 }
 
 // Mutation returns the RecreationMutation object of the builder.
@@ -311,21 +311,21 @@ func (rc *RecreationCreate) createSpec() (*Recreation, *sqlgraph.CreateSpec) {
 		_spec.SetField(recreation.FieldPublishedAt, field.TypeTime, value)
 		_node.PublishedAt = value
 	}
-	if nodes := rc.mutation.ProfileIDs(); len(nodes) > 0 {
+	if nodes := rc.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   recreation.ProfileTable,
-			Columns: []string{recreation.ProfileColumn},
+			Table:   recreation.UsersTable,
+			Columns: []string{recreation.UsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(profile.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.profile_recreations = &nodes[0]
+		_node.user_recreations = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -753,12 +753,16 @@ func (u *RecreationUpsertOne) IDX(ctx context.Context) int {
 // RecreationCreateBulk is the builder for creating many Recreation entities in bulk.
 type RecreationCreateBulk struct {
 	config
+	err      error
 	builders []*RecreationCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the Recreation entities in the database.
 func (rcb *RecreationCreateBulk) Save(ctx context.Context) ([]*Recreation, error) {
+	if rcb.err != nil {
+		return nil, rcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(rcb.builders))
 	nodes := make([]*Recreation, len(rcb.builders))
 	mutators := make([]Mutator, len(rcb.builders))
@@ -1086,6 +1090,9 @@ func (u *RecreationUpsertBulk) ClearPublishedAt() *RecreationUpsertBulk {
 
 // Exec executes the query.
 func (u *RecreationUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the RecreationCreateBulk instead", i)

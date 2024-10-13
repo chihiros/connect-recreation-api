@@ -1,10 +1,10 @@
-FROM golang:1.18-bullseye AS docker
+FROM golang:1.22-bullseye AS docker
 WORKDIR /app
 COPY /app .
 RUN go install github.com/cosmtrek/air@latest
 CMD air
 
-FROM golang:1.18-bullseye AS build
+FROM golang:1.22-bullseye AS build
 WORKDIR /app
 COPY /app .
 RUN go mod download

@@ -46,7 +46,7 @@ func (Recreation) Fields() []ent.Field {
 // Edges of the Recreation.
 func (Recreation) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("profile", Profile.Type).
+		edge.From("users", User.Type).
 			Ref("recreations").
 			Unique(),
 	}

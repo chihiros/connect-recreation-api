@@ -616,21 +616,21 @@ func PublishedAtNotNil() predicate.Recreation {
 	return predicate.Recreation(sql.FieldNotNull(FieldPublishedAt))
 }
 
-// HasProfile applies the HasEdge predicate on the "profile" edge.
-func HasProfile() predicate.Recreation {
+// HasUsers applies the HasEdge predicate on the "users" edge.
+func HasUsers() predicate.Recreation {
 	return predicate.Recreation(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ProfileTable, ProfileColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, UsersTable, UsersColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasProfileWith applies the HasEdge predicate on the "profile" edge with a given conditions (other predicates).
-func HasProfileWith(preds ...predicate.Profile) predicate.Recreation {
+// HasUsersWith applies the HasEdge predicate on the "users" edge with a given conditions (other predicates).
+func HasUsersWith(preds ...predicate.User) predicate.Recreation {
 	return predicate.Recreation(func(s *sql.Selector) {
-		step := newProfileStep()
+		step := newUsersStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -641,32 +641,15 @@ func HasProfileWith(preds ...predicate.Profile) predicate.Recreation {
 
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Recreation) predicate.Recreation {
-	return predicate.Recreation(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for _, p := range predicates {
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.Recreation(sql.AndPredicates(predicates...))
 }
 
 // Or groups predicates with the OR operator between them.
 func Or(predicates ...predicate.Recreation) predicate.Recreation {
-	return predicate.Recreation(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for i, p := range predicates {
-			if i > 0 {
-				s1.Or()
-			}
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.Recreation(sql.OrPredicates(predicates...))
 }
 
 // Not applies the not operator on the given predicate.
 func Not(p predicate.Recreation) predicate.Recreation {
-	return predicate.Recreation(func(s *sql.Selector) {
-		p(s.Not())
-	})
+	return predicate.Recreation(sql.NotPredicates(p))
 }

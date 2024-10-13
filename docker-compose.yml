@@ -13,20 +13,12 @@ services:
     env_file:
       - .env
     environment:
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_NAME: postgres
-      DB_TIMEZONE: Asia/Tokyo
-      PROJECT_ENV: docker
       SUPABASE_JWT_SECRET: ${SUPABASE_JWT_SECRET}
-      # # .envファイルを読み込む場合
-      # DB_USER: ${DB_USER}
-      # DB_PASSWORD: ${DB_PASSWORD}
-      # DB_HOST: ${DB_HOST}
-      # DB_PORT: ${DB_PORT}
-      # DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
     depends_on:
       db:
         condition: service_healthy
@@ -41,7 +33,7 @@ services:
       POSTGRES_PASSWORD: postgres
       TZ: Asia/Tokyo
     volumes:
-      - ./docker/postgres/seeds:/docker-entrypoint-initdb.d
+      - ./schema/init:/docker-entrypoint-initdb.d
     healthcheck:
       test:
         [

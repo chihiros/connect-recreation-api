@@ -29,7 +29,7 @@ const (
 func Setenv(env ENV) {
 	switch env {
 	case PROD:
-		logLevel = logrus.WarnLevel
+		logLevel = logrus.InfoLevel
 	case STG:
 		logLevel = logrus.TraceLevel
 	case DEV:
@@ -47,24 +47,51 @@ func Setenv(env ENV) {
 	logrus.SetLevel(logLevel)
 }
 
-func Debug(args string) {
-	logrus.Debug(args)
+func Print(args ...interface{}) {
+	logrus.Print(args...)
 }
 
-func Info(args string) {
+func Printf(format string, args ...interface{}) {
+	logrus.Printf(format, args...)
+}
+
+func Debug(args ...interface{}) {
+	logrus.Debug(args...)
+}
+func Debugf(format string, args ...interface{}) {
+	logrus.Debugf(format, args...)
+}
+
+func Info(args ...interface{}) {
 	logrus.Info(genMessage(args))
 }
 
-func Warn(args string) {
+func Infof(format string, args ...interface{}) {
+	logrus.Infof(format, args...)
+}
+
+func Warn(args ...interface{}) {
 	logrus.Warn(genMessage(args))
 }
 
-func Error(args string) {
+func Warnf(format string, args ...interface{}) {
+	logrus.Warnf(format, args...)
+}
+
+func Error(args ...interface{}) {
 	logrus.Error(genMessage(args))
 }
 
-func Panic(err error) {
-	logrus.Panic(genMessage(err))
+func Errorf(format string, args ...interface{}) {
+	logrus.Errorf(format, args...)
+}
+
+func Panic(err ...interface{}) {
+	logrus.Panic(err...)
+}
+
+func Panicf(format string, args ...interface{}) {
+	logrus.Panicf(format, args...)
 }
 
 // 実行元のファイル名と行数を取得
@@ -78,4 +105,10 @@ func genMessage(args interface{}) string {
 	fn, file, line := getCaller()
 	msg := fmt.Sprintf("%s:%d %s %v", file, line, fn, args)
 	return msg
+}
+
+func CurrentFuncName() string {
+	pc, _, _, _ := runtime.Caller(1)
+	fn := runtime.FuncForPC(pc).Name()
+	return fn
 }

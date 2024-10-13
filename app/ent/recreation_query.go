@@ -4,8 +4,8 @@ package ent
 
 import (
 	"app/ent/predicate"
-	"app/ent/profile"
 	"app/ent/recreation"
+	"app/ent/user"
 	"context"
 	"fmt"
 	"math"
@@ -18,13 +18,13 @@ import (
 // RecreationQuery is the builder for querying Recreation entities.
 type RecreationQuery struct {
 	config
-	ctx         *QueryContext
-	order       []recreation.OrderOption
-	inters      []Interceptor
-	predicates  []predicate.Recreation
-	withProfile *ProfileQuery
-	withFKs     bool
-	modifiers   []func(*sql.Selector)
+	ctx        *QueryContext
+	order      []recreation.OrderOption
+	inters     []Interceptor
+	predicates []predicate.Recreation
+	withUsers  *UserQuery
+	withFKs    bool
+	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -61,9 +61,9 @@ func (rq *RecreationQuery) Order(o ...recreation.OrderOption) *RecreationQuery {
 	return rq
 }
 
-// QueryProfile chains the current query on the "profile" edge.
-func (rq *RecreationQuery) QueryProfile() *ProfileQuery {
-	query := (&ProfileClient{config: rq.config}).Query()
+// QueryUsers chains the current query on the "users" edge.
+func (rq *RecreationQuery) QueryUsers() *UserQuery {
+	query := (&UserClient{config: rq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := rq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -74,8 +74,8 @@ func (rq *RecreationQuery) QueryProfile() *ProfileQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(recreation.Table, recreation.FieldID, selector),
-			sqlgraph.To(profile.Table, profile.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, recreation.ProfileTable, recreation.ProfileColumn),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, recreation.UsersTable, recreation.UsersColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
 		return fromU, nil
@@ -270,26 +270,26 @@ func (rq *RecreationQuery) Clone() *RecreationQuery {
 		return nil
 	}
 	return &RecreationQuery{
-		config:      rq.config,
-		ctx:         rq.ctx.Clone(),
-		order:       append([]recreation.OrderOption{}, rq.order...),
-		inters:      append([]Interceptor{}, rq.inters...),
-		predicates:  append([]predicate.Recreation{}, rq.predicates...),
-		withProfile: rq.withProfile.Clone(),
+		config:     rq.config,
+		ctx:        rq.ctx.Clone(),
+		order:      append([]recreation.OrderOption{}, rq.order...),
+		inters:     append([]Interceptor{}, rq.inters...),
+		predicates: append([]predicate.Recreation{}, rq.predicates...),
+		withUsers:  rq.withUsers.Clone(),
 		// clone intermediate query.
 		sql:  rq.sql.Clone(),
 		path: rq.path,
 	}
 }
 
-// WithProfile tells the query-builder to eager-load the nodes that are connected to
-// the "profile" edge. The optional arguments are used to configure the query builder of the edge.
-func (rq *RecreationQuery) WithProfile(opts ...func(*ProfileQuery)) *RecreationQuery {
-	query := (&ProfileClient{config: rq.config}).Query()
+// WithUsers tells the query-builder to eager-load the nodes that are connected to
+// the "users" edge. The optional arguments are used to configure the query builder of the edge.
+func (rq *RecreationQuery) WithUsers(opts ...func(*UserQuery)) *RecreationQuery {
+	query := (&UserClient{config: rq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	rq.withProfile = query
+	rq.withUsers = query
 	return rq
 }
 
@@ -373,10 +373,10 @@ func (rq *RecreationQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*R
 		withFKs     = rq.withFKs
 		_spec       = rq.querySpec()
 		loadedTypes = [1]bool{
-			rq.withProfile != nil,
+			rq.withUsers != nil,
 		}
 	)
-	if rq.withProfile != nil {
+	if rq.withUsers != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -403,23 +403,23 @@ func (rq *RecreationQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*R
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := rq.withProfile; query != nil {
-		if err := rq.loadProfile(ctx, query, nodes, nil,
-			func(n *Recreation, e *Profile) { n.Edges.Profile = e }); err != nil {
+	if query := rq.withUsers; query != nil {
+		if err := rq.loadUsers(ctx, query, nodes, nil,
+			func(n *Recreation, e *User) { n.Edges.Users = e }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (rq *RecreationQuery) loadProfile(ctx context.Context, query *ProfileQuery, nodes []*Recreation, init func(*Recreation), assign func(*Recreation, *Profile)) error {
+func (rq *RecreationQuery) loadUsers(ctx context.Context, query *UserQuery, nodes []*Recreation, init func(*Recreation), assign func(*Recreation, *User)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Recreation)
 	for i := range nodes {
-		if nodes[i].profile_recreations == nil {
+		if nodes[i].user_recreations == nil {
 			continue
 		}
-		fk := *nodes[i].profile_recreations
+		fk := *nodes[i].user_recreations
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -428,7 +428,7 @@ func (rq *RecreationQuery) loadProfile(ctx context.Context, query *ProfileQuery,
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(profile.IDIn(ids...))
+	query.Where(user.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
@@ -436,7 +436,7 @@ func (rq *RecreationQuery) loadProfile(ctx context.Context, query *ProfileQuery,
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "profile_recreations" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_recreations" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

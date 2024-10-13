@@ -1,14 +1,31 @@
-up:
-	DOCKER_BUILDKIT=1 docker compose up --build $(filter-out $@,$(MAKECMDGOALS))
-
 %:
 	@:
+
+up: docker-up-db goose-migration-up goose-seed-up docker-up-api
+
+docker-up:
+	docker compose up -d
+
+docker-up-db:
+	docker compose up -d db
+	@echo "Waiting for DB to be ready..."
+	@until docker compose exec db pg_isready -U postgres > /dev/null 2>&1; do \
+		sleep 1; \
+		echo -n "."; \
+	done
+	@echo "DB is ready."
+
+docker-up-api:
+	docker compose up api
+
+build-up:
+	DOCKER_BUILDKIT=1 docker compose up --build $(filter-out $@,$(MAKECMDGOALS))
 
 down:
 	docker compose down
 
 db-in:
-	docker compose exec db bash -c "psql \"user=postgres password=postgres_pw host=localhost port=5432 dbname=postgres\""
+	docker compose exec db bash -c "psql \"user=postgres password=postgres host=localhost port=5432 dbname=postgres\""
 
 prune:
 	docker system prune
@@ -30,36 +47,37 @@ deploy-stg:
 deploy-prod:
 	flyctl deploy --config $(prd-config) --build-target deploy --remote-only
 
-setFlyEnvStg:
-	ifeq ($(key),)
-	$(error key is not set)
-	endif
-	ifeq ($(value),)
-	$(error value is not set)
-	endif
-	flyctl -c $(stg-config) secrets set $(key)=$(value)
+golint:
+	cd app; \
+	golangci-lint run ./...
 
-unsetFlyEnvStg:
-	ifeq ($(key),)
-	$(error key is not set)
-	endif
-	flyctl -c $(stg-config) secrets unset $(key)
+oaslint:
+	npx spectral lint docs/openapi.yml
 
-setFlyEnvPrd:
-	ifeq ($(key),)
-	$(error key is not set)
-	endif
-	ifeq ($(value),)
-	$(error value is not set)
-	endif
-	flyctl -c $(prd-config) secrets set $(key)=$(value)
+# OpenAPI Generatorでコード生成が出来るかを確認するためのコマンド
+ogen:
+	docker run --rm \
+		-v $$PWD:/local openapitools/openapi-generator-cli generate \
+		-i /local/docs/openapi.yml \
+		-g typescript-axios \
+		--additional-properties supportsES6=true,withInterfaces=true \
+		-o /local/docs/test-generate
+	rm -rf docs/test-generate
 
-unsetFlyEnvPrd:
-	ifeq ($(key),)
-	$(error key is not set)
-	endif
-	flyctl -c $(prd-config) secrets unset $(key)
+goose-create-migration:
+	goose -dir ./schema/migrations create $(filter-out $@,$(MAKECMDGOALS)) sql
 
-# memo
-# cat .env.prd | flyctl secrets import -c ./.github/workflows/fly.production.toml
-# cat .env.stg | flyctl secrets import -c ./.github/workflows/fly.staging.toml
+goose-create-seed:
+	goose -dir ./schema/seeds create $(filter-out $@,$(MAKECMDGOALS)) sql
+
+goose-migration-up:
+	goose -dir ./schema/migrations postgres "user=postgres password=postgres host=localhost port=5432 dbname=postgres" up
+
+goose-migration-down:
+	goose -dir ./schema/migrations postgres "user=postgres password=postgres host=localhost port=5432 dbname=postgres" down
+
+goose-seed-up:
+	goose -dir ./schema/seeds postgres "user=postgres password=postgres host=localhost port=5432 dbname=postgres" up
+
+goose-seed-down:
+	goose -dir ./schema/seeds postgres "user=postgres password=postgres host=localhost port=5432 dbname=postgres" down

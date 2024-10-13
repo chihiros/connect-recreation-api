@@ -38,17 +38,17 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldPublishedAt holds the string denoting the published_at field in the database.
 	FieldPublishedAt = "published_at"
-	// EdgeProfile holds the string denoting the profile edge name in mutations.
-	EdgeProfile = "profile"
+	// EdgeUsers holds the string denoting the users edge name in mutations.
+	EdgeUsers = "users"
 	// Table holds the table name of the recreation in the database.
 	Table = "recreations"
-	// ProfileTable is the table that holds the profile relation/edge.
-	ProfileTable = "recreations"
-	// ProfileInverseTable is the table name for the Profile entity.
-	// It exists in this package in order to avoid circular dependency with the "profile" package.
-	ProfileInverseTable = "profiles"
-	// ProfileColumn is the table column denoting the profile relation/edge.
-	ProfileColumn = "profile_recreations"
+	// UsersTable is the table that holds the users relation/edge.
+	UsersTable = "recreations"
+	// UsersInverseTable is the table name for the User entity.
+	// It exists in this package in order to avoid circular dependency with the "user" package.
+	UsersInverseTable = "users"
+	// UsersColumn is the table column denoting the users relation/edge.
+	UsersColumn = "user_recreations"
 )
 
 // Columns holds all SQL columns for recreation fields.
@@ -71,7 +71,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "recreations"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"profile_recreations",
+	"user_recreations",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -163,16 +163,16 @@ func ByPublishedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPublishedAt, opts...).ToFunc()
 }
 
-// ByProfileField orders the results by profile field.
-func ByProfileField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByUsersField orders the results by users field.
+func ByUsersField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newProfileStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newUsersStep(), sql.OrderByField(field, opts...))
 	}
 }
-func newProfileStep() *sqlgraph.Step {
+func newUsersStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ProfileInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, ProfileTable, ProfileColumn),
+		sqlgraph.To(UsersInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, UsersTable, UsersColumn),
 	)
 }
